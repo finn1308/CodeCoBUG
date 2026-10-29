@@ -46,12 +46,12 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     // Map variant to CSS class name
     const variantClass = variant === 'primary' ? 'btn-primary' : `btn-${variant}`;
 
-    // Size-specific styles
+    // Size-specific styles (Adheres to controls: 12–16px radius)
     const sizeStyles: Record<ButtonSize, React.CSSProperties> = {
       sm: {
-        padding: '5px 10px',
+        padding: '5px 12px',
         fontSize: '0.8rem',
-        borderRadius: 'var(--radius-sm)',
+        borderRadius: 'var(--radius-md)',
         gap: '6px',
       },
       md: {

@@ -5,7 +5,7 @@
 
 :root {
   /* --- Primary Canvas & Surface Colors --- */
-  --bg-primary: #F3FBF5;           /* Light Mint Canvas */
+  --bg-primary: #F7F9FC;           /* Clean Light Canvas (#F7F9FC) */
   --bg-surface: #FFFFFF;           /* Pure White Surface for Cards & Modals */
   --bg-secondary: #FFFFFF;         /* Secondary Surface */
   --bg-tertiary: #F8FCF9;          /* Subtle Off-White / Mint Tint for nested areas */
@@ -14,14 +14,14 @@
   --bg-backdrop: rgba(36, 48, 71, 0.45); /* Soft Modal Overlay */
 
   /* --- Borders --- */
-  --border-subtle: #E7EAF0;        /* Subtle Border for Cards & Dividers */
+  --border-subtle: #E7EAF0;        /* Subtle Border for Cards & Dividers (#E7EAF0) */
   --border-medium: #D1D9E6;        /* Standard Control Border */
   --border-strong: #A9B7CD;        /* Emphasized Border */
   --border-focus: #58B084;         /* Accessible Focus Ring */
 
   /* --- Core Typography Colors (High Contrast WCAG AA/AAA) --- */
-  --text-primary: #243047;         /* Deep Navy Slate (Main text, readable on pastels) */
-  --text-secondary: #58657B;       /* Neutral Slate (Secondary descriptions) */
+  --text-primary: #243047;         /* Deep Navy Slate (Main text, readable on pastels #243047) */
+  --text-secondary: #697386;       /* Neutral Slate (Secondary descriptions #697386) */
   --text-muted: #8492A6;           /* Muted text for timestamps & hints */
   --text-inverse: #FFFFFF;         /* White text for dark buttons/tooltips */
   --text-link: #1E6B4A;            /* Accessible Mint Dark Green link */
@@ -109,13 +109,13 @@
   --space-10: 40px;
   --space-12: 48px;
 
-  /* --- Rounded Corner Tokens (agent1.md: 16-24px for cards, 12-16px for controls) --- */
+  /* --- Rounded Corner Tokens (Card radius: 20–24px; Controls: 12–16px) --- */
   --radius-xs: 6px;
   --radius-sm: 8px;
-  --radius-md: 12px;       /* Standard Buttons, Inputs, Dropdowns */
-  --radius-lg: 16px;       /* Small Cards, Dialogs, Badges */
-  --radius-xl: 20px;       /* Content Cards, Panels, Modals */
-  --radius-2xl: 24px;      /* Large Cards, Hero Containers */
+  --radius-md: 12px;       /* Standard Controls (Buttons md, Inputs, Dropdowns: 12-16px) */
+  --radius-lg: 16px;       /* Large Controls (Buttons lg, Dialog headers: 12-16px) */
+  --radius-xl: 20px;       /* Content Cards, Workspace Panels (20-24px card range) */
+  --radius-2xl: 24px;      /* Large Cards, Hero Containers, Modals (20-24px card range) */
   --radius-full: 9999px;   /* Pills, Circular Avatars & Icons */
 
   /* --- Shadows (Subtle, Soft & Friendly) --- */
@@ -480,6 +480,36 @@ body {
 }
 .form-input-error:focus {
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+}
+
+.form-select {
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  outline: none;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-xs);
+  cursor: pointer;
+}
+
+.form-select:hover:not(:disabled) {
+  border-color: var(--border-strong);
+}
+
+.form-select:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(88, 176, 132, 0.2);
+}
+
+.form-select:disabled {
+  background-color: var(--bg-muted);
+  color: var(--text-muted);
+  cursor: not-allowed;
 }
 
 .form-helper-text {
