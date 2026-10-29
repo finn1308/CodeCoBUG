@@ -110,3 +110,4 @@ export function Tabs<T extends string = string>({
     </div>
   );
 }
+
