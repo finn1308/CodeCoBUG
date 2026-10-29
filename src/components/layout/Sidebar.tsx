@@ -48,6 +48,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   }, []);
 
   const isHome = pathname === '/';
+  const isCurriculum = pathname.startsWith('/curriculum');
   const isExercise = pathname.startsWith('/exercises');
 
   return (
@@ -127,7 +128,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* 2. Python Curriculum */}
         <Link
           href="/#curriculum"
-          className="sidebar-nav-item"
+          className={`sidebar-nav-item ${isCurriculum ? 'sidebar-nav-item-active' : ''}`}
           title="Giáo trình Python"
         >
           <BookOpen size={18} style={{ flexShrink: 0 }} />

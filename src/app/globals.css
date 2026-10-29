@@ -1038,10 +1038,16 @@ body {
   .desktop-only-toggle {
     display: none !important;
   }
+  .mobile-only-flex {
+    display: flex !important;
+  }
 }
 
 @media (min-width: 1024px) {
   .mobile-nav-toggle {
+    display: none !important;
+  }
+  .mobile-only-flex {
     display: none !important;
   }
 }

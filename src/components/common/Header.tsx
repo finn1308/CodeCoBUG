@@ -82,29 +82,28 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           )}
 
-          {showBrand && (
-            <Link href="/" className="brand-logo">
-              <div
-                style={{
-                  width: '34px',
-                  height: '34px',
-                  borderRadius: 'var(--radius-md)',
-                  backgroundColor: 'var(--pastel-mint)',
-                  color: 'var(--pastel-mint-text)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: 'var(--shadow-xs)',
-                  border: '1px solid var(--pastel-mint-active)',
-                  flexShrink: 0,
-                }}
-              >
-                <Sparkles size={18} />
-              </div>
-              <span>CodeCoBUG</span>
-              <span className="brand-badge">Studio</span>
-            </Link>
-          )}
+          {/* Brand Logo: shown if showBrand is true, or on mobile */}
+          <Link href="/" className={`brand-logo ${!showBrand ? 'mobile-only-flex' : ''}`}>
+            <div
+              style={{
+                width: '34px',
+                height: '34px',
+                borderRadius: 'var(--radius-md)',
+                backgroundColor: 'var(--pastel-mint)',
+                color: 'var(--pastel-mint-text)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: 'var(--shadow-xs)',
+                border: '1px solid var(--pastel-mint-active)',
+                flexShrink: 0,
+              }}
+            >
+              <Sparkles size={18} />
+            </div>
+            <span>CodeCoBUG</span>
+            <span className="brand-badge">Studio</span>
+          </Link>
 
           {exerciseTitle && (
             <div

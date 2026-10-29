@@ -67,6 +67,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
   if (!isOpen) return null;
 
   const isHome = pathname === '/';
+  const isCurriculum = pathname.startsWith('/curriculum');
   const isExercise = pathname.startsWith('/exercises');
 
   return (
@@ -158,7 +159,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
           <Link
             href="/#curriculum"
             onClick={onClose}
-            className="sidebar-nav-item"
+            className={`sidebar-nav-item ${isCurriculum ? 'sidebar-nav-item-active' : ''}`}
             style={{ minHeight: '48px', padding: '12px 16px' }}
           >
             <BookOpen size={20} />
