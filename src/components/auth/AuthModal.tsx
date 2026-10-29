@@ -1,16 +1,17 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { User, Lock, Mail, Sparkles, LogOut, CheckCircle2, ShieldCheck, ArrowRight } from 'lucide-react';
+import { User, Lock, Mail, Sparkles, LogOut, CheckCircle2, ShieldCheck, ArrowRight, Settings } from 'lucide-react';
 import { authManager, UserProfile } from '@/lib/auth/authManager';
 import { Modal, Button, Input, Badge, Tabs } from '@/components/ui';
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpenAISettings?: () => void;
 }
 
-export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
+export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onOpenAISettings }) => {
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(authManager.getCurrentUser());
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [email, setEmail] = useState('');
@@ -209,17 +210,33 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '6px' }}>
-            <Button variant="secondary" onClick={onClose}>
-              Đóng
-            </Button>
-            <Button
-              variant="danger"
-              onClick={handleSignOut}
-              leftIcon={<LogOut size={15} />}
-            >
-              Đăng xuất
-            </Button>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px', marginTop: '6px' }}>
+            {onOpenAISettings ? (
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  onClose();
+                  onOpenAISettings();
+                }}
+                leftIcon={<Settings size={14} />}
+                title="Quản lý khóa API và tuỳ chọn mô hình AI"
+              >
+                Cài đặt AI (BYOK)
+              </Button>
+            ) : <div />}
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <Button variant="secondary" onClick={onClose}>
+                Đóng
+              </Button>
+              <Button
+                variant="danger"
+                onClick={handleSignOut}
+                leftIcon={<LogOut size={15} />}
+              >
+                Đăng xuất
+              </Button>
+            </div>
           </div>
         </div>
       ) : (

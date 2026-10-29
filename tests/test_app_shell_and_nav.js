@@ -131,6 +131,34 @@ const headerPath = path.resolve(__dirname, '../src/components/common/Header.tsx'
 const headerCode = fs.readFileSync(headerPath, 'utf8');
 assert(headerCode.includes('mobile-nav-toggle'), 'Header includes mobile-nav-toggle hamburger button');
 
+// Group 6: Minimal 3-Destination Navigation & Submenus Architecture
+console.log('\n--- Test Group 6: Minimal 3-Destination Navigation & Submenu Architecture ---');
+assert(sidebarCode.includes('Tổng quan'), 'Primary Destination 1: Tổng quan is present in Sidebar');
+assert(sidebarCode.includes('Học Python'), 'Primary Destination 2: Học Python is present in Sidebar');
+assert(sidebarCode.includes('Luyện tập'), 'Primary Destination 3: Luyện tập is present in Sidebar');
+
+assert(sidebarCode.includes('sidebar-submenu'), 'Sidebar defines structured submenus');
+assert(sidebarCode.includes('sidebar-sub-item'), 'Sidebar defines sub-items for secondary features');
+assert(sidebarCode.includes('Thống kê chi tiết'), 'Detailed statistics submenu placed under Tổng quan');
+assert(sidebarCode.includes('Chủ đề & Bài học'), 'Topic & lesson details submenu placed under Học Python');
+assert(sidebarCode.includes('Ôn tập bài sai'), 'Mistake review submenu placed under Luyện tập');
+assert(sidebarCode.includes('Lịch sử nộp bài'), 'Exercise submission history submenu placed under Luyện tập');
+
+// Contextual AI Tutor Access
+assert(sidebarCode.includes('sidebar-assistant-pill') || sidebarCode.includes('onToggleAITutor'), 'Sidebar provides contextual AI Tutor assistant access without bulky primary nav slot');
+assert(mobileNavCode.includes('sidebar-assistant-pill') || mobileNavCode.includes('onToggleAITutor'), 'Mobile drawer provides contextual AI Tutor assistant access');
+
+// Account Menu & Secondary Navigation (Help & Settings)
+const authModalPath = path.resolve(__dirname, '../src/components/auth/AuthModal.tsx');
+const authModalCode = fs.readFileSync(authModalPath, 'utf8');
+assert(authModalCode.includes('onOpenAISettings'), 'AuthModal integrates API-key settings under account menu');
+assert(authModalCode.includes('Đăng xuất'), 'AuthModal integrates sign-out under account menu');
+
+const helpModalPath = path.resolve(__dirname, '../src/components/common/HelpModal.tsx');
+assert(fs.existsSync(helpModalPath), 'HelpModal.tsx exists for secondary help navigation');
+const helpModalCode = fs.readFileSync(helpModalPath, 'utf8');
+assert(helpModalCode.includes('Ctrl + Enter') || helpModalCode.includes('Cmd + Enter'), 'HelpModal includes keyboard shortcuts');
+
 console.log('\n=============================================================');
 console.log(`🏁 PHASE 3 APP SHELL & NAV RESULTS: ${passCount} PASSED, 0 FAILED`);
 console.log('=============================================================\n');

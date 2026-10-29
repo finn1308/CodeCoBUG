@@ -8,6 +8,7 @@ import { AuthModal } from '@/components/auth/AuthModal';
 import { AISettingsModal } from '@/components/settings/AISettingsModal';
 import { WeaknessTrackerModal } from '@/components/mastery/WeaknessTrackerModal';
 import { AITutorModal } from '@/components/ai';
+import { HelpModal } from '@/components/common/HelpModal';
 
 export interface AppShellProps {
   children: React.ReactNode;
@@ -31,6 +32,7 @@ export const AppShell: React.FC<AppShellProps> = ({
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isTrackerOpen, setIsTrackerOpen] = useState(false);
   const [isGlobalAITutorOpen, setIsGlobalAITutorOpen] = useState(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   // Load sidebar collapse preference from localStorage on desktop
   useEffect(() => {
@@ -70,6 +72,7 @@ export const AppShell: React.FC<AppShellProps> = ({
           onOpenAISettings={() => setIsSettingsOpen(true)}
           onOpenWeaknessTracker={handleOpenWeaknessTracker}
           onToggleAITutor={handleToggleAITutor}
+          onOpenHelp={() => setIsHelpOpen(true)}
         />
       )}
 
@@ -101,12 +104,14 @@ export const AppShell: React.FC<AppShellProps> = ({
         onOpenAISettings={() => setIsSettingsOpen(true)}
         onOpenWeaknessTracker={handleOpenWeaknessTracker}
         onToggleAITutor={handleToggleAITutor}
+        onOpenHelp={() => setIsHelpOpen(true)}
       />
 
       {/* 4. Global Modals */}
       <AuthModal
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
+        onOpenAISettings={() => setIsSettingsOpen(true)}
       />
 
       <AISettingsModal
@@ -117,6 +122,12 @@ export const AppShell: React.FC<AppShellProps> = ({
       <WeaknessTrackerModal
         isOpen={isTrackerOpen}
         onClose={() => setIsTrackerOpen(false)}
+      />
+
+      <HelpModal
+        isOpen={isHelpOpen}
+        onClose={() => setIsHelpOpen(false)}
+        onOpenAISettings={() => setIsSettingsOpen(true)}
       />
 
       {/* 5. Global AI Tutor Modal (for non-exercise pages) */}

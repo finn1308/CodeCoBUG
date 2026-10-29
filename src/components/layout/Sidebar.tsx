@@ -16,6 +16,9 @@ import {
   ChevronRight,
   Sparkles,
   Award,
+  HelpCircle,
+  FileCode,
+  History,
 } from 'lucide-react';
 import { authManager, UserProfile } from '@/lib/auth/authManager';
 import { Badge } from '@/components/ui';
@@ -27,6 +30,7 @@ export interface SidebarProps {
   onOpenAISettings: () => void;
   onOpenWeaknessTracker: (initialTab?: 'skills' | 'queue' | 'policy') => void;
   onToggleAITutor?: () => void;
+  onOpenHelp?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -36,6 +40,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenAISettings,
   onOpenWeaknessTracker,
   onToggleAITutor,
+  onOpenHelp,
 }) => {
   const pathname = usePathname();
   const [user, setUser] = useState<UserProfile | null>(authManager.getCurrentUser());
@@ -113,101 +118,174 @@ export const Sidebar: React.FC<SidebarProps> = ({
         )}
       </div>
 
-      {/* Main Navigation Items */}
-      <nav className="sidebar-nav-list">
-        {/* 1. Home / Learning Dashboard */}
-        <Link
-          href="/"
-          className={`sidebar-nav-item ${isHome ? 'sidebar-nav-item-active' : ''}`}
-          title="Bảng điều khiển học tập"
-        >
-          <LayoutDashboard size={18} style={{ flexShrink: 0 }} />
-          {!isCollapsed && <span>Bảng điều khiển</span>}
-        </Link>
+      {/* Main Navigation (3 Primary Destinations) */}
+      <nav className="sidebar-nav-list" aria-label="3 Điểm đến chính">
+        {/* 1. Tổng quan (Dashboard) */}
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <Link
+            href="/"
+            className={`sidebar-nav-item ${isHome ? 'sidebar-nav-item-active' : ''}`}
+            title="1. Tổng quan — Bảng điều khiển học tập"
+          >
+            <LayoutDashboard size={18} style={{ flexShrink: 0 }} />
+            {!isCollapsed && <span>Tổng quan</span>}
+          </Link>
 
-        {/* 2. Python Curriculum */}
-        <Link
-          href="/#curriculum"
-          className={`sidebar-nav-item ${isCurriculum ? 'sidebar-nav-item-active' : ''}`}
-          title="Giáo trình Python"
-        >
-          <BookOpen size={18} style={{ flexShrink: 0 }} />
-          {!isCollapsed && <span>Giáo trình Python</span>}
-        </Link>
-
-        {/* 3. Practice Exercises */}
-        <Link
-          href="/exercises/in-loi-chao-codecobug"
-          className={`sidebar-nav-item ${isExercise ? 'sidebar-nav-item-active' : ''}`}
-          title="Luyện tập lập trình"
-        >
-          <Code2 size={18} style={{ flexShrink: 0 }} />
-          {!isCollapsed && <span>Luyện tập Code</span>}
-        </Link>
-
-        {/* 4. AI Tutor */}
-        <button
-          type="button"
-          className="sidebar-nav-item"
-          onClick={() => {
-            if (onToggleAITutor) {
-              onToggleAITutor();
-            } else {
-              onOpenAISettings();
-            }
-          }}
-          style={{ width: '100%', background: 'none', textAlign: 'left' }}
-          title="AI Gia sư kèm cặp"
-        >
-          <Bot size={18} style={{ flexShrink: 0, color: 'var(--pastel-lavender-text)' }} />
           {!isCollapsed && (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-              <span>AI Tutor</span>
-              <Badge variant="lavender" size="sm">BYOK</Badge>
+            <div className="sidebar-submenu">
+              <button
+                type="button"
+                className="sidebar-sub-item"
+                onClick={() => onOpenWeaknessTracker('skills')}
+                title="Thống kê chi tiết & Kỹ năng"
+              >
+                <TrendingUp size={14} style={{ color: 'var(--pastel-mint-text)', flexShrink: 0 }} />
+                <span>Thống kê chi tiết</span>
+              </button>
             </div>
           )}
-        </button>
+        </div>
 
-        {/* 5. Review Mistakes (Ôn tập lỗi sai) */}
-        <button
-          type="button"
-          className="sidebar-nav-item"
-          onClick={() => onOpenWeaknessTracker('queue')}
-          style={{ width: '100%', background: 'none', textAlign: 'left' }}
-          title="Ôn tập bài tập sai & Hàng đợi thích ứng"
-        >
-          <Target size={18} style={{ flexShrink: 0, color: 'var(--pastel-peach-text)' }} />
-          {!isCollapsed && <span>Ôn tập bài sai</span>}
-        </button>
+        {/* 2. Học Python (Curriculum) */}
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <Link
+            href="/#curriculum"
+            className={`sidebar-nav-item ${isCurriculum ? 'sidebar-nav-item-active' : ''}`}
+            title="2. Học Python — Giáo trình & Chủ đề"
+          >
+            <BookOpen size={18} style={{ flexShrink: 0 }} />
+            {!isCollapsed && <span>Học Python</span>}
+          </Link>
 
-        {/* 6. Learning Progress (Tiến độ học tập & kỹ năng) */}
-        <button
-          type="button"
-          className="sidebar-nav-item"
-          onClick={() => onOpenWeaknessTracker('skills')}
-          style={{ width: '100%', background: 'none', textAlign: 'left' }}
-          title="Tiến độ kỹ năng & Thành thạo"
-        >
-          <TrendingUp size={18} style={{ flexShrink: 0, color: 'var(--pastel-mint-text)' }} />
-          {!isCollapsed && <span>Tiến độ kỹ năng</span>}
-        </button>
+          {!isCollapsed && (
+            <div className="sidebar-submenu">
+              <Link
+                href="/curriculum"
+                className={`sidebar-sub-item ${isCurriculum ? 'sidebar-sub-item-active' : ''}`}
+                title="Chi tiết các chủ đề & Bài học"
+              >
+                <FileCode size={14} style={{ color: 'var(--pastel-sky-text)', flexShrink: 0 }} />
+                <span>Chủ đề & Bài học</span>
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* 3. Luyện tập (Practice Workspace & Mistakes Review) */}
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <Link
+            href="/exercises/in-loi-chao-codecobug"
+            className={`sidebar-nav-item ${isExercise ? 'sidebar-nav-item-active' : ''}`}
+            title="3. Luyện tập — Không gian lập trình & Ôn tập lỗi sai"
+          >
+            <Code2 size={18} style={{ flexShrink: 0 }} />
+            {!isCollapsed && <span>Luyện tập</span>}
+          </Link>
+
+          {!isCollapsed && (
+            <div className="sidebar-submenu">
+              <Link
+                href="/exercises/in-loi-chao-codecobug"
+                className={`sidebar-sub-item ${isExercise ? 'sidebar-sub-item-active' : ''}`}
+                title="Phòng lab lập trình trực tuyến"
+              >
+                <Code2 size={14} style={{ color: 'var(--pastel-mint-text)', flexShrink: 0 }} />
+                <span>Phòng lab code</span>
+              </Link>
+              <button
+                type="button"
+                className="sidebar-sub-item"
+                onClick={() => onOpenWeaknessTracker('queue')}
+                title="Hàng đợi thích ứng ôn tập các bài làm sai"
+              >
+                <Target size={14} style={{ color: 'var(--pastel-peach-text)', flexShrink: 0 }} />
+                <span>Ôn tập bài sai</span>
+              </button>
+              <button
+                type="button"
+                className="sidebar-sub-item"
+                onClick={() => onOpenWeaknessTracker('policy')}
+                title="Xem lại lịch sử các lần nộp bài"
+              >
+                <History size={14} style={{ color: 'var(--pastel-sky-text)', flexShrink: 0 }} />
+                <span>Lịch sử nộp bài</span>
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Contextual AI Tutor Access */}
+        <div style={{ marginTop: '8px' }}>
+          {!isCollapsed ? (
+            <button
+              type="button"
+              className="sidebar-assistant-pill"
+              onClick={() => {
+                if (onToggleAITutor) {
+                  onToggleAITutor();
+                } else {
+                  onOpenAISettings();
+                }
+              }}
+              title="Mở AI Tutor hỗ trợ học tập"
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Bot size={17} style={{ color: 'var(--pastel-lavender-text)' }} />
+                <span>AI Tutor</span>
+              </div>
+              <Badge variant="lavender" size="sm">BYOK</Badge>
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="sidebar-nav-item"
+              onClick={() => {
+                if (onToggleAITutor) {
+                  onToggleAITutor();
+                } else {
+                  onOpenAISettings();
+                }
+              }}
+              title="AI Tutor kèm cặp (BYOK)"
+              style={{ justifyContent: 'center', padding: '10px 0' }}
+            >
+              <Bot size={18} style={{ color: 'var(--pastel-lavender-text)' }} />
+            </button>
+          )}
+        </div>
+
+        <div className="sidebar-section-divider" />
+
+        {/* Secondary Navigation (Help & Preferences) */}
+        {onOpenHelp && (
+          <button
+            type="button"
+            className="sidebar-nav-item"
+            onClick={onOpenHelp}
+            style={{ width: '100%', background: 'none', textAlign: 'left', minHeight: '38px', padding: '7px 14px' }}
+            title="Trợ giúp & Phím tắt học tập"
+          >
+            <HelpCircle size={16} style={{ flexShrink: 0, color: 'var(--text-muted)' }} />
+            {!isCollapsed && <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>Trợ giúp & Phím tắt</span>}
+          </button>
+        )}
       </nav>
 
-      {/* Sidebar Footer: Settings & Account */}
+      {/* Sidebar Footer: Account & Settings Menu */}
       <div className="sidebar-footer">
         {/* Settings button */}
         <button
           type="button"
           className="sidebar-nav-item"
           onClick={onOpenAISettings}
-          style={{ width: '100%', background: 'none', textAlign: 'left', minHeight: '40px', padding: '8px 12px' }}
+          style={{ width: '100%', background: 'none', textAlign: 'left', minHeight: '38px', padding: '6px 12px' }}
           title="Cài đặt AI Provider (BYOK)"
         >
-          <Settings size={17} style={{ flexShrink: 0 }} />
-          {!isCollapsed && <span style={{ fontSize: '0.84rem' }}>Cài đặt AI (BYOK)</span>}
+          <Settings size={16} style={{ flexShrink: 0 }} />
+          {!isCollapsed && <span style={{ fontSize: '0.82rem' }}>Cài đặt AI (BYOK)</span>}
         </button>
 
-        {/* User Account Pill */}
+        {/* User Account / Profile Menu */}
         <button
           type="button"
           onClick={onOpenAuth}
@@ -225,7 +303,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             boxShadow: 'var(--shadow-xs)',
             transition: 'all var(--transition-base)',
           }}
-          title="Tài khoản học viên"
+          title="Tài khoản học viên & Đăng xuất"
         >
           <div
             style={{
@@ -268,4 +346,3 @@ export const Sidebar: React.FC<SidebarProps> = ({
     </aside>
   );
 };
-

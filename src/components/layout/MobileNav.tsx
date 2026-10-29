@@ -15,6 +15,9 @@ import {
   X,
   Sparkles,
   Award,
+  HelpCircle,
+  FileCode,
+  History,
 } from 'lucide-react';
 import { authManager, UserProfile } from '@/lib/auth/authManager';
 import { Badge } from '@/components/ui';
@@ -26,6 +29,7 @@ export interface MobileNavProps {
   onOpenAISettings: () => void;
   onOpenWeaknessTracker: (initialTab?: 'skills' | 'queue' | 'policy') => void;
   onToggleAITutor?: () => void;
+  onOpenHelp?: () => void;
 }
 
 export const MobileNav: React.FC<MobileNavProps> = ({
@@ -35,6 +39,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
   onOpenAISettings,
   onOpenWeaknessTracker,
   onToggleAITutor,
+  onOpenHelp,
 }) => {
   const pathname = usePathname();
   const [user, setUser] = useState<UserProfile | null>(authManager.getCurrentUser());
@@ -133,101 +138,163 @@ export const MobileNav: React.FC<MobileNavProps> = ({
           </button>
         </div>
 
-        {/* Navigation Links */}
+        {/* Navigation Content: 3 Primary Destinations & Submenus */}
         <nav
           style={{
             flex: 1,
-            padding: '20px 14px',
+            padding: '16px 14px',
             display: 'flex',
             flexDirection: 'column',
             gap: '8px',
             overflowY: 'auto',
           }}
+          aria-label="Điều hướng chính"
         >
-          {/* 1. Dashboard */}
-          <Link
-            href="/"
-            onClick={onClose}
-            className={`sidebar-nav-item ${isHome ? 'sidebar-nav-item-active' : ''}`}
-            style={{ minHeight: '48px', padding: '12px 16px' }}
-          >
-            <LayoutDashboard size={20} />
-            <span>Bảng điều khiển</span>
-          </Link>
+          {/* 1. Tổng quan (Dashboard) */}
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <Link
+              href="/"
+              onClick={onClose}
+              className={`sidebar-nav-item ${isHome ? 'sidebar-nav-item-active' : ''}`}
+              style={{ minHeight: '48px', padding: '12px 16px' }}
+            >
+              <LayoutDashboard size={20} />
+              <span>Tổng quan</span>
+            </Link>
 
-          {/* 2. Python Curriculum */}
-          <Link
-            href="/#curriculum"
-            onClick={onClose}
-            className={`sidebar-nav-item ${isCurriculum ? 'sidebar-nav-item-active' : ''}`}
-            style={{ minHeight: '48px', padding: '12px 16px' }}
-          >
-            <BookOpen size={20} />
-            <span>Giáo trình Python</span>
-          </Link>
-
-          {/* 3. Practice Exercises */}
-          <Link
-            href="/exercises/in-loi-chao-codecobug"
-            onClick={onClose}
-            className={`sidebar-nav-item ${isExercise ? 'sidebar-nav-item-active' : ''}`}
-            style={{ minHeight: '48px', padding: '12px 16px' }}
-          >
-            <Code2 size={20} />
-            <span>Luyện tập Code</span>
-          </Link>
-
-          {/* 4. AI Tutor */}
-          <button
-            type="button"
-            className="sidebar-nav-item"
-            onClick={() => {
-              onClose();
-              if (onToggleAITutor) {
-                onToggleAITutor();
-              } else {
-                onOpenAISettings();
-              }
-            }}
-            style={{ minHeight: '48px', padding: '12px 16px', width: '100%', textAlign: 'left', background: 'none' }}
-          >
-            <Bot size={20} style={{ color: 'var(--pastel-lavender-text)' }} />
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-              <span>AI Tutor</span>
-              <Badge variant="lavender" size="sm">BYOK</Badge>
+            <div className="sidebar-submenu" style={{ margin: '4px 0 6px 18px', paddingLeft: '14px' }}>
+              <button
+                type="button"
+                className="sidebar-sub-item"
+                style={{ minHeight: '44px', padding: '8px 12px' }}
+                onClick={() => {
+                  onClose();
+                  onOpenWeaknessTracker('skills');
+                }}
+              >
+                <TrendingUp size={16} style={{ color: 'var(--pastel-mint-text)' }} />
+                <span>Thống kê chi tiết</span>
+              </button>
             </div>
-          </button>
+          </div>
 
-          {/* 5. Review Mistakes */}
-          <button
-            type="button"
-            className="sidebar-nav-item"
-            onClick={() => {
-              onClose();
-              onOpenWeaknessTracker('queue');
-            }}
-            style={{ minHeight: '48px', padding: '12px 16px', width: '100%', textAlign: 'left', background: 'none' }}
-          >
-            <Target size={20} style={{ color: 'var(--pastel-peach-text)' }} />
-            <span>Ôn tập bài sai</span>
-          </button>
+          {/* 2. Học Python (Curriculum) */}
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <Link
+              href="/#curriculum"
+              onClick={onClose}
+              className={`sidebar-nav-item ${isCurriculum ? 'sidebar-nav-item-active' : ''}`}
+              style={{ minHeight: '48px', padding: '12px 16px' }}
+            >
+              <BookOpen size={20} />
+              <span>Học Python</span>
+            </Link>
 
-          {/* 6. Learning Progress */}
-          <button
-            type="button"
-            className="sidebar-nav-item"
-            onClick={() => {
-              onClose();
-              onOpenWeaknessTracker('skills');
-            }}
-            style={{ minHeight: '48px', padding: '12px 16px', width: '100%', textAlign: 'left', background: 'none' }}
-          >
-            <TrendingUp size={20} style={{ color: 'var(--pastel-mint-text)' }} />
-            <span>Tiến độ kỹ năng</span>
-          </button>
+            <div className="sidebar-submenu" style={{ margin: '4px 0 6px 18px', paddingLeft: '14px' }}>
+              <Link
+                href="/curriculum"
+                onClick={onClose}
+                className={`sidebar-sub-item ${isCurriculum ? 'sidebar-sub-item-active' : ''}`}
+                style={{ minHeight: '44px', padding: '8px 12px' }}
+              >
+                <FileCode size={16} style={{ color: 'var(--pastel-sky-text)' }} />
+                <span>Chủ đề & Bài học</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* 3. Luyện tập (Practice) */}
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <Link
+              href="/exercises/in-loi-chao-codecobug"
+              onClick={onClose}
+              className={`sidebar-nav-item ${isExercise ? 'sidebar-nav-item-active' : ''}`}
+              style={{ minHeight: '48px', padding: '12px 16px' }}
+            >
+              <Code2 size={20} />
+              <span>Luyện tập</span>
+            </Link>
+
+            <div className="sidebar-submenu" style={{ margin: '4px 0 6px 18px', paddingLeft: '14px' }}>
+              <Link
+                href="/exercises/in-loi-chao-codecobug"
+                onClick={onClose}
+                className={`sidebar-sub-item ${isExercise ? 'sidebar-sub-item-active' : ''}`}
+                style={{ minHeight: '44px', padding: '8px 12px' }}
+              >
+                <Code2 size={16} style={{ color: 'var(--pastel-mint-text)' }} />
+                <span>Phòng lab code</span>
+              </Link>
+              <button
+                type="button"
+                className="sidebar-sub-item"
+                style={{ minHeight: '44px', padding: '8px 12px' }}
+                onClick={() => {
+                  onClose();
+                  onOpenWeaknessTracker('queue');
+                }}
+              >
+                <Target size={16} style={{ color: 'var(--pastel-peach-text)' }} />
+                <span>Ôn tập bài sai</span>
+              </button>
+              <button
+                type="button"
+                className="sidebar-sub-item"
+                style={{ minHeight: '44px', padding: '8px 12px' }}
+                onClick={() => {
+                  onClose();
+                  onOpenWeaknessTracker('policy');
+                }}
+              >
+                <History size={16} style={{ color: 'var(--pastel-sky-text)' }} />
+                <span>Lịch sử nộp bài</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Contextual AI Tutor Access */}
+          <div style={{ marginTop: '6px' }}>
+            <button
+              type="button"
+              className="sidebar-assistant-pill"
+              style={{ minHeight: '48px', padding: '10px 14px' }}
+              onClick={() => {
+                onClose();
+                if (onToggleAITutor) {
+                  onToggleAITutor();
+                } else {
+                  onOpenAISettings();
+                }
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <Bot size={20} style={{ color: 'var(--pastel-lavender-text)' }} />
+                <span>AI Tutor kèm cặp</span>
+              </div>
+              <Badge variant="lavender" size="sm">BYOK</Badge>
+            </button>
+          </div>
+
+          <div className="sidebar-section-divider" />
+
+          {/* Secondary Navigation */}
+          {onOpenHelp && (
+            <button
+              type="button"
+              className="sidebar-nav-item"
+              onClick={() => {
+                onClose();
+                onOpenHelp();
+              }}
+              style={{ minHeight: '44px', padding: '10px 14px', width: '100%', textAlign: 'left', background: 'none' }}
+            >
+              <HelpCircle size={18} style={{ color: 'var(--text-muted)' }} />
+              <span style={{ fontSize: '0.84rem' }}>Trợ giúp & Phím tắt</span>
+            </button>
+          )}
         </nav>
 
-        {/* Drawer Footer */}
+        {/* Drawer Footer: Settings & Account Menu */}
         <div
           style={{
             padding: '16px 14px',
@@ -310,4 +377,3 @@ export const MobileNav: React.FC<MobileNavProps> = ({
     </div>
   );
 };
-
