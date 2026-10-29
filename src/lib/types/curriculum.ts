@@ -1,0 +1,75 @@
+export type Difficulty = 'very_easy' | 'easy' | 'medium' | 'hard' | 'challenge';
+
+export interface Example {
+  id: string;
+  exerciseId: string;
+  inputData: string;
+  expectedOutput: string;
+  explanation?: string;
+  orderIndex: number;
+}
+
+export interface TestCase {
+  id: string;
+  exerciseId: string;
+  inputData: string;
+  expectedOutput: string;
+  isHidden: boolean;
+  comparisonMode: 'exact' | 'normalized_lines' | 'float_tolerance';
+  weight: number;
+  orderIndex: number;
+}
+
+export interface Exercise {
+  id: string;
+  lessonId: string;
+  topicId: string;
+  slug: string;
+  title: string;
+  description: string;
+  starterCode: string;
+  solutionCode?: string;
+  difficulty: Difficulty;
+  points: number;
+  completionCriteria: {
+    requiredTests: 'all' | 'majority';
+    forbiddenTokens?: string[];
+    requiredTokens?: string[];
+  };
+  examples: Example[];
+  testCases?: TestCase[]; // Public test cases only on client
+  orderIndex: number;
+  isPublished: boolean;
+}
+
+export interface Lesson {
+  id: string;
+  topicId: string;
+  slug: string;
+  title: string;
+  theoryContent?: string;
+  exercises: Exercise[];
+  orderIndex: number;
+  isPublished: boolean;
+}
+
+export interface Topic {
+  id: string;
+  courseId: string;
+  slug: string;
+  title: string;
+  summary: string;
+  orderIndex: number;
+  lessons: Lesson[];
+  isPublished: boolean;
+}
+
+export interface Course {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  orderIndex: number;
+  topics: Topic[];
+  isPublished: boolean;
+}
