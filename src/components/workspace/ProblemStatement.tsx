@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Exercise } from '@/lib/types/curriculum';
 import { FileText, AlertCircle, Award, Copy, Check, ChevronDown, ChevronUp, Lightbulb, CornerDownRight } from 'lucide-react';
+import { Badge } from '@/components/ui';
 
 interface ProblemStatementProps {
   exercise: Exercise;
@@ -32,29 +33,21 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
     <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
       {/* Exercise Header */}
       <div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-          <span className={`badge badge-${exercise.difficulty}`}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', flexWrap: 'wrap' }}>
+          <Badge variant={exercise.difficulty as any} size="sm">
             {exercise.difficulty.replace('_', ' ')}
-          </span>
-          <span
-            className="badge"
-            style={{
-              background: 'rgba(56, 189, 248, 0.1)',
-              color: 'var(--accent-light)',
-              border: '1px solid rgba(56, 189, 248, 0.25)',
-            }}
-          >
-            <Award size={12} />
+          </Badge>
+          <Badge variant="mint" size="sm" icon={<Award size={12} />}>
             {exercise.points} Điểm
-          </span>
+          </Badge>
           {topicTitle && (
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+            <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
               • {topicTitle}
             </span>
           )}
         </div>
 
-        <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.3 }}>
+        <h1 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.3 }}>
           {exercise.title}
         </h1>
       </div>
@@ -65,14 +58,15 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
           color: 'var(--text-secondary)',
           fontSize: '0.92rem',
           lineHeight: 1.7,
-          background: 'var(--bg-tertiary)',
-          padding: '16px',
-          borderRadius: 'var(--radius-md)',
+          backgroundColor: 'var(--bg-tertiary)',
+          padding: '18px',
+          borderRadius: 'var(--radius-lg)',
           border: '1px solid var(--border-subtle)',
+          boxShadow: 'var(--shadow-xs)',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', color: 'var(--text-primary)', fontWeight: 600 }}>
-          <FileText size={16} style={{ color: 'var(--accent-light)' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', color: 'var(--text-primary)', fontWeight: 700 }}>
+          <FileText size={16} style={{ color: 'var(--pastel-sky-text)' }} />
           <span>Mô tả bài toán</span>
         </div>
         <p style={{ whiteSpace: 'pre-line' }}>{exercise.description}</p>
@@ -82,23 +76,23 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
       {exercise.completionCriteria && (
         <div
           style={{
-            background: 'rgba(2, 132, 199, 0.08)',
-            border: '1px solid rgba(56, 189, 248, 0.2)',
-            borderRadius: 'var(--radius-md)',
-            padding: '14px 16px',
-            fontSize: '0.85rem',
+            backgroundColor: 'var(--pastel-sky-light)',
+            border: '1px solid var(--pastel-sky)',
+            borderRadius: 'var(--radius-lg)',
+            padding: '16px 18px',
+            fontSize: '0.86rem',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-light)', fontWeight: 600, marginBottom: '6px' }}>
-            <AlertCircle size={15} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--pastel-sky-text)', fontWeight: 700, marginBottom: '8px' }}>
+            <AlertCircle size={16} />
             <span>Yêu cầu & Điều kiện hoàn thành</span>
           </div>
-          <ul style={{ paddingLeft: '20px', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <ul style={{ paddingLeft: '20px', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <li>
               Vượt qua <strong>toàn bộ test case</strong> (gồm test công khai và test ẩn).
             </li>
             {exercise.completionCriteria.forbiddenTokens && exercise.completionCriteria.forbiddenTokens.length > 0 && (
-              <li style={{ color: 'var(--accent-rose)' }}>
+              <li style={{ color: 'var(--status-error-text)', fontWeight: 600 }}>
                 Quy tắc: Không được sử dụng biến tạm ({exercise.completionCriteria.forbiddenTokens.join(', ')}).
               </li>
             )}
@@ -113,20 +107,20 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
 
       {/* 3 Example Scenarios */}
       <div>
-        <h2 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '4px' }}>
+        <h2 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '4px' }}>
           Ví dụ minh họa ({exercise.examples.length} ví dụ)
         </h2>
-        <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '10px' }}>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '12px' }}>
           Chương trình của bạn phải xử lý chính xác các trường hợp cơ bản và trường hợp biên sau:
         </p>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           {exercise.examples.map((example, idx) => (
             <div key={example.id || idx} className="example-card">
               <div className="example-header">
-                <span>Ví dụ {idx + 1}</span>
+                <span style={{ fontWeight: 700 }}>Ví dụ {idx + 1}</span>
                 {example.explanation && (
-                  <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                  <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
                     {example.explanation}
                   </span>
                 )}
@@ -134,7 +128,7 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
 
               {example.inputData && (
                 <div className="io-block">
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
                     <div className="io-label">INPUT</div>
                     <div style={{ display: 'flex', gap: '8px' }}>
                       <button
@@ -143,12 +137,13 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
                         style={{
                           background: 'transparent',
                           border: 'none',
-                          color: copiedIdx === idx ? '#34d399' : 'var(--text-muted)',
+                          color: copiedIdx === idx ? 'var(--status-success-text)' : 'var(--text-muted)',
                           cursor: 'pointer',
                           display: 'flex',
                           alignItems: 'center',
                           gap: '3px',
-                          fontSize: '0.7rem',
+                          fontSize: '0.74rem',
+                          fontWeight: 600,
                         }}
                         title="Sao chép input vào clipboard"
                       >
@@ -163,12 +158,13 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
                           style={{
                             background: 'transparent',
                             border: 'none',
-                            color: 'var(--accent-light)',
+                            color: 'var(--pastel-mint-text)',
                             cursor: 'pointer',
                             display: 'flex',
                             alignItems: 'center',
                             gap: '3px',
-                            fontSize: '0.7rem',
+                            fontSize: '0.74rem',
+                            fontWeight: 600,
                           }}
                           title="Nạp dữ liệu vào tab Input của Terminal"
                         >
@@ -184,7 +180,7 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
 
               <div className="io-block">
                 <div className="io-label">OUTPUT MONG ĐỢI</div>
-                <pre className="io-content" style={{ color: '#34d399' }}>
+                <pre className="io-content" style={{ color: 'var(--status-success-text)', fontWeight: 600 }}>
                   {example.expectedOutput}
                 </pre>
               </div>
@@ -196,10 +192,11 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
       {/* Hints Section */}
       <div
         style={{
-          background: 'var(--bg-tertiary)',
+          backgroundColor: 'var(--bg-surface)',
           border: '1px solid var(--border-subtle)',
-          borderRadius: 'var(--radius-md)',
+          borderRadius: 'var(--radius-lg)',
           overflow: 'hidden',
+          boxShadow: 'var(--shadow-xs)',
         }}
       >
         <button
@@ -207,7 +204,7 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
           onClick={() => setHintsOpen((prev) => !prev)}
           style={{
             width: '100%',
-            padding: '12px 16px',
+            padding: '14px 18px',
             background: 'transparent',
             border: 'none',
             display: 'flex',
@@ -215,19 +212,19 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
             justifyContent: 'space-between',
             cursor: 'pointer',
             color: 'var(--text-primary)',
-            fontWeight: 600,
-            fontSize: '0.85rem',
+            fontWeight: 700,
+            fontSize: '0.88rem',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Lightbulb size={16} style={{ color: 'var(--accent-amber)' }} />
+            <Lightbulb size={16} style={{ color: 'var(--status-warning)' }} />
             <span>Gợi ý hướng dẫn bài tập</span>
           </div>
           {hintsOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </button>
 
         {hintsOpen && (
-          <div style={{ padding: '0 16px 14px', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.6, borderTop: '1px solid var(--border-subtle)', paddingTop: '10px' }}>
+          <div style={{ padding: '0 18px 16px', fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.6, borderTop: '1px solid var(--border-subtle)', paddingTop: '12px' }}>
             <p>1. Đọc kỹ kiểu dữ liệu đầu vào. Với các bài tính toán hoặc số học, hãy nhớ ép kiểu bằng <code>int()</code> hoặc <code>float()</code>.</p>
             <p style={{ marginTop: '6px' }}>2. Đảm bảo định dạng xuất chuỗi khớp chính xác từng ký tự và khoảng trắng theo mẫu Output mong đợi.</p>
           </div>

@@ -417,12 +417,15 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
       <div className="mobile-tab-bar">
         <button
           type="button"
-          className="btn btn-ghost"
+          className="btn"
           style={{
-            padding: '5px 12px',
-            fontSize: '0.8rem',
-            background: mobileTab === 'problem' ? 'var(--bg-elevated)' : 'transparent',
-            color: mobileTab === 'problem' ? 'var(--accent-light)' : 'var(--text-secondary)',
+            padding: '6px 14px',
+            fontSize: '0.82rem',
+            borderRadius: 'var(--radius-full)',
+            backgroundColor: mobileTab === 'problem' ? 'var(--pastel-mint)' : 'transparent',
+            color: mobileTab === 'problem' ? 'var(--pastel-mint-text)' : 'var(--text-secondary)',
+            border: mobileTab === 'problem' ? '1px solid var(--pastel-mint-active)' : '1px solid transparent',
+            fontWeight: mobileTab === 'problem' ? 700 : 500,
           }}
           onClick={() => setMobileTab('problem')}
         >
@@ -432,12 +435,15 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
 
         <button
           type="button"
-          className="btn btn-ghost"
+          className="btn"
           style={{
-            padding: '5px 12px',
-            fontSize: '0.8rem',
-            background: mobileTab === 'editor' ? 'var(--bg-elevated)' : 'transparent',
-            color: mobileTab === 'editor' ? 'var(--accent-light)' : 'var(--text-secondary)',
+            padding: '6px 14px',
+            fontSize: '0.82rem',
+            borderRadius: 'var(--radius-full)',
+            backgroundColor: mobileTab === 'editor' ? 'var(--pastel-mint)' : 'transparent',
+            color: mobileTab === 'editor' ? 'var(--pastel-mint-text)' : 'var(--text-secondary)',
+            border: mobileTab === 'editor' ? '1px solid var(--pastel-mint-active)' : '1px solid transparent',
+            fontWeight: mobileTab === 'editor' ? 700 : 500,
           }}
           onClick={() => setMobileTab('editor')}
         >
@@ -447,12 +453,15 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
 
         <button
           type="button"
-          className="btn btn-ghost"
+          className="btn"
           style={{
-            padding: '5px 12px',
-            fontSize: '0.8rem',
-            background: mobileTab === 'terminal' ? 'var(--bg-elevated)' : 'transparent',
-            color: mobileTab === 'terminal' ? 'var(--accent-light)' : 'var(--text-secondary)',
+            padding: '6px 14px',
+            fontSize: '0.82rem',
+            borderRadius: 'var(--radius-full)',
+            backgroundColor: mobileTab === 'terminal' ? 'var(--pastel-mint)' : 'transparent',
+            color: mobileTab === 'terminal' ? 'var(--pastel-mint-text)' : 'var(--text-secondary)',
+            border: mobileTab === 'terminal' ? '1px solid var(--pastel-mint-active)' : '1px solid transparent',
+            fontWeight: mobileTab === 'terminal' ? 700 : 500,
           }}
           onClick={() => setMobileTab('terminal')}
         >
@@ -531,22 +540,22 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
             style={{
               width: '380px',
               borderLeft: '1px solid var(--border-subtle)',
-              background: 'var(--bg-secondary)',
+              backgroundColor: 'var(--bg-surface)',
               display: 'flex',
               flexDirection: 'column',
-              boxShadow: '-4px 0 20px rgba(0, 0, 0, 0.4)',
+              boxShadow: 'var(--shadow-modal)',
               zIndex: 40,
             }}
           >
             <div className="pane-header">
               <div className="pane-title">
-                <Bot size={16} style={{ color: 'var(--accent-purple)' }} />
-                <span>AI Tutor Mentoring</span>
+                <Bot size={16} style={{ color: 'var(--pastel-lavender-text)' }} />
+                <span>AI Tutor Studio</span>
               </div>
               <button
                 type="button"
                 className="btn btn-ghost"
-                style={{ padding: '2px 6px' }}
+                style={{ padding: '4px', borderRadius: 'var(--radius-full)' }}
                 onClick={() => setIsAITutorOpen(false)}
               >
                 <X size={15} />
@@ -557,14 +566,14 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
               {/* Architecture Intro */}
               <div
                 style={{
-                  background: 'rgba(168, 85, 247, 0.08)',
-                  border: '1px solid rgba(168, 85, 247, 0.25)',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '12px 14px',
+                  backgroundColor: 'var(--pastel-lavender-light)',
+                  border: '1px solid var(--pastel-lavender)',
+                  borderRadius: 'var(--radius-lg)',
+                  padding: '14px 16px',
                   fontSize: '0.82rem',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-purple)', fontWeight: 600, marginBottom: '4px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--pastel-lavender-text)', fontWeight: 700, marginBottom: '4px' }}>
                   <Sparkles size={14} />
                   <span>AI Gia sư Sư phạm (BYOK)</span>
                 </div>
@@ -574,38 +583,36 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
                 <button
                   type="button"
                   className="btn btn-secondary"
-                  style={{ width: '100%', marginTop: '8px', fontSize: '0.75rem', padding: '5px' }}
+                  style={{ width: '100%', marginTop: '8px', fontSize: '0.78rem', padding: '6px', borderRadius: 'var(--radius-md)' }}
                   onClick={() => setIsSettingsOpen(true)}
                 >
-                  <Key size={13} style={{ color: 'var(--accent-purple)' }} />
+                  <Key size={13} style={{ color: 'var(--pastel-lavender-text)' }} />
                   <span>Cài đặt / Kiểm tra API Key</span>
                 </button>
               </div>
 
               {/* Four Pedagogical Quick Action Buttons */}
               <div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: '8px' }}>
+                <div style={{ fontSize: '0.76rem', color: 'var(--text-secondary)', fontWeight: 700, marginBottom: '8px' }}>
                   Hành động sư phạm:
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '6px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
                   <button
                     type="button"
                     disabled={isAILoading}
                     onClick={() => executeAIRequest('explain_error')}
+                    className="btn btn-secondary"
                     style={{
                       padding: '8px 10px',
-                      background: 'var(--bg-tertiary)',
-                      border: '1px solid var(--border-subtle)',
-                      borderRadius: 'var(--radius-sm)',
-                      color: 'var(--text-primary)',
-                      fontSize: '0.75rem',
+                      fontSize: '0.76rem',
                       display: 'flex',
                       alignItems: 'center',
                       gap: '6px',
+                      justifyContent: 'flex-start',
                       cursor: isAILoading ? 'not-allowed' : 'pointer',
                     }}
                   >
-                    <AlertTriangle size={13} style={{ color: '#fb7185' }} />
+                    <AlertTriangle size={14} style={{ color: 'var(--status-error)' }} />
                     <span>Giải thích lỗi này</span>
                   </button>
 
@@ -613,20 +620,18 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
                     type="button"
                     disabled={isAILoading}
                     onClick={() => executeAIRequest('get_hint')}
+                    className="btn btn-secondary"
                     style={{
                       padding: '8px 10px',
-                      background: 'var(--bg-tertiary)',
-                      border: '1px solid var(--border-subtle)',
-                      borderRadius: 'var(--radius-sm)',
-                      color: 'var(--text-primary)',
-                      fontSize: '0.75rem',
+                      fontSize: '0.76rem',
                       display: 'flex',
                       alignItems: 'center',
                       gap: '6px',
+                      justifyContent: 'flex-start',
                       cursor: isAILoading ? 'not-allowed' : 'pointer',
                     }}
                   >
-                    <Lightbulb size={13} style={{ color: '#fbbf24' }} />
+                    <Lightbulb size={14} style={{ color: 'var(--status-warning)' }} />
                     <span>Gợi ý (Mức {hintLevel})</span>
                   </button>
 
@@ -634,20 +639,18 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
                     type="button"
                     disabled={isAILoading}
                     onClick={() => executeAIRequest('analyze_weakness')}
+                    className="btn btn-secondary"
                     style={{
                       padding: '8px 10px',
-                      background: 'var(--bg-tertiary)',
-                      border: '1px solid var(--border-subtle)',
-                      borderRadius: 'var(--radius-sm)',
-                      color: 'var(--text-primary)',
-                      fontSize: '0.75rem',
+                      fontSize: '0.76rem',
                       display: 'flex',
                       alignItems: 'center',
                       gap: '6px',
+                      justifyContent: 'flex-start',
                       cursor: isAILoading ? 'not-allowed' : 'pointer',
                     }}
                   >
-                    <HelpCircle size={13} style={{ color: '#38bdf8' }} />
+                    <HelpCircle size={14} style={{ color: 'var(--status-info)' }} />
                     <span>Phân tích điểm yếu</span>
                   </button>
 
@@ -655,21 +658,19 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
                     type="button"
                     disabled={isAILoading}
                     onClick={() => executeAIRequest('generate_exercise')}
+                    className="btn btn-secondary"
                     style={{
                       padding: '8px 10px',
-                      background: 'var(--bg-tertiary)',
-                      border: '1px solid var(--border-subtle)',
-                      borderRadius: 'var(--radius-sm)',
-                      color: 'var(--text-primary)',
-                      fontSize: '0.75rem',
+                      fontSize: '0.76rem',
                       display: 'flex',
                       alignItems: 'center',
                       gap: '6px',
+                      justifyContent: 'flex-start',
                       cursor: isAILoading ? 'not-allowed' : 'pointer',
                     }}
                   >
-                    <Sparkles size={13} style={{ color: 'var(--accent-purple)' }} />
-                    <span>Tạo bài tự luyện</span>
+                    <Sparkles size={14} style={{ color: 'var(--pastel-lavender-text)' }} />
+                    <span>Tạo bài tương tự</span>
                   </button>
                 </div>
               </div>
@@ -784,7 +785,7 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
             </div>
 
             {/* Input Box */}
-            <div style={{ padding: '12px', borderTop: '1px solid var(--border-subtle)', background: 'var(--bg-tertiary)', display: 'flex', gap: '8px' }}>
+            <div style={{ padding: '14px', borderTop: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-surface)', display: 'flex', gap: '8px' }}>
               <input
                 type="text"
                 value={aiPrompt}
@@ -794,25 +795,21 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
                   if (e.key === 'Enter') executeAIRequest('chat');
                 }}
                 placeholder="Hỏi AI Gia sư về bài tập này..."
+                className="form-input"
                 style={{
                   flex: 1,
-                  padding: '8px 12px',
-                  borderRadius: 'var(--radius-sm)',
-                  background: 'var(--bg-primary)',
-                  color: 'var(--text-primary)',
-                  border: '1px solid var(--border-medium)',
-                  fontSize: '0.8rem',
-                  outline: 'none',
+                  padding: '9px 14px',
+                  fontSize: '0.84rem',
                 }}
               />
               <button
                 type="button"
-                className="btn btn-primary"
+                className="btn btn-mint"
                 disabled={isAILoading}
-                style={{ padding: '8px 12px' }}
+                style={{ padding: '9px 16px' }}
                 onClick={() => executeAIRequest('chat')}
               >
-                {isAILoading ? <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> : <Send size={14} />}
+                {isAILoading ? <Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} /> : <Send size={15} />}
               </button>
             </div>
           </aside>

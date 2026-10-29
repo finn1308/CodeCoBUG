@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, Key, Shield, Sparkles, Check, AlertCircle, Eye, EyeOff, Trash2 } from 'lucide-react';
+import { Key, Shield, Sparkles, Check, AlertCircle, Eye, EyeOff, Trash2 } from 'lucide-react';
+import { Modal, Button, Badge } from '@/components/ui';
 
 interface AISettingsModalProps {
   isOpen: boolean;
@@ -62,8 +63,6 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({ isOpen, onClos
       }
     }
   }, [isOpen]);
-
-  if (!isOpen) return null;
 
   const handleProviderChange = (newProvider: AISettings['provider']) => {
     const defaultModel = PROVIDER_MODELS[newProvider]?.[0]?.id || '';
@@ -135,322 +134,226 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({ isOpen, onClos
   };
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: 'rgba(0, 0, 0, 0.75)',
-        backdropFilter: 'blur(6px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 100,
-        padding: '20px',
-      }}
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Cài đặt AI Gia sư (BYOK)"
+      description="Bring Your Own Key — Tự cấp API key cá nhân, an toàn và riêng tư"
+      icon={<Key size={18} />}
+      maxWidth="560px"
+      footer={
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+          <Button
+            variant="secondary"
+            onClick={handleTestConnection}
+            isLoading={testStatus === 'testing'}
+          >
+            Kiểm tra kết nối
+          </Button>
+
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <Button variant="ghost" onClick={onClose}>
+              Đóng
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleSave}
+              leftIcon={savedSuccess ? <Check size={16} /> : undefined}
+            >
+              {savedSuccess ? 'Đã lưu!' : 'Lưu cấu hình'}
+            </Button>
+          </div>
+        </div>
+      }
     >
-      <div
-        style={{
-          background: 'var(--bg-secondary)',
-          border: '1px solid var(--border-medium)',
-          borderRadius: 'var(--radius-lg)',
-          width: '100%',
-          maxWidth: '540px',
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.6)',
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden',
-          animation: 'fadeIn 0.2s ease-out',
-        }}
-      >
-        {/* Modal Header */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+        {/* Security Notice */}
         <div
           style={{
-            padding: '16px 20px',
-            borderBottom: '1px solid var(--border-subtle)',
+            background: 'var(--pastel-sky-light)',
+            border: '1px solid var(--pastel-sky)',
+            borderRadius: 'var(--radius-md)',
+            padding: '12px 14px',
+            fontSize: '0.82rem',
+            color: 'var(--pastel-sky-text)',
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            background: 'var(--bg-tertiary)',
+            gap: '10px',
+            alignItems: 'flex-start',
+            lineHeight: 1.5,
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '8px',
-                background: 'rgba(168, 85, 247, 0.15)',
-                color: 'var(--accent-purple)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Key size={16} />
-            </div>
-            <div>
-              <h2 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                Cài đặt AI Gia sư (BYOK)
-              </h2>
-              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                Bring Your Own Key — Tự cấp API key cá nhân, an toàn và riêng tư
-              </p>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            className="btn btn-ghost"
-            style={{ padding: '6px' }}
-            onClick={onClose}
-          >
-            <X size={18} />
-          </button>
+          <Shield size={18} style={{ color: 'var(--status-info)', marginTop: '2px', flexShrink: 0 }} />
+          <span>
+            API Key được bảo mật cao cấp: Khóa được mã hóa bằng chuẩn mã hóa đối xứng <strong>AES-256-GCM</strong> trước khi gửi lên AI Provider adapter và không bao giờ bị lưu lộ ở client.
+          </span>
         </div>
 
-        {/* Modal Body */}
-        <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '18px', maxHeight: '75vh', overflowY: 'auto' }}>
-          {/* Security Notice */}
-          <div
-            style={{
-              background: 'rgba(2, 132, 199, 0.08)',
-              border: '1px solid rgba(56, 189, 248, 0.2)',
-              borderRadius: 'var(--radius-md)',
-              padding: '12px 14px',
-              fontSize: '0.8rem',
-              color: 'var(--text-secondary)',
-              display: 'flex',
-              gap: '10px',
-              alignItems: 'flex-start',
-            }}
-          >
-            <Shield size={16} style={{ color: 'var(--accent-light)', marginTop: '2px', flexShrink: 0 }} />
-            <span>
-              API Key được quản lý an toàn. Trong Giai đoạn 6, khóa sẽ được mã hóa chuẩn <strong>AES-256-GCM</strong> trước khi gửi lên AI Provider adapter.
-            </span>
-          </div>
-
-          {/* Provider Selector */}
-          <div>
-            <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '8px' }}>
-              Nhà cung cấp AI (Provider)
-            </label>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
-              {(['gemini', 'openai', 'anthropic'] as const).map((prov) => (
+        {/* Provider Selector */}
+        <div>
+          <label style={{ display: 'block', fontSize: '0.84rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' }}>
+            Nhà cung cấp AI (Provider)
+          </label>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
+            {(['gemini', 'openai', 'anthropic'] as const).map((prov) => {
+              const isSelected = settings.provider === prov;
+              return (
                 <button
                   key={prov}
                   type="button"
                   onClick={() => handleProviderChange(prov)}
                   style={{
-                    padding: '10px',
-                    borderRadius: 'var(--radius-sm)',
-                    border: `1px solid ${settings.provider === prov ? 'var(--accent-light)' : 'var(--border-subtle)'}`,
-                    background: settings.provider === prov ? 'rgba(56, 189, 248, 0.12)' : 'var(--bg-tertiary)',
-                    color: settings.provider === prov ? 'var(--text-primary)' : 'var(--text-secondary)',
+                    padding: '10px 8px',
+                    borderRadius: 'var(--radius-md)',
+                    border: `1px solid ${isSelected ? 'var(--pastel-mint-active)' : 'var(--border-subtle)'}`,
+                    backgroundColor: isSelected ? 'var(--pastel-mint)' : 'var(--bg-tertiary)',
+                    color: isSelected ? 'var(--pastel-mint-text)' : 'var(--text-secondary)',
                     fontWeight: 600,
-                    fontSize: '0.82rem',
-                    textTransform: 'capitalize',
+                    fontSize: '0.84rem',
                     cursor: 'pointer',
-                    transition: 'all 0.15s ease',
+                    transition: 'all var(--transition-base)',
+                    boxShadow: isSelected ? 'var(--shadow-xs)' : 'none',
                   }}
                 >
                   {prov === 'gemini' ? 'Google Gemini' : prov === 'openai' ? 'OpenAI' : 'Anthropic'}
                 </button>
-              ))}
-            </div>
+              );
+            })}
           </div>
+        </div>
 
-          {/* Model Selector */}
-          <div>
-            <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
-              Mô hình (Model)
+        {/* Model Selector */}
+        <div>
+          <label style={{ display: 'block', fontSize: '0.84rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '6px' }}>
+            Mô hình (Model)
+          </label>
+          <select
+            value={settings.model}
+            onChange={(e) => setSettings((prev) => ({ ...prev, model: e.target.value }))}
+            className="form-input"
+            style={{
+              cursor: 'pointer',
+            }}
+          >
+            {PROVIDER_MODELS[settings.provider]?.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* API Key Input */}
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+            <label style={{ fontSize: '0.84rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+              API Key {settings.provider === 'gemini' ? '(Google AI Studio)' : '(OpenAI / Claude)'}
             </label>
-            <select
-              value={settings.model}
-              onChange={(e) => setSettings((prev) => ({ ...prev, model: e.target.value }))}
-              style={{
-                width: '100%',
-                padding: '9px 12px',
-                borderRadius: 'var(--radius-sm)',
-                background: 'var(--bg-primary)',
-                color: 'var(--text-primary)',
-                border: '1px solid var(--border-medium)',
-                outline: 'none',
-                fontSize: '0.85rem',
-              }}
-            >
-              {PROVIDER_MODELS[settings.provider]?.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* API Key Input */}
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-              <label style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
-                API Key {settings.provider === 'gemini' ? '(Gemini)' : '(OpenAI / Claude)'}
-              </label>
-              {settings.apiKey && (
-                <button
-                  type="button"
-                  onClick={handleClearKey}
-                  style={{
-                    background: 'transparent',
-                    border: 'none',
-                    color: 'var(--accent-rose)',
-                    fontSize: '0.72rem',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                  }}
-                >
-                  <Trash2 size={11} />
-                  <span>Xóa key</span>
-                </button>
-              )}
-            </div>
-
-            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-              <input
-                type={showKey ? 'text' : 'password'}
-                value={settings.apiKey}
-                onChange={(e) => {
-                  setSettings((prev) => ({ ...prev, apiKey: e.target.value }));
-                  setTestStatus('idle');
-                  setStatusMessage('');
-                }}
-                placeholder={
-                  settings.provider === 'gemini'
-                    ? 'AIzaSy...'
-                    : settings.provider === 'openai'
-                    ? 'sk-proj-...'
-                    : 'sk-ant-...'
-                }
-                style={{
-                  width: '100%',
-                  padding: '9px 40px 9px 12px',
-                  borderRadius: 'var(--radius-sm)',
-                  background: 'var(--bg-primary)',
-                  color: 'var(--text-primary)',
-                  border: '1px solid var(--border-medium)',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.82rem',
-                  outline: 'none',
-                }}
-              />
+            {settings.apiKey && (
               <button
                 type="button"
-                onClick={() => setShowKey((prev) => !prev)}
+                onClick={handleClearKey}
                 style={{
-                  position: 'absolute',
-                  right: '10px',
                   background: 'transparent',
                   border: 'none',
-                  color: 'var(--text-muted)',
+                  color: 'var(--status-error-text)',
+                  fontSize: '0.75rem',
                   cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  fontWeight: 600,
                 }}
-                title={showKey ? 'Ẩn key' : 'Hiện key'}
               >
-                {showKey ? <EyeOff size={15} /> : <Eye size={15} />}
+                <Trash2 size={12} />
+                <span>Xóa key</span>
               </button>
-            </div>
-            <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-              {settings.provider === 'gemini'
-                ? 'Lấy khóa miễn phí tại: aistudio.google.com'
-                : 'Lấy khóa tại bảng điều khiển nhà cung cấp của bạn.'}
-            </p>
+            )}
           </div>
 
-          {/* Test Status Banner */}
-          {testStatus !== 'idle' && (
-            <div
-              style={{
-                padding: '10px 12px',
-                borderRadius: 'var(--radius-sm)',
-                fontSize: '0.8rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                background:
-                  testStatus === 'success'
-                    ? 'rgba(16, 185, 129, 0.12)'
-                    : testStatus === 'error'
-                    ? 'rgba(239, 68, 68, 0.12)'
-                    : 'rgba(56, 189, 248, 0.12)',
-                color:
-                  testStatus === 'success'
-                    ? '#34d399'
-                    : testStatus === 'error'
-                    ? '#fb7185'
-                    : 'var(--accent-light)',
-                border: `1px solid ${
-                  testStatus === 'success'
-                    ? 'rgba(16, 185, 129, 0.3)'
-                    : testStatus === 'error'
-                    ? 'rgba(239, 68, 68, 0.3)'
-                    : 'rgba(56, 189, 248, 0.3)'
-                }`,
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <input
+              type={showKey ? 'text' : 'password'}
+              value={settings.apiKey}
+              onChange={(e) => {
+                setSettings((prev) => ({ ...prev, apiKey: e.target.value }));
+                setTestStatus('idle');
+                setStatusMessage('');
               }}
-            >
-              {testStatus === 'success' && <Check size={14} />}
-              {testStatus === 'error' && <AlertCircle size={14} />}
-              {testStatus === 'testing' && <Sparkles size={14} />}
-              <span>{statusMessage}</span>
-            </div>
-          )}
-        </div>
-
-        {/* Modal Footer */}
-        <div
-          style={{
-            padding: '14px 20px',
-            borderTop: '1px solid var(--border-subtle)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            background: 'var(--bg-tertiary)',
-          }}
-        >
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={handleTestConnection}
-            disabled={testStatus === 'testing'}
-          >
-            <span>{testStatus === 'testing' ? 'Đang kiểm tra...' : 'Kiểm tra kết nối'}</span>
-          </button>
-
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button type="button" className="btn btn-ghost" onClick={onClose}>
-              Đóng
-            </button>
+              placeholder={
+                settings.provider === 'gemini'
+                  ? 'AIzaSy...'
+                  : settings.provider === 'openai'
+                  ? 'sk-proj-...'
+                  : 'sk-ant-...'
+              }
+              className="form-input"
+              style={{
+                paddingRight: '40px',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.84rem',
+              }}
+            />
             <button
               type="button"
-              className="btn btn-primary"
-              onClick={handleSave}
+              onClick={() => setShowKey((prev) => !prev)}
+              style={{
+                position: 'absolute',
+                right: '12px',
+                background: 'transparent',
+                border: 'none',
+                color: 'var(--text-muted)',
+                cursor: 'pointer',
+              }}
+              title={showKey ? 'Ẩn key' : 'Hiện key'}
             >
-              {savedSuccess ? (
-                <>
-                  <Check size={14} />
-                  <span>Đã lưu!</span>
-                </>
-              ) : (
-                <span>Lưu cấu hình</span>
-              )}
+              {showKey ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
           </div>
+          <p style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+            {settings.provider === 'gemini'
+              ? 'Lấy khóa miễn phí tại: aistudio.google.com'
+              : 'Lấy khóa tại bảng điều khiển nhà cung cấp của bạn.'}
+          </p>
         </div>
+
+        {/* Test Status Banner */}
+        {testStatus !== 'idle' && (
+          <div
+            style={{
+              padding: '10px 14px',
+              borderRadius: 'var(--radius-md)',
+              fontSize: '0.82rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              backgroundColor:
+                testStatus === 'success'
+                  ? 'var(--status-success-bg)'
+                  : testStatus === 'error'
+                  ? 'var(--status-error-bg)'
+                  : 'var(--pastel-sky-light)',
+              color:
+                testStatus === 'success'
+                  ? 'var(--status-success-text)'
+                  : testStatus === 'error'
+                  ? 'var(--status-error-text)'
+                  : 'var(--pastel-sky-text)',
+              border: `1px solid ${
+                testStatus === 'success'
+                  ? 'var(--status-success-border)'
+                  : testStatus === 'error'
+                  ? 'var(--status-error-border)'
+                  : 'var(--pastel-sky)'
+              }`,
+            }}
+          >
+            {testStatus === 'success' && <Check size={16} />}
+            {testStatus === 'error' && <AlertCircle size={16} />}
+            {testStatus === 'testing' && <Sparkles size={16} />}
+            <span>{statusMessage}</span>
+          </div>
+        )}
       </div>
-    </div>
+    </Modal>
   );
 };
