@@ -270,16 +270,16 @@ Every visible interactive control must have a real action or be clearly marked a
 
 Implement this UI phase in the following order:
 
-1. Audit the existing application and identify the relevant UI entry points.
-2. Establish the color tokens, typography, spacing, and reusable rounded components.
-3. Update the main application shell and responsive navigation.
-4. Redesign the learning dashboard.
-5. Redesign the curriculum browsing interface using the existing data model.
-6. Redesign the exercise workspace and preserve actual editor/runtime integration.
-7. Update the AI Tutor presentation if the feature exists.
-8. Verify interactions, responsive behavior, accessibility, and visual consistency.
-9. Fix regressions before considering the phase complete.
-10. Update the existing `AGENT.md` checklist in place, checking only items that have actually been implemented and verified.
+- [x] 1. Audit the existing application and identify the relevant UI entry points (Phase 1 Khảo sát dự án — Completed & Documented).
+- [x] 2. Establish the color tokens, typography, spacing, and reusable rounded components (Phase 2 Design System — Completed & Verified with 40/40 tests).
+- [x] 3. Update the main application shell and responsive navigation (Phase 3 Khung giao diện toàn website — Completed & Verified with AppShell, Sidebar, MobileNav, 31/31 tests).
+- [ ] 4. Redesign the learning dashboard.
+- [ ] 5. Redesign the curriculum browsing interface using the existing data model.
+- [ ] 6. Redesign the exercise workspace and preserve actual editor/runtime integration.
+- [ ] 7. Update the AI Tutor presentation if the feature exists.
+- [ ] 8. Verify interactions, responsive behavior, accessibility, and visual consistency.
+- [ ] 9. Fix regressions before considering the phase complete.
+- [ ] 10. Update the existing `AGENT.md` checklist in place, checking only items that have actually been implemented and verified.
 
 Do not implement all future product features during this UI phase. Do not start unrelated backend work.
 

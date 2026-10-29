@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Exercise } from '@/lib/types/curriculum';
 import { OutputLog } from '@/lib/types/runtime';
 import { SubmissionEvaluationReport } from '@/lib/judge/runner';
-import { Header } from '@/components/common/Header';
+import { AppShell } from '@/components/layout';
 import { ProblemStatement } from './ProblemStatement';
 import { CodeEditor } from './CodeEditor';
 import { TerminalOutput } from './TerminalOutput';
@@ -401,18 +401,18 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw', overflow: 'hidden' }}>
-      {/* Top Header */}
-      <Header
-        exerciseTitle={exercise.title}
-        topicTitle={topicTitle}
-        isRunning={isRunning || isSubmitting}
-        onRun={handleRun}
-        onSubmit={handleSubmit}
-        onToggleAITutor={() => setIsAITutorOpen((prev) => !prev)}
-        isAITutorOpen={isAITutorOpen}
-      />
-
+    <AppShell
+      defaultCollapsed={true}
+      headerProps={{
+        exerciseTitle: exercise.title,
+        topicTitle: topicTitle,
+        isRunning: isRunning || isSubmitting,
+        onRun: handleRun,
+        onSubmit: handleSubmit,
+        onToggleAITutor: () => setIsAITutorOpen((prev) => !prev),
+        isAITutorOpen: isAITutorOpen,
+      }}
+    >
       {/* Mobile Tab Switcher (< 1024px) */}
       <div className="mobile-tab-bar">
         <button
@@ -821,6 +821,6 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
       />
-    </div>
+    </AppShell>
   );
 };

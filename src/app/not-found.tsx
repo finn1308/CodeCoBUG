@@ -1,13 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
-import { Header } from '@/components/common/Header';
+import { AppShell } from '@/components/layout';
 import { AlertCircle, ArrowLeft } from 'lucide-react';
 import { Card, Button } from '@/components/ui';
 
 export default function NotFound() {
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--bg-primary)' }}>
-      <Header />
+    <AppShell>
       <div
         style={{
           flex: 1,
@@ -61,6 +60,6 @@ export default function NotFound() {
           </Link>
         </Card>
       </div>
-    </div>
+    </AppShell>
   );
 }

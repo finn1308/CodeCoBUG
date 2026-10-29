@@ -2,14 +2,24 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Play, CheckCircle2, Bot, Sparkles, BookOpen, Settings, User, Target } from 'lucide-react';
+import {
+  Play,
+  CheckCircle2,
+  Bot,
+  Sparkles,
+  BookOpen,
+  Settings,
+  User,
+  Target,
+  Menu,
+} from 'lucide-react';
 import { AISettingsModal } from '@/components/settings/AISettingsModal';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { WeaknessTrackerModal } from '@/components/mastery/WeaknessTrackerModal';
 import { authManager, UserProfile } from '@/lib/auth/authManager';
 import { Button, Badge } from '@/components/ui';
 
-interface HeaderProps {
+export interface HeaderProps {
   exerciseTitle?: string;
   topicTitle?: string;
   isRunning?: boolean;
@@ -17,6 +27,11 @@ interface HeaderProps {
   onSubmit?: () => void;
   onToggleAITutor?: () => void;
   isAITutorOpen?: boolean;
+  onToggleMobileNav?: () => void;
+  onOpenAuth?: () => void;
+  onOpenAISettings?: () => void;
+  onOpenWeaknessTracker?: (initialTab?: 'skills' | 'queue' | 'policy') => void;
+  showBrand?: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -27,10 +42,15 @@ export const Header: React.FC<HeaderProps> = ({
   onSubmit,
   onToggleAITutor,
   isAITutorOpen = false,
+  onToggleMobileNav,
+  onOpenAuth: externalOpenAuth,
+  onOpenAISettings: externalOpenAISettings,
+  onOpenWeaknessTracker: externalOpenTracker,
+  showBrand = true,
 }) => {
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [isTrackerOpen, setIsTrackerOpen] = useState(false);
+  const [internalSettingsOpen, setInternalSettingsOpen] = useState(false);
+  const [internalAuthOpen, setInternalAuthOpen] = useState(false);
+  const [internalTrackerOpen, setInternalTrackerOpen] = useState(false);
   const [user, setUser] = useState<UserProfile | null>(authManager.getCurrentUser());
 
   useEffect(() => {
@@ -40,31 +60,51 @@ export const Header: React.FC<HeaderProps> = ({
     return () => unsub();
   }, []);
 
+  const handleOpenAuth = externalOpenAuth || (() => setInternalAuthOpen(true));
+  const handleOpenSettings = externalOpenAISettings || (() => setInternalSettingsOpen(true));
+  const handleOpenTracker = externalOpenTracker || (() => setInternalTrackerOpen(true));
+
   return (
     <>
       <header className="app-header">
-        {/* Brand & Breadcrumb */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <Link href="/" className="brand-logo">
-            <div
-              style={{
-                width: '34px',
-                height: '34px',
-                borderRadius: 'var(--radius-md)',
-                backgroundColor: 'var(--pastel-mint)',
-                color: 'var(--pastel-mint-text)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: 'var(--shadow-xs)',
-                border: '1px solid var(--pastel-mint-active)',
-              }}
+        {/* Left Side: Hamburger (Mobile) + Brand Logo + Breadcrumb */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          {onToggleMobileNav && (
+            <button
+              type="button"
+              className="btn btn-ghost mobile-nav-toggle"
+              style={{ padding: '6px 8px', borderRadius: 'var(--radius-md)', color: 'var(--text-primary)' }}
+              onClick={onToggleMobileNav}
+              aria-label="Mở menu di động"
+              title="Mở menu di động"
             >
-              <Sparkles size={18} />
-            </div>
-            <span>CodeCoBUG</span>
-            <span className="brand-badge">Studio</span>
-          </Link>
+              <Menu size={20} />
+            </button>
+          )}
+
+          {showBrand && (
+            <Link href="/" className="brand-logo">
+              <div
+                style={{
+                  width: '34px',
+                  height: '34px',
+                  borderRadius: 'var(--radius-md)',
+                  backgroundColor: 'var(--pastel-mint)',
+                  color: 'var(--pastel-mint-text)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: 'var(--shadow-xs)',
+                  border: '1px solid var(--pastel-mint-active)',
+                  flexShrink: 0,
+                }}
+              >
+                <Sparkles size={18} />
+              </div>
+              <span>CodeCoBUG</span>
+              <span className="brand-badge">Studio</span>
+            </Link>
+          )}
 
           {exerciseTitle && (
             <div
@@ -75,8 +115,8 @@ export const Header: React.FC<HeaderProps> = ({
                 gap: '8px',
                 fontSize: '0.84rem',
                 color: 'var(--text-secondary)',
-                borderLeft: '1px solid var(--border-subtle)',
-                paddingLeft: '16px',
+                borderLeft: showBrand ? '1px solid var(--border-subtle)' : 'none',
+                paddingLeft: showBrand ? '16px' : '0',
               }}
             >
               <BookOpen size={15} style={{ color: 'var(--text-muted)' }} />
@@ -91,7 +131,7 @@ export const Header: React.FC<HeaderProps> = ({
           )}
         </div>
 
-        {/* Action Buttons & User Profile */}
+        {/* Right Side: Action Buttons & User Profile */}
         <div className="header-actions" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           {onRun && (
             <Button
@@ -135,7 +175,7 @@ export const Header: React.FC<HeaderProps> = ({
           <Button
             variant="secondary"
             size="sm"
-            onClick={() => setIsTrackerOpen(true)}
+            onClick={() => handleOpenTracker('queue')}
             leftIcon={<Target size={14} style={{ color: 'var(--pastel-mint-text)' }} />}
             title="Theo dõi điểm yếu & Hàng đợi ôn tập thích ứng"
           >
@@ -146,8 +186,9 @@ export const Header: React.FC<HeaderProps> = ({
             type="button"
             className="btn btn-ghost"
             style={{ padding: '7px 10px', borderRadius: 'var(--radius-full)' }}
-            onClick={() => setIsSettingsOpen(true)}
+            onClick={handleOpenSettings}
             title="Cài đặt khóa AI (BYOK) & Mô hình"
+            aria-label="Cài đặt AI"
           >
             <Settings size={18} />
           </button>
@@ -166,7 +207,7 @@ export const Header: React.FC<HeaderProps> = ({
               gap: '8px',
               boxShadow: 'var(--shadow-xs)',
             }}
-            onClick={() => setIsAuthOpen(true)}
+            onClick={handleOpenAuth}
             title="Quản lý tài khoản và phân tách dữ liệu"
           >
             {user ? (
@@ -205,23 +246,27 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </header>
 
-      {/* Real AI Settings Modal */}
-      <AISettingsModal
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-      />
+      {/* Internal Modals (Fallback if not wrapped by AppShell) */}
+      {!externalOpenAISettings && (
+        <AISettingsModal
+          isOpen={internalSettingsOpen}
+          onClose={() => setInternalSettingsOpen(false)}
+        />
+      )}
 
-      {/* Real Auth Modal */}
-      <AuthModal
-        isOpen={isAuthOpen}
-        onClose={() => setIsAuthOpen(false)}
-      />
+      {!externalOpenAuth && (
+        <AuthModal
+          isOpen={internalAuthOpen}
+          onClose={() => setInternalAuthOpen(false)}
+        />
+      )}
 
-      {/* Real Weakness Tracker & Adaptive Review Modal */}
-      <WeaknessTrackerModal
-        isOpen={isTrackerOpen}
-        onClose={() => setIsTrackerOpen(false)}
-      />
+      {!externalOpenTracker && (
+        <WeaknessTrackerModal
+          isOpen={internalTrackerOpen}
+          onClose={() => setInternalTrackerOpen(false)}
+        />
+      )}
     </>
   );
 };
