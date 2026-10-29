@@ -22,6 +22,7 @@ import { SAMPLE_TEST_COURSE } from '@/lib/fixtures/sampleCurriculum';
 import { MasteryEngine, LearnerMasteryReport } from '@/lib/mastery/masteryEngine';
 import { ReviewEngine, ReviewItem } from '@/lib/mastery/reviewEngine';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, Badge, Button } from '@/components/ui';
+import { CurriculumBrowser } from '@/components/curriculum';
 
 export const LearningDashboard: React.FC = () => {
   const [user, setUser] = useState<UserProfile | null>(authManager.getCurrentUser());
@@ -585,181 +586,11 @@ export const LearningDashboard: React.FC = () => {
 
       {/* 5. Python Curriculum Browser & Topic Progress */}
       <div id="curriculum">
-        <Card variant="default" padding="lg">
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--pastel-sky-text)', fontSize: '0.82rem', fontWeight: 700, textTransform: 'uppercase', marginBottom: '6px' }}>
-                <BookOpen size={16} />
-                <span>Tiến độ giáo trình Python</span>
-              </div>
-              <h2 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-                {SAMPLE_TEST_COURSE.title}
-              </h2>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', marginTop: '6px' }}>
-                {SAMPLE_TEST_COURSE.description}
-              </p>
-            </div>
-
-            <Badge variant="mint" size="md" icon={<CheckCircle2 size={14} />}>
-              Tổng tiến độ: {completedExercisesCount}/{totalExercisesCount} bài ({overallProgressPercentage}%)
-            </Badge>
-          </div>
-
-          {/* Topics List with Real Status */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            {topicProgressList.map(({ topic, totalInTopic, completedInTopic, percentage, isCompleted, isStarted }, topicIdx) => {
-              const topicPastelBg = isCompleted
-                ? 'var(--pastel-mint-light)'
-                : isStarted
-                ? 'var(--pastel-sky-light)'
-                : 'var(--bg-tertiary)';
-              const topicBorder = isCompleted
-                ? 'var(--pastel-mint)'
-                : isStarted
-                ? 'var(--pastel-sky)'
-                : 'var(--border-subtle)';
-
-              return (
-                <div
-                  key={topic.id}
-                  style={{
-                    backgroundColor: topicPastelBg,
-                    border: `1px solid ${topicBorder}`,
-                    borderRadius: 'var(--radius-xl)',
-                    padding: '22px',
-                    boxShadow: 'var(--shadow-xs)',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <span
-                          style={{
-                            backgroundColor: 'var(--bg-surface)',
-                            border: `1px solid ${topicBorder}`,
-                            padding: '3px 10px',
-                            borderRadius: 'var(--radius-full)',
-                            fontSize: '0.74rem',
-                            fontWeight: 700,
-                            color: 'var(--text-primary)',
-                          }}
-                        >
-                          Chủ đề {String(topicIdx + 1).padStart(2, '0')}
-                        </span>
-                        <h3 style={{ fontSize: '1.18rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-                          {topic.title}
-                        </h3>
-                      </div>
-                      <p style={{ color: 'var(--text-secondary)', fontSize: '0.86rem', marginTop: '6px' }}>
-                        {topic.summary}
-                      </p>
-                    </div>
-
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <Badge variant={isCompleted ? 'success' : isStarted ? 'sky' : 'neutral'} size="sm">
-                        {isCompleted ? 'ĐÃ HOÀN THÀNH' : isStarted ? 'ĐANG HỌC' : 'CHƯA HỌC'}
-                      </Badge>
-                      <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                        {completedInTopic}/{totalInTopic} bài ({percentage}%)
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Topic Progress Bar */}
-                  <div style={{ height: '6px', backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-full)', overflow: 'hidden', marginBottom: '16px' }}>
-                    <div
-                      style={{
-                        height: '100%',
-                        width: `${percentage}%`,
-                        backgroundColor: isCompleted ? 'var(--status-success)' : 'var(--status-info)',
-                        transition: 'width 0.4s ease',
-                      }}
-                    />
-                  </div>
-
-                  {/* Exercises in Topic */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    {topic.lessons.flatMap((l) => l.exercises).map((ex) => {
-                      const isExAccepted = acceptedExerciseSlugs.has(ex.slug);
-
-                      return (
-                        <Link
-                          key={ex.id}
-                          href={`/exercises/${ex.slug}`}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            padding: '12px 16px',
-                            backgroundColor: 'var(--bg-surface)',
-                            border: `1px solid ${isExAccepted ? 'var(--pastel-mint)' : 'var(--border-subtle)'}`,
-                            borderRadius: 'var(--radius-md)',
-                            textDecoration: 'none',
-                            transition: 'all var(--transition-base)',
-                            boxShadow: 'var(--shadow-xs)',
-                          }}
-                          className="card-pastel"
-                        >
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <div
-                              style={{
-                                width: '34px',
-                                height: '34px',
-                                borderRadius: 'var(--radius-md)',
-                                backgroundColor: isExAccepted ? 'var(--pastel-mint)' : 'var(--bg-tertiary)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                color: isExAccepted ? 'var(--pastel-mint-text)' : 'var(--text-muted)',
-                                flexShrink: 0,
-                              }}
-                            >
-                              {isExAccepted ? <CheckCircle2 size={18} /> : <Code2 size={18} />}
-                            </div>
-                            <div>
-                              <div style={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--text-primary)' }}>
-                                {ex.title}
-                              </div>
-                              <div style={{ fontSize: '0.76rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px', marginTop: '2px' }}>
-                                <span>3 ví dụ minh họa</span>
-                                <span>•</span>
-                                <span>{ex.examples.length} test scenarios</span>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <Badge variant={ex.difficulty as any} size="sm">
-                              {ex.difficulty.replace('_', ' ')}
-                            </Badge>
-
-                            <Badge variant="mint" size="sm" icon={<Award size={13} />}>
-                              {ex.points} đ
-                            </Badge>
-
-                            <div
-                              style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '4px',
-                                color: isExAccepted ? 'var(--status-success-text)' : 'var(--pastel-mint-text)',
-                                fontSize: '0.82rem',
-                                fontWeight: 700,
-                              }}
-                            >
-                              <span>{isExAccepted ? 'Làm lại' : 'Làm bài'}</span>
-                              <ArrowRight size={14} />
-                            </div>
-                          </div>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </Card>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--pastel-sky-text)', fontSize: '0.82rem', fontWeight: 700, textTransform: 'uppercase', marginBottom: '12px' }}>
+          <BookOpen size={16} />
+          <span>Tiến độ giáo trình Python</span>
+        </div>
+        <CurriculumBrowser showCourseHeader={true} id="curriculum-browser-inner" />
       </div>
     </div>
   );

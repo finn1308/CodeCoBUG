@@ -53,6 +53,8 @@ export interface Lesson {
   isPublished: boolean;
 }
 
+export type TopicCompletionStatus = 'locked' | 'available' | 'in_progress' | 'completed';
+
 export interface Topic {
   id: string;
   courseId: string;
@@ -62,6 +64,9 @@ export interface Topic {
   orderIndex: number;
   lessons: Lesson[];
   isPublished: boolean;
+  category?: string;
+  isLocked?: boolean;
+  accentColor?: 'mint' | 'lavender' | 'sky' | 'peach' | 'yellow';
 }
 
 export interface Course {
