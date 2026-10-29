@@ -1046,3 +1046,109 @@ body {
   }
 }
 
+/* ==========================================================================
+   AI Tutor Studio — Teen Pastel Styles
+   ========================================================================== */
+
+.ai-code-block {
+  background-color: #1e293b;
+  color: #f8fafc;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin: 6px 0;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-xs);
+}
+
+.ai-code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background-color: #0f172a;
+  border-bottom: 1px solid #334155;
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.ai-code-lang {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #94a3b8;
+}
+
+.ai-code-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid #475569;
+  background-color: #1e293b;
+  color: #cbd5e1;
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.ai-code-copy-btn:hover {
+  background-color: #334155;
+  color: #ffffff;
+}
+
+.ai-code-pre {
+  margin: 0;
+  padding: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  overflow-x: auto;
+  color: #e2e8f0;
+  white-space: pre;
+}
+
+.ai-inline-code {
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  background-color: var(--pastel-lavender-light);
+  border: 1px solid var(--pastel-lavender);
+  color: var(--pastel-lavender-text);
+  font-weight: 600;
+}
+
+.ai-callout {
+  display: flex;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  margin: 4px 0;
+}
+
+.ai-callout-warning {
+  background-color: var(--pastel-yellow-light);
+  border: 1px solid var(--pastel-yellow);
+  color: var(--status-warning-text);
+}
+
+.ai-callout-info {
+  background-color: var(--pastel-sky-light);
+  border: 1px solid var(--pastel-sky);
+  color: var(--pastel-sky-text);
+}
+
+.ai-callout-error {
+  background-color: var(--pastel-peach-light);
+  border: 1px solid var(--pastel-peach);
+  color: var(--status-error);
+}
+
+.ai-prompt-chip:hover {
+  background-color: var(--pastel-sky) !important;
+  color: var(--text-primary) !important;
+  transform: translateY(-1px);
+}
+
+

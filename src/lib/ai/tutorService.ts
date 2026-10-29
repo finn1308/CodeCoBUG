@@ -30,6 +30,11 @@ export interface SubmissionData {
     actualOutput?: string;
     errorMessage?: string;
   };
+  overallWeaknesses?: Array<{
+    category: string;
+    title: string;
+    count: number;
+  }>;
 }
 
 export interface AITutorRequest {
@@ -206,6 +211,10 @@ Hãy đưa ra gợi ý phù hợp đúng với Mức ${level}. Giữ giọng vă
     exercise: ExerciseContext,
     submission?: SubmissionData
   ): string {
+    const weaknessesList = submission?.overallWeaknesses && submission.overallWeaknesses.length > 0
+      ? submission.overallWeaknesses.map(w => `- ${w.title} (${w.category}): ${w.count} lần`).join('\n')
+      : null;
+
     return `
 [YÊU CẦU: PHÂN TÍCH ĐIỂM YẾU VÀ LỖI THƯỜNG GẶP]
 Bài tập: "${exercise.title}"
@@ -214,6 +223,7 @@ Mã nguồn đã nộp:
 ${submission?.submittedCode || ''}
 \`\`\`
 Lỗi ghi nhận: ${submission?.errorMessage || submission?.cleanTraceback || 'Sai logic kiểm thử.'}
+${weaknessesList ? `\nThống kê các dạng lỗi lặp lại từ lịch sử làm bài:\n${weaknessesList}` : ''}
 
 Hãy chỉ ra thói quen hoặc khái niệm mà học viên có thể đang hiểu nhầm (ví dụ: nhầm lẫn giữa kiểu chuỗi và số nguyên trong input(), quên ép kiểu, nhầm cú pháp gán đa biến, v.v.) và cách rèn luyện để không mắc lại.
 `.trim();

@@ -7,6 +7,7 @@ import { Header, HeaderProps } from '@/components/common/Header';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { AISettingsModal } from '@/components/settings/AISettingsModal';
 import { WeaknessTrackerModal } from '@/components/mastery/WeaknessTrackerModal';
+import { AITutorModal } from '@/components/ai';
 
 export interface AppShellProps {
   children: React.ReactNode;
@@ -29,6 +30,7 @@ export const AppShell: React.FC<AppShellProps> = ({
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isTrackerOpen, setIsTrackerOpen] = useState(false);
+  const [isGlobalAITutorOpen, setIsGlobalAITutorOpen] = useState(false);
 
   // Load sidebar collapse preference from localStorage on desktop
   useEffect(() => {
@@ -54,6 +56,9 @@ export const AppShell: React.FC<AppShellProps> = ({
     setIsTrackerOpen(true);
   };
 
+  const handleToggleAITutor =
+    headerProps?.onToggleAITutor || (() => setIsGlobalAITutorOpen((prev) => !prev));
+
   return (
     <div className="app-shell">
       {/* 1. Desktop Left Sidebar */}
@@ -64,7 +69,7 @@ export const AppShell: React.FC<AppShellProps> = ({
           onOpenAuth={() => setIsAuthOpen(true)}
           onOpenAISettings={() => setIsSettingsOpen(true)}
           onOpenWeaknessTracker={handleOpenWeaknessTracker}
-          onToggleAITutor={headerProps?.onToggleAITutor}
+          onToggleAITutor={handleToggleAITutor}
         />
       )}
 
@@ -73,6 +78,8 @@ export const AppShell: React.FC<AppShellProps> = ({
         {/* Header Bar */}
         <Header
           {...headerProps}
+          onToggleAITutor={handleToggleAITutor}
+          isAITutorOpen={headerProps?.isAITutorOpen ?? isGlobalAITutorOpen}
           onToggleMobileNav={() => setIsMobileNavOpen(true)}
           onOpenAuth={() => setIsAuthOpen(true)}
           onOpenAISettings={() => setIsSettingsOpen(true)}
@@ -93,7 +100,7 @@ export const AppShell: React.FC<AppShellProps> = ({
         onOpenAuth={() => setIsAuthOpen(true)}
         onOpenAISettings={() => setIsSettingsOpen(true)}
         onOpenWeaknessTracker={handleOpenWeaknessTracker}
-        onToggleAITutor={headerProps?.onToggleAITutor}
+        onToggleAITutor={handleToggleAITutor}
       />
 
       {/* 4. Global Modals */}
@@ -110,6 +117,13 @@ export const AppShell: React.FC<AppShellProps> = ({
       <WeaknessTrackerModal
         isOpen={isTrackerOpen}
         onClose={() => setIsTrackerOpen(false)}
+      />
+
+      {/* 5. Global AI Tutor Modal (for non-exercise pages) */}
+      <AITutorModal
+        isOpen={isGlobalAITutorOpen}
+        onClose={() => setIsGlobalAITutorOpen(false)}
+        onOpenSettings={() => setIsSettingsOpen(true)}
       />
     </div>
   );
