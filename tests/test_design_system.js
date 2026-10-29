@@ -94,6 +94,8 @@ assert(typeof UI.Textarea !== 'undefined', 'Textarea component is exported');
 assert(typeof UI.Modal !== 'undefined', 'Modal component is exported');
 assert(typeof UI.Badge !== 'undefined', 'Badge component is exported');
 assert(typeof UI.Tabs !== 'undefined', 'Tabs component is exported');
+assert(typeof UI.ToastProvider !== 'undefined', 'ToastProvider component is exported');
+assert(typeof UI.useToast !== 'undefined', 'useToast hook is exported');
 
 // Group 4: Contrast Ratio Verification (WCAG AA Compliance)
 console.log('\n--- Test Group 4: Accessible Contrast Ratios (WCAG AA) ---');
@@ -157,6 +159,19 @@ console.log('\n--- Test Group 5: Responsive Desktop & Mobile Media Rules ---');
 assert(cssContent.includes('@media (max-width: 1023px)'), 'Mobile tabs & stack rules defined for screens < 1024px');
 assert(cssContent.includes('@media (max-width: 768px)'), 'Header & navigation responsive hardening for tablets/mobile (< 768px)');
 assert(cssContent.includes('@media (max-width: 480px)'), 'Small mobile touch padding (< 480px) defined');
+
+// Group 6: LucianLabs-Inspired Micro-Interactions & Motion Targets
+console.log('\n--- Test Group 6: LucianLabs-Inspired Micro-Interactions & Motion Targets ---');
+assert(cssContent.includes('--transition-instant: 90ms') || cssContent.includes('--transition-fast: 140ms'), 'Small interaction motion target defined (100-220ms)');
+assert(cssContent.includes('--transition-smooth: 260ms') || cssContent.includes('--transition-interactive: 220ms'), 'Larger transition motion target defined (180-320ms)');
+assert(cssContent.includes('.btn:active:not(:disabled)'), 'Immediate button pressed tactile feedback defined');
+assert(cssContent.includes('transform: scale(0.97) translateY(1px)'), 'Button pressed feedback uses fast transform scaling');
+assert(cssContent.includes('.card-pastel:hover'), 'Restrained card hover elevation defined');
+assert(cssContent.includes('transform: translateY(-2px)'), 'Card hover uses restrained -2px elevation');
+assert(cssContent.includes('.sidebar-nav-item-active::before'), 'Navigation active indicator defined with smooth entrance');
+assert(cssContent.includes('.toast-container'), 'Compact toast notification container defined');
+assert(cssContent.includes('.toast-item-success'), 'Toast success variant with pastel mint styling defined');
+assert(cssContent.includes('@keyframes toastSlideUp'), 'Toast purposeful entrance animation (toastSlideUp) defined');
 
 console.log('\n=============================================================');
 console.log(`🏁 PHASE 2 DESIGN SYSTEM RESULTS: ${passCount} PASSED, 0 FAILED`);
