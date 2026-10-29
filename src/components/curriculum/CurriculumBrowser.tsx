@@ -14,9 +14,7 @@ import {
   ChevronUp,
   ArrowRight,
   RotateCcw,
-  Code2,
   Award,
-  Sparkles,
   Layers,
   Check,
 } from 'lucide-react';
@@ -86,7 +84,7 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
   id = 'curriculum',
   className = '',
 }) => {
-  // 1. Local / Real state derivation
+  // 1. Local & Real state derivation
   const [internalCompletedSlugs, setInternalCompletedSlugs] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'in_progress' | 'completed' | 'not_started'>(initialFilter);
@@ -119,7 +117,7 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
 
     loadRealUserProgress();
 
-    // Initialize with first topic expanded for pleasant learner discovery
+    // Default to first topic expanded for pleasant initial discovery
     if (rawTopics.length > 0) {
       setExpandedTopicIds(new Set([rawTopics[0].id]));
     }
@@ -211,14 +209,14 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
           if (!hasDifficulty) return false;
         }
 
-        // Search query filter (search across topic title, summary, lesson title, exercise title/description)
+        // Search query filter
         if (searchQuery.trim()) {
           const q = searchQuery.toLowerCase().trim();
           const matchTitle = item.topic.title.toLowerCase().includes(q);
-          const matchSummary = item.topic.summary.toLowerCase().includes(q);
+          const matchSummary = item.topic.summary ? item.topic.summary.toLowerCase().includes(q) : false;
           const matchLesson = item.topic.lessons.some((l) => l.title.toLowerCase().includes(q));
           const matchExercise = item.exercises.some(
-            (ex) => ex.title.toLowerCase().includes(q) || ex.description.toLowerCase().includes(q)
+            (ex) => ex.title.toLowerCase().includes(q) || (ex.description ? ex.description.toLowerCase().includes(q) : false)
           );
 
           if (!matchTitle && !matchSummary && !matchLesson && !matchExercise) {
@@ -287,76 +285,84 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
   };
 
   return (
-    <div id={id} className={`curriculum-browser-container ${className}`.trim()} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      {/* 1. Course Header / Progress Overview */}
+    <div id={id} className={`curriculum-browser-container ${className}`.trim()} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+      {/* 1. Compact Course Header */}
       {showCourseHeader && (
-        <Card variant="mint" padding="lg">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+        <Card variant="mint" padding="md" style={{ boxShadow: 'var(--shadow-xs)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--pastel-mint-text)', fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase', marginBottom: '6px' }}>
-                  <BookOpen size={18} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--pastel-mint-text)', fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>
+                  <BookOpen size={15} />
                   <span>Chương trình học Python chuẩn</span>
                 </div>
-                <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0, letterSpacing: '-0.02em' }}>
+                <h1 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0, letterSpacing: '-0.01em' }}>
                   {course.title}
                 </h1>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.96rem', marginTop: '8px', maxWidth: '750px', lineHeight: 1.55 }}>
-                  {course.description}
-                </p>
+                {course.description && (
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.86rem', marginTop: '4px', maxWidth: '680px', lineHeight: 1.5, margin: '4px 0 0 0' }}>
+                    {course.description}
+                  </p>
+                )}
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-                <Badge variant="mint" size="md" icon={<CheckCircle2 size={16} />}>
-                  {courseStats.completedExercises}/{courseStats.totalExercises} bài đã hoàn thành ({courseStats.overallPercentage}%)
-                </Badge>
-                <Badge variant="sky" size="md" icon={<Award size={16} />}>
-                  {courseStats.totalPoints} điểm tối đa
-                </Badge>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                {courseStats.totalExercises > 0 && (
+                  <Badge variant="mint" size="sm" icon={<CheckCircle2 size={13} />}>
+                    {courseStats.completedExercises}/{courseStats.totalExercises} bài ({courseStats.overallPercentage}%)
+                  </Badge>
+                )}
+                {courseStats.totalPoints > 0 && (
+                  <Badge variant="sky" size="sm" icon={<Award size={13} />}>
+                    {courseStats.totalPoints} điểm
+                  </Badge>
+                )}
               </div>
             </div>
 
             {/* Overall Progress Bar */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.84rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
-                <span>Tiến độ tổng thể</span>
-                <span style={{ color: 'var(--pastel-mint-text)', fontWeight: 700 }}>{courseStats.overallPercentage}% Hoàn thành</span>
-              </div>
-              <div
-                style={{
-                  height: '10px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                  borderRadius: 'var(--radius-full)',
-                  overflow: 'hidden',
-                  border: '1px solid var(--pastel-mint)',
-                }}
-              >
+            {courseStats.totalExercises > 0 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.76rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                  <span>Tiến độ toàn bộ giáo trình</span>
+                  <span style={{ color: 'var(--pastel-mint-text)', fontWeight: 700 }}>{courseStats.overallPercentage}% Hoàn thành</span>
+                </div>
                 <div
                   style={{
-                    height: '100%',
-                    width: `${courseStats.overallPercentage}%`,
-                    backgroundColor: 'var(--border-focus)',
+                    height: '6px',
+                    backgroundColor: 'rgba(255, 255, 255, 0.85)',
                     borderRadius: 'var(--radius-full)',
-                    transition: 'width 0.4s ease-out',
+                    overflow: 'hidden',
+                    border: '1px solid var(--pastel-mint)',
                   }}
-                />
+                >
+                  <div
+                    style={{
+                      height: '100%',
+                      width: `${courseStats.overallPercentage}%`,
+                      backgroundColor: 'var(--border-focus)',
+                      borderRadius: 'var(--radius-full)',
+                      transition: 'width 0.4s ease-out',
+                    }}
+                  />
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </Card>
       )}
 
-      {/* 2. Search, Filters, and Controls */}
-      <Card variant="default" padding="md">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {/* Top row: Search input + Sorting */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-            <div style={{ flex: '1 1 280px' }}>
+      {/* 2. Compact Search & Filter Controls */}
+      <Card variant="default" padding="sm" style={{ boxShadow: 'var(--shadow-xs)' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {/* Top row: Search input + Sorting + Accordion toggles */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            <div style={{ flex: '1 1 260px' }}>
               <Input
-                placeholder="Tìm kiếm chủ đề, bài tập hoặc từ khóa (print, input, if, loop)..."
+                placeholder="Tìm kiếm chủ đề, bài tập hoặc từ khóa..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                leftIcon={<Search size={18} />}
+                leftIcon={<Search size={16} />}
                 rightIcon={
                   searchQuery ? (
                     <button
@@ -373,43 +379,38 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
                       }}
                       aria-label="Xóa tìm kiếm"
                     >
-                      <RotateCcw size={14} />
+                      <RotateCcw size={13} />
                     </button>
                   ) : undefined
                 }
               />
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
               {/* Sort Selector */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Sắp xếp:</span>
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as any)}
-                  className="form-control"
-                  style={{
-                    padding: '8px 12px',
-                    fontSize: '0.85rem',
-                    borderRadius: 'var(--radius-md)',
-                    border: '1px solid var(--border-medium)',
-                    backgroundColor: 'var(--bg-surface)',
-                    color: 'var(--text-primary)',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <option value="order">Theo thứ tự giáo trình</option>
-                  <option value="progress">Tiến độ cao nhất</option>
-                  <option value="exercises">Nhiều bài tập nhất</option>
-                </select>
-              </div>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="form-select"
+                style={{
+                  padding: '6px 10px',
+                  fontSize: '0.8rem',
+                  width: 'auto',
+                  minWidth: '150px',
+                }}
+                aria-label="Sắp xếp danh sách chủ đề"
+              >
+                <option value="order">Thứ tự giáo trình</option>
+                <option value="progress">Tiến độ cao nhất</option>
+                <option value="exercises">Nhiều bài tập nhất</option>
+              </select>
 
               {/* Accordion global toggles */}
-              <div style={{ display: 'flex', gap: '6px' }}>
-                <Button variant="ghost" size="sm" onClick={expandAll}>
+              <div style={{ display: 'flex', gap: '4px' }}>
+                <Button variant="ghost" size="sm" onClick={expandAll} style={{ fontSize: '0.78rem', padding: '4px 8px' }}>
                   Mở tất cả
                 </Button>
-                <Button variant="ghost" size="sm" onClick={collapseAll}>
+                <Button variant="ghost" size="sm" onClick={collapseAll} style={{ fontSize: '0.78rem', padding: '4px 8px' }}>
                   Thu gọn
                 </Button>
               </div>
@@ -417,25 +418,25 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
           </div>
 
           {/* Bottom row: Filter Chips & Reset */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-secondary)' }}>
-                <Filter size={14} /> Trạng thái:
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-secondary)' }}>
+                <Filter size={13} /> Lọc:
               </span>
 
               <button
                 type="button"
                 onClick={() => setStatusFilter('all')}
                 style={{
-                  padding: '5px 12px',
+                  padding: '4px 10px',
                   borderRadius: 'var(--radius-full)',
-                  fontSize: '0.82rem',
+                  fontSize: '0.78rem',
                   fontWeight: 600,
                   cursor: 'pointer',
                   border: statusFilter === 'all' ? '1px solid var(--border-focus)' : '1px solid var(--border-subtle)',
                   backgroundColor: statusFilter === 'all' ? 'var(--pastel-mint-light)' : 'var(--bg-surface)',
                   color: statusFilter === 'all' ? 'var(--pastel-mint-text)' : 'var(--text-secondary)',
-                  transition: 'all 0.15s ease',
+                  transition: 'all var(--transition-instant)',
                 }}
               >
                 Tất cả ({computedTopics.length})
@@ -445,15 +446,15 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
                 type="button"
                 onClick={() => setStatusFilter('in_progress')}
                 style={{
-                  padding: '5px 12px',
+                  padding: '4px 10px',
                   borderRadius: 'var(--radius-full)',
-                  fontSize: '0.82rem',
+                  fontSize: '0.78rem',
                   fontWeight: 600,
                   cursor: 'pointer',
                   border: statusFilter === 'in_progress' ? '1px solid var(--pastel-sky)' : '1px solid var(--border-subtle)',
                   backgroundColor: statusFilter === 'in_progress' ? 'var(--pastel-sky-light)' : 'var(--bg-surface)',
                   color: statusFilter === 'in_progress' ? 'var(--pastel-sky-text)' : 'var(--text-secondary)',
-                  transition: 'all 0.15s ease',
+                  transition: 'all var(--transition-instant)',
                 }}
               >
                 Đang học ({computedTopics.filter((t) => t.status === 'in_progress').length})
@@ -463,15 +464,15 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
                 type="button"
                 onClick={() => setStatusFilter('completed')}
                 style={{
-                  padding: '5px 12px',
+                  padding: '4px 10px',
                   borderRadius: 'var(--radius-full)',
-                  fontSize: '0.82rem',
+                  fontSize: '0.78rem',
                   fontWeight: 600,
                   cursor: 'pointer',
                   border: statusFilter === 'completed' ? '1px solid var(--pastel-mint)' : '1px solid var(--border-subtle)',
                   backgroundColor: statusFilter === 'completed' ? 'var(--pastel-mint-light)' : 'var(--bg-surface)',
                   color: statusFilter === 'completed' ? 'var(--pastel-mint-text)' : 'var(--text-secondary)',
-                  transition: 'all 0.15s ease',
+                  transition: 'all var(--transition-instant)',
                 }}
               >
                 Đã hoàn thành ({computedTopics.filter((t) => t.status === 'completed').length})
@@ -481,15 +482,15 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
                 type="button"
                 onClick={() => setStatusFilter('not_started')}
                 style={{
-                  padding: '5px 12px',
+                  padding: '4px 10px',
                   borderRadius: 'var(--radius-full)',
-                  fontSize: '0.82rem',
+                  fontSize: '0.78rem',
                   fontWeight: 600,
                   cursor: 'pointer',
                   border: statusFilter === 'not_started' ? '1px solid var(--border-strong)' : '1px solid var(--border-subtle)',
                   backgroundColor: statusFilter === 'not_started' ? 'var(--bg-muted)' : 'var(--bg-surface)',
                   color: statusFilter === 'not_started' ? 'var(--text-primary)' : 'var(--text-secondary)',
-                  transition: 'all 0.15s ease',
+                  transition: 'all var(--transition-instant)',
                 }}
               >
                 Chưa học ({computedTopics.filter((t) => t.status === 'not_started').length})
@@ -498,7 +499,7 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
 
             {/* Reset Filters button */}
             {isFiltered && (
-              <Button variant="ghost" size="sm" onClick={resetFilters} leftIcon={<RotateCcw size={14} />}>
+              <Button variant="ghost" size="sm" onClick={resetFilters} leftIcon={<RotateCcw size={13} />} style={{ fontSize: '0.78rem', padding: '4px 8px' }}>
                 Đặt lại bộ lọc
               </Button>
             )}
@@ -506,40 +507,40 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
         </div>
       </Card>
 
-      {/* 3. Empty State or Topics List */}
+      {/* 3. Empty State or Compact Topics List */}
       {filteredTopics.length === 0 ? (
-        <Card variant="default" padding="lg">
-          <div style={{ textAlign: 'center', padding: '36px 16px' }}>
+        <Card variant="default" padding="md">
+          <div style={{ textAlign: 'center', padding: '28px 16px' }}>
             <div
               style={{
-                width: '64px',
-                height: '64px',
+                width: '48px',
+                height: '48px',
                 borderRadius: 'var(--radius-full)',
                 backgroundColor: 'var(--bg-muted)',
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 color: 'var(--text-muted)',
-                marginBottom: '16px',
+                marginBottom: '12px',
               }}
             >
-              <Search size={30} />
+              <Search size={22} />
             </div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px' }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '6px' }}>
               Không tìm thấy chủ đề nào
             </h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.94rem', maxWidth: '480px', margin: '0 auto 20px auto' }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.84rem', maxWidth: '420px', margin: '0 auto 16px auto', lineHeight: 1.45 }}>
               {searchQuery
                 ? `Không có chủ đề hoặc bài tập nào khớp với từ khóa "${searchQuery}". Hãy thử từ khóa khác hoặc xóa bộ lọc.`
                 : 'Không có chủ đề nào phù hợp với các tiêu chí bộ lọc đã chọn.'}
             </p>
-            <Button variant="mint" size="md" onClick={resetFilters} leftIcon={<RotateCcw size={16} />}>
+            <Button variant="mint" size="sm" onClick={resetFilters} leftIcon={<RotateCcw size={14} />}>
               Hiển thị toàn bộ giáo trình
             </Button>
           </div>
         </Card>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           {filteredTopics.map((item, index) => {
             const { topic, exercises, totalExercises, completedCount, percentage, status, nextExercise, theme } = item;
             const isExpanded = expandedTopicIds.has(topic.id);
@@ -549,31 +550,31 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
                 key={topic.id}
                 style={{
                   backgroundColor: 'var(--bg-surface)',
-                  border: `1.5px solid ${theme.border}`,
+                  border: `1px solid ${theme.border}`,
                   borderRadius: 'var(--radius-xl)',
                   overflow: 'hidden',
                   boxShadow: 'var(--shadow-xs)',
-                  transition: 'box-shadow 0.2s ease, border-color 0.2s ease',
+                  transition: 'box-shadow var(--transition-base), border-color var(--transition-base)',
                 }}
               >
-                {/* Topic Header Card */}
+                {/* Topic Header Card (Compact & Focused) */}
                 <div
                   style={{
                     backgroundColor: theme.bgLight,
-                    padding: '22px 24px',
+                    padding: '16px 20px',
                     borderBottom: isExpanded ? `1px solid ${theme.border}` : 'none',
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px' }}>
-                    <div style={{ flex: '1 1 340px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+                    <div style={{ flex: '1 1 300px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', flexWrap: 'wrap' }}>
                         <span
                           style={{
                             backgroundColor: 'var(--bg-surface)',
                             border: `1px solid ${theme.border}`,
-                            padding: '3px 10px',
+                            padding: '2px 8px',
                             borderRadius: 'var(--radius-full)',
-                            fontSize: '0.74rem',
+                            fontSize: '0.7rem',
                             fontWeight: 700,
                             color: theme.text,
                             textTransform: 'uppercase',
@@ -588,54 +589,53 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
                           </Badge>
                         )}
 
-                        {/* Status Badge */}
+                        {/* Real Status Badge */}
                         {status === 'completed' && (
-                          <Badge variant="mint" size="sm" icon={<CheckCircle2 size={13} />}>
+                          <Badge variant="mint" size="sm" icon={<CheckCircle2 size={12} />}>
                             Đã hoàn thành
                           </Badge>
                         )}
                         {status === 'in_progress' && (
-                          <Badge variant="sky" size="sm" icon={<PlayCircle size={13} />}>
+                          <Badge variant="sky" size="sm" icon={<PlayCircle size={12} />}>
                             Đang học
                           </Badge>
                         )}
                         {status === 'not_started' && (
-                          <Badge variant="neutral" size="sm" icon={<Clock size={13} />}>
+                          <Badge variant="neutral" size="sm" icon={<Clock size={12} />}>
                             Chưa bắt đầu
                           </Badge>
                         )}
                         {status === 'locked' && (
-                          <Badge variant="peach" size="sm" icon={<Lock size={13} />}>
+                          <Badge variant="peach" size="sm" icon={<Lock size={12} />}>
                             Đã khóa
                           </Badge>
                         )}
                       </div>
 
-                      <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+                      <h3 style={{ fontSize: '1.18rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
                         {topic.title}
                       </h3>
                       {topic.summary && (
-                        <p style={{ color: 'var(--text-secondary)', fontSize: '0.94rem', marginTop: '6px', lineHeight: 1.5, margin: '6px 0 0 0' }}>
+                        <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginTop: '4px', lineHeight: 1.45, margin: '4px 0 0 0' }}>
                           {topic.summary}
                         </p>
                       )}
                     </div>
 
-                    {/* Progress summary & Action buttons */}
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '12px', flex: '0 0 auto' }}>
-                      <div style={{ textAlign: 'right' }}>
-                        <div style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                          {completedCount}/{totalExercises} bài tập ({percentage}%)
+                    {/* Progress summary & Actions */}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px', flex: '0 0 auto' }}>
+                      {totalExercises > 0 && (
+                        <div style={{ textAlign: 'right' }}>
+                          <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                            {completedCount}/{totalExercises} bài tập ({percentage}%)
+                          </div>
                         </div>
-                        <div style={{ fontSize: '0.76rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                          {status === 'completed' ? 'Xuất sắc! Bạn đã xong chủ đề này' : 'Tiến độ thực tế'}
-                        </div>
-                      </div>
+                      )}
 
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                         {/* Primary action button */}
                         {status === 'locked' ? (
-                          <Button variant="outline" size="sm" disabled leftIcon={<Lock size={14} />}>
+                          <Button variant="outline" size="sm" disabled leftIcon={<Lock size={13} />}>
                             Khóa
                           </Button>
                         ) : nextExercise ? (
@@ -643,7 +643,7 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
                             <Button
                               variant={status === 'completed' ? 'outline' : 'mint'}
                               size="sm"
-                              leftIcon={status === 'completed' ? <RotateCcw size={14} /> : <PlayCircle size={14} />}
+                              leftIcon={status === 'completed' ? <RotateCcw size={13} /> : <PlayCircle size={13} />}
                             >
                               {status === 'completed' ? 'Ôn tập lại' : status === 'in_progress' ? 'Học tiếp' : 'Bắt đầu học'}
                             </Button>
@@ -655,9 +655,10 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
                           variant="ghost"
                           size="sm"
                           onClick={() => toggleTopicExpand(topic.id)}
-                          rightIcon={isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                          rightIcon={isExpanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
                           aria-expanded={isExpanded}
                           aria-label={`Xem danh sách bài tập của ${topic.title}`}
+                          style={{ padding: '6px 10px' }}
                         >
                           {isExpanded ? 'Thu gọn' : 'Chi tiết'}
                         </Button>
@@ -666,135 +667,144 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
                   </div>
 
                   {/* Progress bar */}
-                  <div
-                    style={{
-                      height: '6px',
-                      backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                      borderRadius: 'var(--radius-full)',
-                      overflow: 'hidden',
-                      marginTop: '16px',
-                      border: '1px solid rgba(0, 0, 0, 0.05)',
-                    }}
-                  >
+                  {totalExercises > 0 && (
                     <div
                       style={{
-                        height: '100%',
-                        width: `${percentage}%`,
-                        backgroundColor: status === 'completed' ? 'var(--status-success)' : 'var(--border-focus)',
+                        height: '5px',
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
                         borderRadius: 'var(--radius-full)',
-                        transition: 'width 0.35s ease',
+                        overflow: 'hidden',
+                        marginTop: '12px',
+                        border: '1px solid rgba(0, 0, 0, 0.05)',
                       }}
-                    />
-                  </div>
+                    >
+                      <div
+                        style={{
+                          height: '100%',
+                          width: `${percentage}%`,
+                          backgroundColor: status === 'completed' ? 'var(--status-success)' : 'var(--border-focus)',
+                          borderRadius: 'var(--radius-full)',
+                          transition: 'width 0.35s ease',
+                        }}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Expanded Lessons & Exercises Accordion */}
                 {isExpanded && (
-                  <div style={{ padding: '20px 24px', backgroundColor: 'var(--bg-surface)' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <div style={{ padding: '16px 20px', backgroundColor: 'var(--bg-surface)' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                       {topic.lessons.map((lesson) => (
                         <div
                           key={lesson.id}
                           style={{
                             border: '1px solid var(--border-subtle)',
                             borderRadius: 'var(--radius-lg)',
-                            padding: '16px',
+                            padding: '12px 14px',
                             backgroundColor: 'var(--bg-tertiary)',
                           }}
                         >
-                          {/* Lesson Title & Theory Note */}
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <Layers size={16} color="var(--text-secondary)" />
-                              <h4 style={{ fontSize: '1.02rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+                          {/* Lesson Title */}
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: lesson.theoryContent || lesson.exercises.length > 0 ? '8px' : '0', flexWrap: 'wrap', gap: '6px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              <Layers size={15} color="var(--text-secondary)" />
+                              <h4 style={{ fontSize: '0.94rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
                                 {lesson.title}
                               </h4>
                             </div>
 
-                            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                              {lesson.exercises.length} bài tập
-                            </span>
+                            {lesson.exercises.length > 0 && (
+                              <span style={{ fontSize: '0.76rem', color: 'var(--text-secondary)' }}>
+                                {lesson.exercises.length} bài tập
+                              </span>
+                            )}
                           </div>
 
                           {lesson.theoryContent && (
-                            <p style={{ fontSize: '0.86rem', color: 'var(--text-secondary)', margin: '0 0 14px 0', lineHeight: 1.45 }}>
+                            <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: '0 0 10px 0', lineHeight: 1.45 }}>
                               {lesson.theoryContent}
                             </p>
                           )}
 
                           {/* Exercise List */}
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            {lesson.exercises.map((exercise, exIdx) => {
-                              const isCompleted = isExerciseCompleted(exercise);
+                          {lesson.exercises.length > 0 && (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                              {lesson.exercises.map((exercise, exIdx) => {
+                                const isCompleted = isExerciseCompleted(exercise);
 
-                              return (
-                                <div
-                                  key={exercise.id}
-                                  style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    padding: '12px 16px',
-                                    backgroundColor: isCompleted ? 'var(--pastel-mint-light)' : 'var(--bg-surface)',
-                                    border: isCompleted ? '1px solid var(--pastel-mint)' : '1px solid var(--border-subtle)',
-                                    borderRadius: 'var(--radius-md)',
-                                    flexWrap: 'wrap',
-                                    gap: '12px',
-                                  }}
-                                >
-                                  {/* Left: Indicator & Title */}
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1 1 240px' }}>
-                                    <div
-                                      style={{
-                                        width: '24px',
-                                        height: '24px',
-                                        borderRadius: 'var(--radius-full)',
-                                        backgroundColor: isCompleted ? 'var(--status-success)' : 'var(--bg-muted)',
-                                        color: isCompleted ? '#FFFFFF' : 'var(--text-muted)',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        fontSize: '0.74rem',
-                                        fontWeight: 700,
-                                        flexShrink: 0,
-                                      }}
-                                    >
-                                      {isCompleted ? <Check size={14} strokeWidth={3} /> : exIdx + 1}
-                                    </div>
-
-                                    <div>
-                                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                                        <span style={{ fontSize: '0.94rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                                          {exercise.title}
-                                        </span>
-                                      </div>
-                                      <p style={{ margin: '2px 0 0 0', fontSize: '0.8rem', color: 'var(--text-secondary)', lineClamp: 1 }}>
-                                        {exercise.description}
-                                      </p>
-                                    </div>
-                                  </div>
-
-                                  {/* Right: Badges & Launch Link */}
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
-                                    {getDifficultyBadge(exercise.difficulty)}
-                                    <Badge variant="yellow" size="sm" icon={<Award size={12} />}>
-                                      +{exercise.points}đ
-                                    </Badge>
-
-                                    <Link href={`/exercises/${exercise.slug}`} style={{ textDecoration: 'none' }}>
-                                      <Button
-                                        variant={isCompleted ? 'ghost' : 'mint'}
-                                        size="sm"
-                                        rightIcon={<ArrowRight size={14} />}
+                                return (
+                                  <div
+                                    key={exercise.id}
+                                    style={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'space-between',
+                                      padding: '8px 12px',
+                                      backgroundColor: isCompleted ? 'var(--pastel-mint-light)' : 'var(--bg-surface)',
+                                      border: isCompleted ? '1px solid var(--pastel-mint)' : '1px solid var(--border-subtle)',
+                                      borderRadius: 'var(--radius-md)',
+                                      flexWrap: 'wrap',
+                                      gap: '8px',
+                                    }}
+                                  >
+                                    {/* Left: Indicator & Title */}
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: '1 1 200px' }}>
+                                      <div
+                                        style={{
+                                          width: '22px',
+                                          height: '22px',
+                                          borderRadius: 'var(--radius-full)',
+                                          backgroundColor: isCompleted ? 'var(--status-success)' : 'var(--bg-muted)',
+                                          color: isCompleted ? '#FFFFFF' : 'var(--text-muted)',
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          justifyContent: 'center',
+                                          fontSize: '0.7rem',
+                                          fontWeight: 700,
+                                          flexShrink: 0,
+                                        }}
                                       >
-                                        {isCompleted ? 'Làm lại' : 'Làm bài'}
-                                      </Button>
-                                    </Link>
+                                        {isCompleted ? <Check size={12} strokeWidth={3} /> : exIdx + 1}
+                                      </div>
+
+                                      <div>
+                                        <div style={{ fontSize: '0.86rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                                          {exercise.title}
+                                        </div>
+                                        {exercise.description && (
+                                          <p style={{ margin: '1px 0 0 0', fontSize: '0.76rem', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '380px' }}>
+                                            {exercise.description}
+                                          </p>
+                                        )}
+                                      </div>
+                                    </div>
+
+                                    {/* Right: Badges & Launch Link */}
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+                                      {getDifficultyBadge(exercise.difficulty)}
+                                      {exercise.points > 0 && (
+                                        <Badge variant="yellow" size="sm" icon={<Award size={11} />}>
+                                          +{exercise.points}đ
+                                        </Badge>
+                                      )}
+
+                                      <Link href={`/exercises/${exercise.slug}`} style={{ textDecoration: 'none' }}>
+                                        <Button
+                                          variant={isCompleted ? 'ghost' : 'mint'}
+                                          size="sm"
+                                          rightIcon={<ArrowRight size={13} />}
+                                          style={{ padding: '3px 8px', fontSize: '0.76rem' }}
+                                        >
+                                          {isCompleted ? 'Làm lại' : 'Làm bài'}
+                                        </Button>
+                                      </Link>
+                                    </div>
                                   </div>
-                                </div>
-                              );
-                            })}
-                          </div>
+                                );
+                              })}
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
