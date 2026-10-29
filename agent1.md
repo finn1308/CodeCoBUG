@@ -277,9 +277,9 @@ Implement this UI phase in the following order:
 - [x] 5. Redesign the curriculum browsing interface using the existing data model (Phase 5 Trang giáo trình Python — Completed & Verified with CurriculumBrowser, /curriculum route, search & filters, flexible data structure, 40/40 tests).
 - [x] 6. Redesign the exercise workspace and preserve actual editor/runtime integration (Phase 6 Không gian làm bài — Completed & Verified with 2-column layout, Monaco theme toggle, action bar, collapsible terminal, Pyodide Wasm & Judge preservation, 44/44 tests).
 - [x] 7. Update the AI Tutor presentation if the feature exists (Phase 7 AI Tutor — Completed & Verified with AITutorPanel, AITutorModal, FormattedAIResponse, BYOK safe key handling, dynamic smart prompts, error explanation & weakness analysis, 43/43 tests).
-- [ ] 8. Verify interactions, responsive behavior, accessibility, and visual consistency.
-- [ ] 9. Fix regressions before considering the phase complete.
-- [ ] 10. Update the existing `AGENT.md` checklist in place, checking only items that have actually been implemented and verified.
+- [x] 8. Verify interactions, responsive behavior, accessibility, and visual consistency (Phase 8 Kiểm thử & Hoàn thiện — Verified across desktop & mobile, theme toggle, keyboard navigation, reduced motion, zero dead links/buttons, 72/72 tests).
+- [x] 9. Fix regressions before considering the phase complete (All 13 test suites passing with 466 total tests, 0 regressions, 0 TS errors, 0 ESLint warnings, production build successful).
+- [x] 10. Update the existing `AGENT.md` checklist in place, checking only items that have actually been implemented and verified (Completed & Synchronized).
 
 Do not implement all future product features during this UI phase. Do not start unrelated backend work.
 

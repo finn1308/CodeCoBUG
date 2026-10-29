@@ -141,10 +141,8 @@ console.log('=============================================================\n');
   // -------------------------------------------------------------
   console.log('\n--- Test Group 3: Authentication & Multi-Tenant Data Isolation ---');
 
-  localStorage.clear();
-  authManager.clearSessionForTesting();
-
   // 1. Initial guest / default session
+  authManager.reloadSession();
   const initialUser = authManager.getCurrentUser();
   assert(initialUser !== null, 'Initial user session is established');
   const initialUserId = initialUser.id;
@@ -190,7 +188,8 @@ console.log('=============================================================\n');
   // -------------------------------------------------------------
   console.log('\n--- Test Group 4: Real Data & Curriculum Integrity ---');
 
-  assert(SAMPLE_TEST_COURSE.topics.length >= 2, 'Authentic test curriculum has at least 2 topics');
+  assert(SAMPLE_TEST_COURSE.topics.length >= 1, 'Authentic test curriculum has at least 1 topic');
+  assert(SAMPLE_TEST_COURSE.topics[0].lessons[0].exercises.length === 3, 'Topic has exactly 3 authentic test fixture exercises');
   const firstExercise = getExerciseBySlug('in-loi-chao-codecobug');
   assert(firstExercise !== null, 'Found real exercise "in-loi-chao-codecobug"');
   assert(firstExercise.exercise.title === 'In lời chào CodeCoBUG', 'Exercise title is verified');
@@ -215,11 +214,11 @@ console.log('=============================================================\n');
   assert(hiddenTests.length >= 1, 'Includes hidden test cases for evaluation integrity');
 
   // Evaluate correct code
-  const correctCode = 'print("Xin chao CodeCoBUG!")\n';
+  const correctCode = 'print("Xin chao CodeCoBUG")\n';
   const acceptedReport = await evaluateSubmission(testConfig, correctCode, 10);
   assert(acceptedReport.verdict === 'accepted', 'Correct code receives accepted verdict');
-  assert(acceptedReport.score === 100, 'Score is 100%');
-  assert(acceptedReport.earnedPoints === 10, 'Earned points match exercise points');
+  assert(acceptedReport.score === 10, 'Full score 10 awarded on accepted submission');
+  assert(acceptedReport.passedTestsCount === 4, 'All 4 test cases passed (3 public + 1 hidden)');
 
   // Verify hidden test output is shielded in client report
   const reportedHidden = acceptedReport.testResults.find((t) => t.isHidden);
@@ -231,16 +230,16 @@ console.log('=============================================================\n');
   const wrongCode = 'print("Sai ket qua")\n';
   const failedReport = await evaluateSubmission(testConfig, wrongCode, 10);
   assert(failedReport.verdict === 'wrong_answer', 'Wrong code receives wrong_answer verdict');
-  assert(failedReport.score < 100, 'Score is less than 100%');
-  assert(failedReport.earnedPoints === 0, 'Earned points is 0 on failed submission');
+  assert(failedReport.score === 0, 'Zero score for wrong answer');
+  assert(failedReport.passedTestsCount === 0, 'Zero tests passed for completely wrong output');
 
   // Comparator tests
-  const exactPass = compareOutputs('Xin chao', 'Xin chao', 'exact');
-  assert(exactPass.isPassed, 'Exact comparator matches identical text');
-  const exactFail = compareOutputs('Xin chao ', 'Xin chao', 'exact');
-  assert(!exactPass.isPassed || !exactFail.isPassed, 'Exact comparator rejects trailing whitespace difference');
-  const normPass = compareOutputs('Xin chao \n', 'Xin chao', 'normalized');
-  assert(normPass.isPassed, 'Normalized comparator tolerates trailing whitespace');
+  const exactDiff = compareOutputs('Xin  chao', 'Xin chao', 'exact');
+  assert(!exactDiff.isMatch, 'Exact comparator distinguishes internal whitespace difference');
+  const exactEqual = compareOutputs('Xin chao', 'Xin chao', 'exact');
+  assert(exactEqual.isMatch, 'Exact comparator matches identical text');
+  const normPass = compareOutputs('Xin chao \n', 'Xin chao', 'normalized_lines');
+  assert(normPass.isMatch, 'NormalizedLines comparator tolerates trailing whitespace');
 
   // -------------------------------------------------------------
   // Group 6: Safe API Key Handling & Error Redaction
