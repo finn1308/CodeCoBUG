@@ -776,3 +776,353 @@ After Phase 1, report the findings and wait for the next implementation instruct
 - **Teen Pastel UI Redesign (agent1.md) — Phase 7 (AI Tutor Experience & Security)**: Completed & Verified. Redesigned AI Tutor Studio (`AITutorPanel.tsx`), Global Modal (`AITutorModal.tsx`), and formatted markdown/code explanation renderer (`FormattedAIResponse.tsx`) implemented in `src/components/ai/`. Dual-surface availability verified: docked slide drawer mode in `ExerciseWorkspace.tsx` and global interactive modal in `AppShell.tsx` triggered from Sidebar, MobileNav, and Header across any page. Q&A interface supports natural language query input (Enter-to-send), dynamic smart suggested prompts contextually adapting to error states vs normal learning, chat thread preserving order/roles, code blocks with Python language headers & copy buttons, inline code pills, educational callouts, and unverified exercise generation cards. Strict BYOK API key safety enforced: zero key leakage to client bundles, masked display in UI (`maskApiKey`), server-side trace & response redaction (`redactApiKey`), preflight validation, real test connection against provider ping, and accurate Vietnamese error translation (401 invalid key, 429 quota, network timeout). Real submission error explanation and empirical weakness analysis derived from `MasteryEngine`. All 12 test suites passing (438 total test cases, 0 failures, 0 TypeScript errors, 0 lint warnings).
 - **Teen Pastel UI Redesign (agent1.md) — Phase 8 (Kiểm thử, Trợ năng, Responsive & Hoàn thiện)**: Completed & Verified. Comprehensive audit and hardening conducted across all surfaces: All routes verified (`/`, `/curriculum`, `/exercises/[exerciseSlug]`, `/404`), all interactive controls and buttons connected with zero dead links or dead handlers, strict multi-tenant authentication and user data isolation verified, zero fabricated curriculum or fake learner progress (100% empirical evidence), Pyodide WebAssembly execution and variable scope isolation verified, serverless deterministic Judge Engine with hidden test shielding and multi-comparator verification (exact, normalized, float tolerance) verified, mobile hardening and viewport responsiveness verified across desktop and mobile, keyboard accessibility (Escape, Enter) and reduced-motion preferences supported. New dedicated test suite `tests/test_phase8_verification_and_hardening.js` (72/72 tests). All 13 test suites passing with 466 total tests (0 failures, 0 regressions, 0 TypeScript errors, 0 ESLint warnings, production build successful).
 - **Project Implementation Status**: All phases complete! Technical Foundation (Phases 1-8) and CodeCoBUG Teen Pastel Studio Redesign (Phases 1-8) fully completed, verified, and production-ready. Standing by for user instruction or deployment.
+# CODECOBUG — MINIMAL TEEN PASTEL UI + LUCIANLABS MICRO-INTERACTIONS
+
+## ROLE
+
+Act as a senior product designer, interaction designer, and frontend engineer.
+
+Redesign the existing CodeCoBUG Python learning platform using:
+- The polished UI patterns and micro-interaction principles demonstrated by lucianlabs.dev/uxui-prompt/
+- A teen-friendly pastel visual identity.
+- A minimal, content-first information architecture.
+- Smooth, purposeful animations.
+- Production-quality implementation integrated into the existing application.
+
+The result should feel like a premium, modern learning product: clean, expressive, intuitive, and enjoyable to use without sacrificing usability or coding productivity.
+
+## PHASE 1 — AUDIT BEFORE IMPLEMENTATION
+
+Before editing files:
+
+1. Read the existing `AGENT.md` completely.
+2. Inspect the existing framework, routes, components, styling system, theme tokens, and dependencies.
+3. Identify the actual homepage, curriculum, exercise workspace, AI Tutor, authentication, and progress pages.
+4. Inspect the existing implementation plan if available.
+5. Identify working functionality that must be preserved.
+6. Check whether the LucianLabs UI library or its official integration skill is compatible with the current development environment.
+
+Official references:
+- Gallery: https://lucianlabs.dev/uxui-prompt/
+- Introduction: https://lucianlabs.dev/en/uxui-prompt/introducing/
+- Skill repository: https://github.com/Seokwoooo/lucian-uxui-prompt
+
+If the environment supports the official skill, consider using it to discover and adapt relevant components. Do not install dependencies or skills blindly. Check compatibility first.
+
+Do not build a separate demo application. All work must integrate into the existing CodeCoBUG project.
+
+## PHASE 2 — DESIGN DIRECTION
+
+Create a coherent visual system called "CodeCoBUG Pastel Studio".
+
+### Visual identity
+
+Use a calm pastel palette:
+- Mint: `#BFE8D0`
+- Soft lavender: `#DCCBFF`
+- Sky blue: `#C7E3FF`
+- Peach: `#FFCDBD`
+- Soft yellow: `#FFF0B8`
+- Main background: `#F7F9FC`
+- Card background: `#FFFFFF`
+- Main text: `#243047`
+- Secondary text: `#697386`
+- Borders: `#E7EAF0`
+
+Use mint as the primary accent. Apply lavender, blue, peach, and yellow selectively to distinguish different content types.
+
+The pastel colors must support readable text contrast. Do not use colorful backgrounds everywhere.
+
+### Shape language
+
+- Main cards: 20–24px border radius.
+- Buttons and inputs: 12–16px border radius.
+- Floating panels and dialogs: soft corners and subtle shadows.
+- Use consistent spacing and alignment.
+- Prefer thin borders and restrained shadows over heavy outlines.
+- Use a consistent icon family and stroke weight.
+- Avoid excessive gradients, excessive glassmorphism, and childish decorations.
+
+The interface should be youthful without looking like a toy.
+
+## PHASE 3 — RADICALLY SIMPLIFY THE INFORMATION ARCHITECTURE
+
+The interface must expose only the most important destinations.
+
+### Main navigation
+
+Keep only three primary destinations in the main navigation:
+
+1. **Tổng quan** — learning dashboard.
+2. **Học Python** — curriculum, topics, and lessons.
+3. **Luyện tập** — exercises, submissions, and mistake review.
+
+AI Tutor should be available contextually through a compact assistant button or panel instead of occupying a large permanent navigation section.
+
+Place secondary functions in appropriate submenus:
+- Topic and lesson details under Học Python.
+- All exercises, history, and review mistakes under Luyện tập.
+- Detailed statistics and learning history under Tổng quan.
+- Account, preferences, API-key settings, and sign-out in the profile menu.
+- Help and less frequently used options in a secondary menu.
+
+Do not create a separate primary navigation item for every small feature.
+
+Do not delete existing capabilities simply to make the interface minimal. Reorganize them into logical submenus, contextual panels, collapsible sections, or secondary pages.
+
+### Navigation behavior
+
+- Clearly highlight the current destination.
+- Keep submenu labels short and understandable.
+- Avoid deep navigation trees.
+- Use a compact sidebar on desktop.
+- Use a simple, accessible mobile navigation pattern.
+- Avoid showing multiple competing navigation bars.
+- Preserve existing routes and deep links where possible.
+
+## PHASE 4 — DASHBOARD
+
+The dashboard must answer three questions immediately:
+
+1. What should I do next?
+2. Where did I leave off?
+3. What needs more practice?
+
+Recommended layout:
+- A compact greeting and page title.
+- One prominent "Continue learning" card based on actual progress.
+- A small current-topic progress indicator.
+- A concise next-action recommendation.
+- A compact review section when real review data exists.
+- Additional statistics behind a collapsible section or secondary page.
+
+Avoid:
+- Large decorative hero sections that waste space.
+- Multiple cards displaying the same information.
+- Fake streaks, scores, achievements, or progress.
+- Excessive charts and decorative widgets.
+- Long introductory text.
+
+Use a clear visual hierarchy. One primary action should stand out on each screen.
+
+## PHASE 5 — PYTHON CURRICULUM
+
+Design a minimal curriculum browser.
+
+Show:
+- Topic title.
+- Brief description when actual content exists.
+- Real progress when available.
+- Number of exercises when known.
+- A clear action to open the topic.
+
+Use compact cards or grouped lists, not oversized promotional cards.
+
+Secondary details should appear only when the learner opens a topic.
+
+Do not invent curriculum content. The project owner will provide the actual syllabus separately.
+
+## PHASE 6 — THE CODING WORKSPACE
+
+The exercise workspace is the most important screen in CodeCoBUG.
+
+Design for concentration, clarity, and speed.
+
+### Desktop
+
+Use a balanced split layout:
+
+LEFT:
+- Exercise title and difficulty.
+- Problem statement.
+- Requirements and constraints.
+- Example input/output.
+- Optional hints in a collapsible section.
+
+RIGHT:
+- Real Python editor.
+- One visually prominent Run button.
+- Submit/check-answer action when supported.
+- Terminal/output panel beneath the editor.
+- Clear execution and grading feedback.
+
+Keep the editor as the main visual focus.
+
+Use compact panel headers, subtle separators, rounded containers, and a clear monospace font.
+
+Hide secondary information inside collapsible sections instead of displaying everything at once.
+
+### Mobile
+
+Use a vertical layout or compact tabs:
+- Problem.
+- Code.
+- Output.
+
+Keep Run easily accessible. Prevent horizontal page overflow.
+
+### Functional requirements
+
+- Preserve the actual Python runtime and editor integration.
+- Run must execute real code.
+- Output must show actual results.
+- Submission results must come from the real judge.
+- Never display fake success states.
+- Do not replace functional components with static visual mockups.
+
+## PHASE 7 — LUCIANLABS-INSPIRED MICRO-INTERACTIONS
+
+Study the official gallery and select only interactions that improve CodeCoBUG.
+
+Do not indiscriminately import dozens of animations.
+
+Prioritize these interaction patterns:
+
+### A. Navigation
+
+- Smooth active-indicator transitions.
+- Subtle submenu expansion and collapse.
+- Short fade-and-slide transitions between relevant content.
+- Clear hover and keyboard-focus states.
+
+### B. Cards
+
+- Gentle hover elevation.
+- Slight border or accent-color transition.
+- Optional subtle pointer response only for suitable nonessential cards.
+- No excessive rotation, scaling, or cursor-following effects that interfere with reading.
+
+### C. Buttons
+
+- Immediate pressed feedback.
+- Subtle spring-like movement where appropriate.
+- Clear loading states for asynchronous actions.
+- Success confirmation only after a real operation succeeds.
+- Disabled states that remain understandable.
+
+### D. Learning progress
+
+- Smooth progress-bar filling after actual data updates.
+- Gentle entrance transitions for newly revealed results.
+- Small completion feedback when a real exercise is passed.
+- No fake progress or reward animations.
+
+### E. Exercise execution
+
+When Run is clicked:
+1. Respond immediately with a pressed/loading state.
+2. Keep the interface responsive during execution.
+3. Display actual output when execution finishes.
+4. Present errors clearly without disruptive animations.
+5. Restore the button to its correct state.
+
+### F. AI Tutor
+
+- Smoothly reveal incoming responses when practical.
+- Show an unobtrusive loading indicator during actual API requests.
+- Provide immediate feedback when a message is submitted.
+- Handle API errors and missing configuration honestly.
+
+### G. Feedback
+
+Use compact toast notifications for important actions such as saved settings or copied code.
+
+Avoid interrupting the learner with unnecessary modals.
+
+## PHASE 8 — MOTION DESIGN RULES
+
+Animation must feel polished, consistent, and quick.
+
+Use these as initial design targets, then validate them in the actual interface:
+
+- Button feedback: approximately 100–180ms.
+- Hover and focus transitions: approximately 150–220ms.
+- Small panel transitions: approximately 180–260ms.
+- Larger content transitions: approximately 220–320ms.
+- Use smooth ease-out curves for entrances and responsive easing for interactive movement.
+
+These are starting points, not mandatory values for every element.
+
+Requirements:
+- Avoid long page transitions.
+- Avoid animating large numbers of elements simultaneously.
+- Prefer transform and opacity when suitable.
+- Avoid layout-shifting animations.
+- Respect `prefers-reduced-motion`.
+- Preserve keyboard accessibility.
+- Support touch devices without hover-only functionality.
+- Avoid animation that slows down Run, Submit, navigation, or typing.
+
+When adapting an actual LucianLabs component, preserve its relevant interaction behavior and motion parameters when practical. Map its theme variables into the existing design system rather than introducing a conflicting theme.
+
+Retain the required attribution and MIT license notice when reusing code from the library.
+
+## PHASE 9 — RESPONSIVE DESIGN
+
+Verify the interface at:
+- Desktop: 1440px.
+- Laptop: 1280px.
+- Tablet: 768px.
+- Mobile: 390px.
+- Narrow mobile: 320px.
+
+These are verification viewports, not fixed layout widths.
+
+Requirements:
+- No horizontal page overflow.
+- No clipped menus or dialogs.
+- No overlapping primary actions.
+- Readable code and problem statements.
+- Appropriate touch targets.
+- Responsive cards and navigation.
+- The editor must remain usable on small screens.
+
+## PHASE 10 — IMPLEMENTATION ORDER
+
+Work incrementally in this exact order:
+
+1. Audit the existing project and identify relevant files.
+2. Establish shared design tokens and typography.
+3. Simplify navigation and the application shell.
+4. Implement consistent buttons, cards, menus, dialogs, and feedback components.
+5. Redesign the dashboard.
+6. Redesign the curriculum browser.
+7. Redesign the coding workspace.
+8. Add carefully selected micro-interactions.
+9. Apply responsive behavior and accessibility improvements.
+10. Run tests and fix regressions.
+
+Complete and verify each step before moving to the next.
+
+Do not redesign unrelated backend functionality during this phase.
+
+## PHASE 11 — QUALITY GATES
+
+Before marking this phase complete:
+
+- Run available type checks, lint checks, and production build.
+- Verify navigation and submenu behavior.
+- Verify keyboard focus and reduced-motion behavior.
+- Verify Run and Submit still use actual functionality.
+- Verify AI Tutor does not fake responses.
+- Verify existing authentication and data integrations are preserved.
+- Inspect responsive layouts at the target viewports.
+- Check console errors and broken imports.
+- Fix regressions introduced by the redesign.
+
+Update the existing `AGENT.md` checklist in place. Mark an item complete only when it has been verified.
+
+## FINAL REPORT
+
+Report:
+1. Files changed.
+2. Navigation items removed from the primary level and where their functions moved.
+3. LucianLabs components or interaction patterns reused, including their element identifiers when available.
+4. Animation behavior implemented.
+5. Tests executed and actual results.
+6. Features preserved.
+7. Known limitations and remaining issues.
+
+Start by inspecting the project. Then implement only this UI redesign phase.
+
+The final result should feel minimal at first glance, rich when needed, fast to navigate, and delightful in the small details.
