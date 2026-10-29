@@ -275,7 +275,7 @@ Implement this UI phase in the following order:
 - [x] 3. Update the main application shell and responsive navigation (Phase 3 Khung giao diện toàn website — Completed & Verified with AppShell, Sidebar, MobileNav, 31/31 tests).
 - [x] 4. Redesign the learning dashboard (Phase 4 Trang chủ học tập — Completed & Verified with 26/26 tests, 0 fake progress/stats).
 - [x] 5. Redesign the curriculum browsing interface using the existing data model (Phase 5 Trang giáo trình Python — Completed & Verified with CurriculumBrowser, /curriculum route, search & filters, flexible data structure, 40/40 tests).
-- [ ] 6. Redesign the exercise workspace and preserve actual editor/runtime integration.
+- [x] 6. Redesign the exercise workspace and preserve actual editor/runtime integration (Phase 6 Không gian làm bài — Completed & Verified with 2-column layout, Monaco theme toggle, action bar, collapsible terminal, Pyodide Wasm & Judge preservation, 44/44 tests).
 - [ ] 7. Update the AI Tutor presentation if the feature exists.
 - [ ] 8. Verify interactions, responsive behavior, accessibility, and visual consistency.
 - [ ] 9. Fix regressions before considering the phase complete.

@@ -47,6 +47,7 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [executionTimeMs, setExecutionTimeMs] = useState<number | undefined>(undefined);
   const [mobileTab, setMobileTab] = useState<'problem' | 'editor' | 'terminal'>('editor');
+  const [isTerminalCollapsed, setIsTerminalCollapsed] = useState(false);
   const [isAITutorOpen, setIsAITutorOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [aiPrompt, setAiPrompt] = useState('');
@@ -490,18 +491,26 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
           {/* Editor Container */}
           <div
             className={`editor-wrapper ${mobileTab === 'editor' ? 'mobile-visible' : 'mobile-hidden'}`}
+            style={isTerminalCollapsed ? { flex: 1, minHeight: 0 } : undefined}
           >
             <CodeEditor
               value={code}
               onChange={handleCodeChange}
               starterCode={exercise.starterCode}
               disabled={isRunning || isSubmitting}
+              isRunning={isRunning}
+              isSubmitting={isSubmitting}
+              onRun={handleRun}
+              onSubmit={handleSubmit}
+              isTerminalCollapsed={isTerminalCollapsed}
+              onToggleTerminal={() => setIsTerminalCollapsed((prev) => !prev)}
             />
           </div>
 
           {/* Terminal Output Container */}
           <div
             className={`terminal-wrapper ${mobileTab === 'terminal' ? 'mobile-visible' : 'mobile-hidden'}`}
+            style={isTerminalCollapsed ? { flex: '0 0 44px', minHeight: '44px', maxHeight: '44px' } : undefined}
           >
             <TerminalOutput
               logs={logs}
@@ -513,6 +522,8 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
               isSubmitting={isSubmitting}
               executionTimeMs={executionTimeMs}
               pastSubmissions={pastSubmissions}
+              isCollapsed={isTerminalCollapsed}
+              onToggleCollapse={() => setIsTerminalCollapsed((prev) => !prev)}
               onRestoreSubmissionCode={(restoredCode) => {
                 handleCodeChange(restoredCode);
                 setLogs((prev) => [

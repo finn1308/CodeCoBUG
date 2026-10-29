@@ -14,12 +14,14 @@ import {
   Award,
   History,
   RotateCcw,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 import { OutputLog } from '@/lib/types/runtime';
 import { EvaluatedTestResult, SubmissionEvaluationReport } from '@/lib/judge/runner';
 import { SavedSubmissionRecord } from '@/lib/auth/authManager';
 
-interface TerminalOutputProps {
+export interface TerminalOutputProps {
   logs: OutputLog[];
   onClearLogs?: () => void;
   submissionReport?: SubmissionEvaluationReport | null;
@@ -30,6 +32,8 @@ interface TerminalOutputProps {
   executionTimeMs?: number;
   pastSubmissions?: SavedSubmissionRecord[];
   onRestoreSubmissionCode?: (code: string) => void;
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
   pyodideStatus?: {
     isReady: boolean;
     isLoading: boolean;
@@ -48,6 +52,8 @@ export const TerminalOutput: React.FC<TerminalOutputProps> = ({
   executionTimeMs,
   pastSubmissions = [],
   onRestoreSubmissionCode,
+  isCollapsed = false,
+  onToggleCollapse,
   pyodideStatus,
 }) => {
   const [activeTab, setActiveTab] = useState<'console' | 'tests' | 'stdin' | 'history'>(
@@ -181,11 +187,25 @@ export const TerminalOutput: React.FC<TerminalOutputProps> = ({
               <span>Clear</span>
             </button>
           )}
+
+          {onToggleCollapse && (
+            <button
+              type="button"
+              className="btn btn-ghost"
+              style={{ padding: '3px 6px', fontSize: '0.72rem' }}
+              onClick={onToggleCollapse}
+              title={isCollapsed ? 'Mở rộng Terminal' : 'Thu gọn Terminal'}
+              aria-label={isCollapsed ? 'Mở rộng Terminal' : 'Thu gọn Terminal'}
+            >
+              {isCollapsed ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+            </button>
+          )}
         </div>
       </div>
 
       {/* Pane Content */}
-      <div style={{ flex: 1, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+      {!isCollapsed && (
+        <div style={{ flex: 1, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
         {/* TAB 1: CONSOLE */}
         {activeTab === 'console' && (
           <div className="terminal-output">
@@ -547,6 +567,7 @@ export const TerminalOutput: React.FC<TerminalOutputProps> = ({
           </div>
         )}
       </div>
+      )}
     </div>
   );
 };
