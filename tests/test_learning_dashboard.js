@@ -169,6 +169,17 @@ assert(remainingReviewForEx2.length === 0, 'Exercise 2 is removed from pending r
 const completedReviews = ReviewEngine.getCompletedReviews('learner-test-default');
 assert(completedReviews.some((r) => r.exerciseSlug === 'nhap-ten-va-tuoi'), 'Exercise 2 successfully moved to completed reviews');
 
+// Group 6: Minimal Scannable Dashboard Architecture & Collapsible Statistics
+console.log('\n--- Test Group 6: Minimal Scannable Dashboard & Collapsible Statistics ---');
+assert(dashboardCode.includes('Tổng quan học tập'), 'Compact page title "Tổng quan học tập" present');
+assert(dashboardCode.includes('Thống kê chi tiết & Năng lực học viên'), 'Detailed statistics organized in dedicated section');
+assert(dashboardCode.includes('setShowStats'), 'Detailed statistics supports collapsible toggle (showStats)');
+assert(dashboardCode.includes('Khu vực học tiếp'), 'One prominent Continue Learning action card based on actual progress');
+assert(dashboardCode.includes('Tiến độ chủ đề hiện tại'), 'Current topic and real progress percentage displayed');
+assert(dashboardCode.includes('Gợi ý tiếp theo:'), 'One useful next action recommendation rendered');
+assert(dashboardCode.includes('pendingReviews.length === 0'), 'Review recommendations strictly gated by real records');
+assert(!dashboardCode.includes('streak-flame') && !dashboardCode.includes('fake-points'), 'No fake streaks or fabricated gamification elements');
+
 console.log('\n=============================================================');
 console.log(`🏁 PHASE 4 LEARNING DASHBOARD RESULTS: ${passCount} PASSED, 0 FAILED`);
 console.log('=============================================================\n');
