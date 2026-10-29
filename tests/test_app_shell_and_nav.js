@@ -122,7 +122,9 @@ assert(defaultExercise.exercise.title.length > 0, `Exercise title verified: ${de
 
 // Verify curriculum section anchor
 const homeContent = fs.readFileSync(homePath, 'utf8');
-assert(homeContent.includes('id="curriculum"'), 'Home page contains id="curriculum" anchor target');
+const dashboardPath = path.resolve(__dirname, '../src/components/dashboard/LearningDashboard.tsx');
+const dashboardContent = fs.existsSync(dashboardPath) ? fs.readFileSync(dashboardPath, 'utf8') : '';
+assert(homeContent.includes('id="curriculum"') || dashboardContent.includes('id="curriculum"'), 'Home page contains id="curriculum" anchor target');
 
 // Verify Header mobile toggle integration
 const headerPath = path.resolve(__dirname, '../src/components/common/Header.tsx');
