@@ -308,4 +308,4 @@ At the end, report:
 
 **Definition of done:** The interface looks coherent across desktop and mobile, existing routes and core functionality remain intact, no fake success states are introduced, and all completion claims are supported by verification.
 
-Begin by inspecting the existing project. Then implement this UI phase incrementally and verify each part before moving on.
+Begin by inspecting the existing project. Then implement this UI phase incrementally and verify each part before moving on
