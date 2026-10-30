@@ -557,61 +557,18 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
                   transition: 'box-shadow var(--transition-base), border-color var(--transition-base)',
                 }}
               >
-                {/* Topic Header Card (Compact & Focused) */}
+                {/* Topic Header Card (Compact & Focused: Title, Description, Progress, Single Expand Action) */}
                 <div
                   style={{
                     backgroundColor: theme.bgLight,
                     padding: '16px 20px',
                     borderBottom: isExpanded ? `1px solid ${theme.border}` : 'none',
+                    cursor: 'pointer',
                   }}
+                  onClick={() => toggleTopicExpand(topic.id)}
                 >
-                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
-                    <div style={{ flex: '1 1 300px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', flexWrap: 'wrap' }}>
-                        <span
-                          style={{
-                            backgroundColor: 'var(--bg-surface)',
-                            border: `1px solid ${theme.border}`,
-                            padding: '2px 8px',
-                            borderRadius: 'var(--radius-full)',
-                            fontSize: '0.7rem',
-                            fontWeight: 700,
-                            color: theme.text,
-                            textTransform: 'uppercase',
-                          }}
-                        >
-                          Chủ đề {String(topic.orderIndex || index + 1).padStart(2, '0')}
-                        </span>
-
-                        {topic.category && (
-                          <Badge variant={theme.badgeVariant} size="sm">
-                            {topic.category}
-                          </Badge>
-                        )}
-
-                        {/* Real Status Badge */}
-                        {status === 'completed' && (
-                          <Badge variant="mint" size="sm" icon={<CheckCircle2 size={12} />}>
-                            Đã hoàn thành
-                          </Badge>
-                        )}
-                        {status === 'in_progress' && (
-                          <Badge variant="sky" size="sm" icon={<PlayCircle size={12} />}>
-                            Đang học
-                          </Badge>
-                        )}
-                        {status === 'not_started' && (
-                          <Badge variant="neutral" size="sm" icon={<Clock size={12} />}>
-                            Chưa bắt đầu
-                          </Badge>
-                        )}
-                        {status === 'locked' && (
-                          <Badge variant="peach" size="sm" icon={<Lock size={12} />}>
-                            Đã khóa
-                          </Badge>
-                        )}
-                      </div>
-
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+                    <div style={{ flex: '1 1 280px' }}>
                       <h3 style={{ fontSize: '1.18rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
                         {topic.title}
                       </h3>
@@ -622,8 +579,11 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
                       )}
                     </div>
 
-                    {/* Progress summary & Actions */}
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px', flex: '0 0 auto' }}>
+                    {/* Progress summary & Single Expand/Open Action */}
+                    <div
+                      style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       {totalExercises > 0 && (
                         <div style={{ textAlign: 'right' }}>
                           <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-primary)' }}>
@@ -632,41 +592,21 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
                         </div>
                       )}
 
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        {/* Primary action button */}
-                        {status === 'locked' ? (
-                          <Button variant="outline" size="sm" disabled leftIcon={<Lock size={13} />}>
-                            Khóa
-                          </Button>
-                        ) : nextExercise ? (
-                          <Link href={`/exercises/${nextExercise.slug}`} style={{ textDecoration: 'none' }}>
-                            <Button
-                              variant={status === 'completed' ? 'outline' : 'mint'}
-                              size="sm"
-                              leftIcon={status === 'completed' ? <RotateCcw size={13} /> : <PlayCircle size={13} />}
-                            >
-                              {status === 'completed' ? 'Ôn tập lại' : status === 'in_progress' ? 'Học tiếp' : 'Bắt đầu học'}
-                            </Button>
-                          </Link>
-                        ) : null}
-
-                        {/* Toggle Accordion */}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => toggleTopicExpand(topic.id)}
-                          rightIcon={isExpanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-                          aria-expanded={isExpanded}
-                          aria-label={`Xem danh sách bài tập của ${topic.title}`}
-                          style={{ padding: '6px 10px' }}
-                        >
-                          {isExpanded ? 'Thu gọn' : 'Chi tiết'}
-                        </Button>
-                      </div>
+                      <Button
+                        variant={isExpanded ? 'ghost' : 'outline'}
+                        size="sm"
+                        onClick={() => toggleTopicExpand(topic.id)}
+                        rightIcon={isExpanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+                        aria-expanded={isExpanded}
+                        aria-label={`Xem danh sách bài tập của ${topic.title}`}
+                        style={{ padding: '6px 12px', fontWeight: 600 }}
+                      >
+                        {isExpanded ? 'Thu gọn' : 'Xem bài học'}
+                      </Button>
                     </div>
                   </div>
 
-                  {/* Progress bar */}
+                  {/* Real progress bar */}
                   {totalExercises > 0 && (
                     <div
                       style={{
@@ -691,9 +631,83 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
                   )}
                 </div>
 
-                {/* Expanded Lessons & Exercises Accordion */}
+                {/* Expanded Lessons & Exercises Accordion: Metadata and Exercises revealed progressively */}
                 {isExpanded && (
                   <div style={{ padding: '16px 20px', backgroundColor: 'var(--bg-surface)' }}>
+                    {/* Progressive Disclosure: Metadata & Continue Action inside expanded chapter */}
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        flexWrap: 'wrap',
+                        gap: '8px',
+                        marginBottom: '14px',
+                        paddingBottom: '12px',
+                        borderBottom: '1px solid var(--border-subtle)',
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                        <span
+                          style={{
+                            backgroundColor: 'var(--bg-tertiary)',
+                            border: `1px solid ${theme.border}`,
+                            padding: '2px 8px',
+                            borderRadius: 'var(--radius-full)',
+                            fontSize: '0.7rem',
+                            fontWeight: 700,
+                            color: theme.text,
+                            textTransform: 'uppercase',
+                          }}
+                        >
+                          Chủ đề {String(topic.orderIndex || index + 1).padStart(2, '0')}
+                        </span>
+
+                        {topic.category && (
+                          <Badge variant={theme.badgeVariant} size="sm">
+                            {topic.category}
+                          </Badge>
+                        )}
+
+                        {status === 'completed' && (
+                          <Badge variant="mint" size="sm" icon={<CheckCircle2 size={12} />}>
+                            Đã hoàn thành
+                          </Badge>
+                        )}
+                        {status === 'in_progress' && (
+                          <Badge variant="sky" size="sm" icon={<PlayCircle size={12} />}>
+                            Đang học
+                          </Badge>
+                        )}
+                        {status === 'not_started' && (
+                          <Badge variant="neutral" size="sm" icon={<Clock size={12} />}>
+                            Chưa bắt đầu
+                          </Badge>
+                        )}
+                        {status === 'locked' && (
+                          <Badge variant="peach" size="sm" icon={<Lock size={12} />}>
+                            Đã khóa
+                          </Badge>
+                        )}
+                      </div>
+
+                      {status === 'locked' ? (
+                        <Button variant="outline" size="sm" disabled leftIcon={<Lock size={13} />}>
+                          Đã khóa
+                        </Button>
+                      ) : nextExercise ? (
+                        <Link href={`/exercises/${nextExercise.slug}`} style={{ textDecoration: 'none' }}>
+                          <Button
+                            variant={status === 'completed' ? 'outline' : 'mint'}
+                            size="sm"
+                            leftIcon={status === 'completed' ? <RotateCcw size={13} /> : <PlayCircle size={13} />}
+                          >
+                            {status === 'completed' ? 'Ôn tập lại chủ đề' : status === 'in_progress' ? 'Học tiếp bài kế' : 'Bắt đầu chủ đề'}
+                          </Button>
+                        </Link>
+                      ) : null}
+                    </div>
+
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                       {topic.lessons.map((lesson) => (
                         <div

@@ -548,13 +548,13 @@ export const LearningDashboard: React.FC = () => {
         </Card>
       </div>
 
-      {/* 5. Python Curriculum Browser & Topic Progress */}
+      {/* 5. Python Curriculum Browser & Topic Progress (Clean embedded view without duplicate header) */}
       <div id="curriculum">
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--pastel-sky-text)', fontSize: '0.82rem', fontWeight: 700, textTransform: 'uppercase', marginBottom: '12px' }}>
           <BookOpen size={16} />
           <span>Tiến độ giáo trình Python</span>
         </div>
-        <CurriculumBrowser showCourseHeader={true} id="curriculum-browser-inner" />
+        <CurriculumBrowser showCourseHeader={false} id="curriculum-browser-inner" />
       </div>
     </div>
   );
