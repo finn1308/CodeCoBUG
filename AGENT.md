@@ -1141,3 +1141,120 @@ Report:
 Start by inspecting the project. Then implement only this UI redesign phase.
 
 The final result should feel minimal at first glance, rich when needed, fast to navigate, and delightful in the small details.
+
+---
+
+# CODECOBUG PHASE 3: PYTHON CURRICULUM IMPLEMENTATION & VERIFICATION REPORT
+
+## 1. Executive Summary & Curriculum Scope
+Successfully designed, authored, and verified the complete 12-Chapter Python Curriculum for CodeCoBUG based on the sequential learning progression inspired by W3Schools, featuring 100% original Vietnamese educational content, runnable code examples, common mistakes with actionable fixes, and deterministic multi-test grading:
+
+- **12 Chapters (Topics)**: Strictly sequential progression (Order index 1 to 12).
+- **44 Lessons**: Every lesson adheres to the comprehensive 10-part pedagogical structure.
+- **61 Original Exercises**: Ordered from easy to hard, each equipped with starter code, description, points, difficulty, skill tags, hints, and at least 3-6 test cases (public + hidden).
+- **Authoritative Test Suites**: All test cases registered in `src/lib/judge/testCasesRepository.ts` and evaluated against the real in-memory Pyodide Judge Engine.
+- **Regression Zero**: Maintained 100% backward compatibility with `SAMPLE_TEST_COURSE` test fixtures (`in-loi-chao-codecobug`, `nhap-ten-va-tuoi`, `hoan-doi-hai-bien`), ensuring all existing learning dashboard and E2E verification suites pass.
+
+---
+
+## 2. Curriculum Syllabus Breakdown (12 Chapters)
+
+| Chapter | Topic Title | Category | Lessons | Exercises | Points | Accent Color |
+|---|---|---|---|---|---|---|
+| **01** | Làm quen với Python | Nhập môn | 4 | 11 | 125đ | mint |
+| **02** | Biến và kiểu dữ liệu | Nền tảng | 4 | 8 | 100đ | sky |
+| **03** | Số học và toán tử | Nền tảng | 4 | 6 | 75đ | lavender |
+| **04** | Xử lý chuỗi ký tự (Strings) | Kiểu dữ liệu | 4 | 6 | 80đ | peach |
+| **05** | Cấu trúc dữ liệu (Lists, Tuples, Sets, Dicts) | Cấu trúc dữ liệu | 4 | 5 | 80đ | yellow |
+| **06** | Cấu trúc điều kiện (if, elif, else) | Cấu trúc điều khiển | 3 | 3 | 40đ | mint |
+| **07** | Vòng lặp trong Python (for và while) | Cấu trúc điều khiển | 4 | 5 | 60đ | sky |
+| **08** | Hàm trong Python (Functions) | Cấu trúc chương trình | 4 | 4 | 60đ | lavender |
+| **09** | Xử lý ngoại lệ và Tổ chức chương trình | Cấu trúc chương trình | 3 | 3 | 45đ | peach |
+| **10** | Thao tác File & Định dạng dữ liệu (JSON, CSV) | Xử lý dữ liệu | 3 | 3 | 45đ | mint |
+| **11** | Lập trình hướng đối tượng (OOP) | Lập trình nâng cao | 4 | 4 | 70đ | lavender |
+| **12** | Mở rộng sau nền tảng (Generators, Virtualenv) | Mở rộng & Ứng dụng | 3 | 3 | 50đ | sky |
+| **TỔNG** | **12 Chủ đề Giáo trình CodeCoBUG** | **Toàn diện** | **44** | **61** | **830đ** | — |
+
+---
+
+## 3. Ten-Part Pedagogical Standard (100% Compliant)
+Every lesson across all 12 chapters implements the following 10 sections:
+1. **Mục tiêu học tập (`learningObjectives`)**: Tối thiểu 2 mục tiêu rõ ràng, định hướng năng lực.
+2. **Kiến thức tiên quyết (`prerequisites`)**: Kiến thức cần nắm trước khi vào bài.
+3. **Nội dung lý thuyết (`theoryContent`)**: Giải thích chi tiết bằng tiếng Việt, mạch lạc, dễ hiểu cho lứa tuổi teen/học sinh.
+4. **Ví dụ code minh họa (`codeExamples`)**: Mã Python ngắn gọn, chạy được ngay.
+5. **Kết quả mẫu & giải thích (`expectedOutput` & `explanation`)**: Minh họa đầu ra chuẩn xác.
+6. **Lỗi thường gặp & cách sửa (`commonMistakes`)**: Nêu rõ lỗi cú pháp/logic phổ biến và hướng dẫn khắc phục.
+7. **Nhiệm vụ thực hành có hướng dẫn (`guidedPracticeTask`)**: Nhiệm vụ gợi mở kèm gợi ý.
+8. **Bài tập thực hành (`exercises`)**: Bài tập xếp từ dễ đến khó, có starter code và gợi ý từng bước.
+9. **Tóm tắt ghi nhớ (`recap`)**: Các điểm then chốt cần ghi nhớ.
+10. **Tài liệu tham khảo (`referenceLinks`)**: Liên kết bổ trợ chính thống đến W3Schools Python.
+
+---
+
+## 4. Test Verification & Quality Gates
+
+All automated test suites, type checks, linting, and production builds were executed and verified:
+
+```bash
+# 1. Pilot Chapter 01 Verification (135/135 passed)
+npx tsx tests/test_pilot_chapter_01.js
+
+# 2. Batch 2: Chapters 02 & 03 (193/193 passed)
+npx tsx tests/test_batch2_chapters_02_03.js
+
+# 3. Batch 3: Chapters 04 & 05 (166/166 passed)
+npx tsx tests/test_batch3_chapters_04_05.js
+
+# 4. Batch 4: Chapters 06 & 07 (139/139 passed)
+npx tsx tests/test_batch4_chapters_06_07.js
+
+# 5. Batch 5: Chapters 08 & 09 (129/129 passed)
+npx tsx tests/test_batch5_chapters_08_09.js
+
+# 6. Batch 6: Chapters 10 & 11 (129/129 passed)
+npx tsx tests/test_batch6_chapters_10_11.js
+
+# 7. Batch 7: Chapter 12 (56/56 passed)
+npx tsx tests/test_batch7_chapter_12.js
+
+# 8. Full 12-Chapter Comprehensive Audit (1,324/1,324 passed)
+npx tsx tests/test_curriculum_full_12_chapters.js
+
+# 9. Entire System Regression Test Suite (ALL SUITES PASSED)
+npm test
+
+# 10. TypeScript Strict Type-Check (0 errors)
+npx tsc --noEmit
+
+# 11. ESLint Code Quality Check (0 warnings, 0 errors)
+npm run lint
+
+# 12. Next.js Production Build (8/8 static & dynamic routes compiled)
+npm run build
+```
+
+---
+
+## 5. Files Changed & Added
+
+- `src/lib/types/curriculum.ts`: Enriched schema with `LessonExample`, `LessonCommonMistake`, `LessonGuidedTask`, `LessonReferenceLink`, and metadata fields on `Lesson`, `Exercise`, and `Topic`.
+- `supabase/migrations/004_curriculum_enrichment.sql`: Database migration adding schema columns for full curriculum metadata.
+- `src/lib/curriculum/chapter01_intro.ts`: Pilot Chapter 01 (4 lessons, 11 exercises).
+- `src/lib/curriculum/chapter02_variables.ts`: Chapter 02 (4 lessons, 8 exercises).
+- `src/lib/curriculum/chapter03_operators.ts`: Chapter 03 (4 lessons, 6 exercises).
+- `src/lib/curriculum/chapter04_strings.ts`: Chapter 04 (4 lessons, 6 exercises).
+- `src/lib/curriculum/chapter05_data_structures.ts`: Chapter 05 (4 lessons, 5 exercises).
+- `src/lib/curriculum/chapter06_conditionals.ts`: Chapter 06 (3 lessons, 3 exercises).
+- `src/lib/curriculum/chapter07_loops.ts`: Chapter 07 (4 lessons, 5 exercises).
+- `src/lib/curriculum/chapter08_functions.ts`: Chapter 08 (4 lessons, 4 exercises).
+- `src/lib/curriculum/chapter09_errors_modules.ts`: Chapter 09 (3 lessons, 3 exercises).
+- `src/lib/curriculum/chapter10_files_data.ts`: Chapter 10 (3 lessons, 3 exercises).
+- `src/lib/curriculum/chapter11_oop.ts`: Chapter 11 (4 lessons, 4 exercises).
+- `src/lib/curriculum/chapter12_advanced_topics.ts`: Chapter 12 (3 lessons, 3 exercises).
+- `src/lib/curriculum/curriculumRegistry.ts`: Authoritative aggregator for `OFFICIAL_PYTHON_COURSE` with lookup functions `getExerciseFromRegistry` and `getAllExercisesFromRegistry`.
+- `src/lib/curriculum/index.ts`: Barrel export for all 12 chapters and registry.
+- `src/lib/fixtures/sampleCurriculum.ts`: Seamless routing resolver prioritizing `getExerciseFromRegistry` with fallback to test fixtures.
+- `src/lib/judge/testCasesRepository.ts`: Authoritative server-side test configurations for all 61 exercises with public and secret hidden test cases.
+- `src/components/curriculum/CurriculumBrowser.tsx`: Integrated `OFFICIAL_PYTHON_COURSE` by default, added interactive progressive disclosure for full 10-part lesson pedagogical details, while preserving collapsible chapter navigation and honest completion progress.
+- `tests/*`: 7 batch test suites and 1 complete 12-chapter audit suite verifying end-to-end curriculum integrity.

@@ -28,3 +28,4 @@ ALTER TABLE public.exercises
     ADD COLUMN IF NOT EXISTS topic_id UUID REFERENCES public.topics(id) ON DELETE CASCADE;
 
 CREATE INDEX IF NOT EXISTS idx_exercises_topic ON public.exercises(topic_id);
+

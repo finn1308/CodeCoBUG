@@ -17,9 +17,16 @@ import {
   Award,
   Layers,
   Check,
+  Target,
+  Lightbulb,
+  AlertTriangle,
+  ExternalLink,
+  Code,
+  Sparkles,
 } from 'lucide-react';
 import { Card, Badge, Button, Input } from '@/components/ui';
 import { Course, Topic, Difficulty } from '@/lib/types/curriculum';
+import { OFFICIAL_PYTHON_COURSE } from '@/lib/curriculum';
 import { SAMPLE_TEST_COURSE } from '@/lib/fixtures/sampleCurriculum';
 import { authManager } from '@/lib/auth/authManager';
 
@@ -74,7 +81,7 @@ const PASTEL_THEMES = [
 ];
 
 export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
-  course = SAMPLE_TEST_COURSE,
+  course = OFFICIAL_PYTHON_COURSE,
   topics: propTopics,
   completedExerciseIds: propCompletedIds,
   completedExerciseSlugs: propCompletedSlugs,
@@ -91,6 +98,7 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
   const [difficultyFilter, setDifficultyFilter] = useState<'all' | Difficulty>(initialDifficulty);
   const [sortBy, setSortBy] = useState<'order' | 'progress' | 'exercises'>('order');
   const [expandedTopicIds, setExpandedTopicIds] = useState<Set<string>>(new Set());
+  const [expandedLessonIds, setExpandedLessonIds] = useState<Set<string>>(new Set());
 
   // Determine list of topics to render from props or course
   const rawTopics = useMemo(() => {
@@ -245,6 +253,19 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
         next.delete(topicId);
       } else {
         next.add(topicId);
+      }
+      return next;
+    });
+  };
+
+  // Toggle lesson educational detail accordion
+  const toggleLessonExpand = (lessonId: string) => {
+    setExpandedLessonIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(lessonId)) {
+        next.delete(lessonId);
+      } else {
+        next.add(lessonId);
       }
       return next;
     });
@@ -709,41 +730,245 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                      {topic.lessons.map((lesson) => (
-                        <div
-                          key={lesson.id}
-                          style={{
-                            border: '1px solid var(--border-subtle)',
-                            borderRadius: 'var(--radius-lg)',
-                            padding: '12px 14px',
-                            backgroundColor: 'var(--bg-tertiary)',
-                          }}
-                        >
-                          {/* Lesson Title */}
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: lesson.theoryContent || lesson.exercises.length > 0 ? '8px' : '0', flexWrap: 'wrap', gap: '6px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <Layers size={15} color="var(--text-secondary)" />
-                              <h4 style={{ fontSize: '0.94rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-                                {lesson.title}
-                              </h4>
+                      {topic.lessons.map((lesson) => {
+                        const isLessonDetailExpanded = expandedLessonIds.has(lesson.id);
+                        const hasPedagogy = (lesson.learningObjectives && lesson.learningObjectives.length > 0) ||
+                          (lesson.codeExamples && lesson.codeExamples.length > 0) ||
+                          (lesson.commonMistakes && lesson.commonMistakes.length > 0) ||
+                          lesson.guidedPracticeTask ||
+                          (lesson.recap && lesson.recap.length > 0);
+
+                        return (
+                          <div
+                            key={lesson.id}
+                            style={{
+                              border: '1px solid var(--border-subtle)',
+                              borderRadius: 'var(--radius-lg)',
+                              padding: '14px 16px',
+                              backgroundColor: 'var(--bg-surface)',
+                              boxShadow: 'var(--shadow-xs)',
+                            }}
+                          >
+                            {/* Lesson Title & Header Actions */}
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', flexWrap: 'wrap', gap: '8px' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <Layers size={16} color="var(--pastel-sky-text)" />
+                                <h4 style={{ fontSize: '0.98rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+                                  {lesson.title}
+                                </h4>
+                              </div>
+
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                {lesson.exercises.length > 0 && (
+                                  <Badge variant="neutral" size="sm">
+                                    {lesson.exercises.length} bài tập
+                                  </Badge>
+                                )}
+
+                                {hasPedagogy && (
+                                  <button
+                                    type="button"
+                                    onClick={() => toggleLessonExpand(lesson.id)}
+                                    style={{
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '4px',
+                                      padding: '4px 10px',
+                                      borderRadius: 'var(--radius-full)',
+                                      fontSize: '0.74rem',
+                                      fontWeight: 600,
+                                      backgroundColor: isLessonDetailExpanded ? 'var(--pastel-sky-light)' : 'var(--bg-tertiary)',
+                                      border: `1px solid ${isLessonDetailExpanded ? 'var(--pastel-sky)' : 'var(--border-subtle)'}`,
+                                      color: isLessonDetailExpanded ? 'var(--pastel-sky-text)' : 'var(--text-secondary)',
+                                      cursor: 'pointer',
+                                      transition: 'all var(--transition-instant)',
+                                    }}
+                                    aria-expanded={isLessonDetailExpanded}
+                                  >
+                                    <BookOpen size={12} />
+                                    <span>{isLessonDetailExpanded ? 'Thu gọn bài giảng' : 'Xem bài giảng chi tiết'}</span>
+                                    {isLessonDetailExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                                  </button>
+                                )}
+                              </div>
                             </div>
 
-                            {lesson.exercises.length > 0 && (
-                              <span style={{ fontSize: '0.76rem', color: 'var(--text-secondary)' }}>
-                                {lesson.exercises.length} bài tập
-                              </span>
+                            {/* Summary Theory excerpt when collapsed */}
+                            {lesson.theoryContent && !isLessonDetailExpanded && (
+                              <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', margin: '0 0 10px 0', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                                {lesson.theoryContent}
+                              </p>
                             )}
-                          </div>
 
-                          {lesson.theoryContent && (
-                            <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: '0 0 10px 0', lineHeight: 1.45 }}>
-                              {lesson.theoryContent}
-                            </p>
-                          )}
+                            {/* Detailed 10-Part Pedagogical Content when expanded */}
+                            {isLessonDetailExpanded && (
+                              <div
+                                style={{
+                                  backgroundColor: 'var(--bg-tertiary)',
+                                  borderRadius: 'var(--radius-md)',
+                                  padding: '14px',
+                                  margin: '10px 0 14px 0',
+                                  border: '1px solid var(--border-subtle)',
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  gap: '14px',
+                                }}
+                              >
+                                {/* 1. Objectives & Prerequisites */}
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '10px' }}>
+                                  {lesson.learningObjectives && lesson.learningObjectives.length > 0 && (
+                                    <div style={{ backgroundColor: 'var(--pastel-mint-light)', border: '1px solid var(--pastel-mint)', borderRadius: 'var(--radius-md)', padding: '10px 12px' }}>
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 700, color: 'var(--pastel-mint-text)', marginBottom: '6px' }}>
+                                        <Target size={14} />
+                                        <span>Mục tiêu bài học</span>
+                                      </div>
+                                      <ul style={{ margin: 0, paddingLeft: '16px', fontSize: '0.8rem', color: 'var(--text-primary)', lineHeight: 1.45 }}>
+                                        {lesson.learningObjectives.map((obj, i) => (
+                                          <li key={i}>{obj}</li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  )}
 
-                          {/* Exercise List */}
-                          {lesson.exercises.length > 0 && (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                  {lesson.prerequisites && lesson.prerequisites.length > 0 && (
+                                    <div style={{ backgroundColor: 'var(--pastel-sky-light)', border: '1px solid var(--pastel-sky)', borderRadius: 'var(--radius-md)', padding: '10px 12px' }}>
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 700, color: 'var(--pastel-sky-text)', marginBottom: '6px' }}>
+                                        <Lightbulb size={14} />
+                                        <span>Kiến thức tiên quyết</span>
+                                      </div>
+                                      <ul style={{ margin: 0, paddingLeft: '16px', fontSize: '0.8rem', color: 'var(--text-primary)', lineHeight: 1.45 }}>
+                                        {lesson.prerequisites.map((req, i) => (
+                                          <li key={i}>{req}</li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  )}
+                                </div>
+
+                                {/* 2. Full Theory Text */}
+                                {lesson.theoryContent && (
+                                  <div>
+                                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '4px', textTransform: 'uppercase' }}>
+                                      Nội dung lý thuyết
+                                    </div>
+                                    <div style={{ fontSize: '0.86rem', color: 'var(--text-primary)', lineHeight: 1.6, whiteSpace: 'pre-line', backgroundColor: 'var(--bg-surface)', padding: '12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
+                                      {lesson.theoryContent}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {/* 3. Runnable Code Examples */}
+                                {lesson.codeExamples && lesson.codeExamples.length > 0 && (
+                                  <div>
+                                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '6px', textTransform: 'uppercase' }}>
+                                      Ví dụ code minh họa
+                                    </div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                      {lesson.codeExamples.map((ex, i) => (
+                                        <div key={i} style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', padding: '10px 12px' }}>
+                                          <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '6px' }}>
+                                            {ex.title}
+                                          </div>
+                                          <pre style={{ margin: 0, padding: '8px 10px', backgroundColor: '#1E293B', color: '#F8FAFC', borderRadius: 'var(--radius-sm)', fontSize: '0.8rem', fontFamily: 'monospace', overflowX: 'auto' }}>
+                                            <code>{ex.code}</code>
+                                          </pre>
+                                          {ex.expectedOutput && (
+                                            <div style={{ marginTop: '6px', fontSize: '0.76rem', color: 'var(--text-secondary)' }}>
+                                              <span style={{ fontWeight: 600 }}>Kết quả: </span>
+                                              <code style={{ backgroundColor: 'var(--bg-tertiary)', padding: '1px 5px', borderRadius: '3px' }}>{ex.expectedOutput}</code>
+                                            </div>
+                                          )}
+                                          {ex.explanation && (
+                                            <p style={{ margin: '4px 0 0 0', fontSize: '0.78rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
+                                              {ex.explanation}
+                                            </p>
+                                          )}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {/* 4. Common Mistakes & Fixes */}
+                                {lesson.commonMistakes && lesson.commonMistakes.length > 0 && (
+                                  <div style={{ backgroundColor: 'var(--pastel-peach-light)', border: '1px solid var(--pastel-peach)', borderRadius: 'var(--radius-md)', padding: '10px 12px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 700, color: 'var(--pastel-peach-text)', marginBottom: '6px' }}>
+                                      <AlertTriangle size={14} />
+                                      <span>Lỗi thường gặp & Cách khắc phục</span>
+                                    </div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                      {lesson.commonMistakes.map((mis, i) => (
+                                        <div key={i} style={{ fontSize: '0.79rem', color: 'var(--text-primary)' }}>
+                                          <span style={{ fontWeight: 700, color: '#B91C1C' }}>⚠️ {mis.mistake}: </span>
+                                          <span>{mis.explanation} </span>
+                                          <span style={{ fontWeight: 600, color: '#15803D' }}>→ Sửa: {mis.fix}</span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {/* 5. Guided Task & Recap */}
+                                {lesson.guidedPracticeTask && (
+                                  <div style={{ backgroundColor: 'var(--pastel-lavender-light)', border: '1px solid var(--pastel-lavender)', borderRadius: 'var(--radius-md)', padding: '10px 12px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 700, color: 'var(--pastel-lavender-text)', marginBottom: '4px' }}>
+                                      <Sparkles size={14} />
+                                      <span>Nhiệm vụ thực hành có hướng dẫn: {lesson.guidedPracticeTask.title}</span>
+                                    </div>
+                                    <p style={{ margin: '2px 0 4px 0', fontSize: '0.8rem', color: 'var(--text-primary)' }}>
+                                      {lesson.guidedPracticeTask.instructions}
+                                    </p>
+                                    {lesson.guidedPracticeTask.hint && (
+                                      <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
+                                        💡 Gợi ý: {lesson.guidedPracticeTask.hint}
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
+
+                                {/* 6. Recap Points & Reference Links */}
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px', paddingTop: '6px', borderTop: '1px solid var(--border-subtle)' }}>
+                                  {lesson.recap && lesson.recap.length > 0 && (
+                                    <div style={{ flex: '1 1 240px' }}>
+                                      <span style={{ fontSize: '0.76rem', fontWeight: 700, color: 'var(--text-secondary)' }}>🧠 Ghi nhớ cốt lõi: </span>
+                                      <span style={{ fontSize: '0.76rem', color: 'var(--text-primary)' }}>
+                                        {lesson.recap.join(' • ')}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {lesson.referenceLinks && lesson.referenceLinks.length > 0 && (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                                      <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Tham khảo:</span>
+                                      {lesson.referenceLinks.map((ref, i) => (
+                                        <a
+                                          key={i}
+                                          href={ref.url}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          style={{
+                                            display: 'inline-flex',
+                                            alignItems: 'center',
+                                            gap: '3px',
+                                            fontSize: '0.74rem',
+                                            color: 'var(--border-focus)',
+                                            textDecoration: 'none',
+                                            fontWeight: 600,
+                                          }}
+                                        >
+                                          <span>{ref.title}</span>
+                                          <ExternalLink size={10} />
+                                        </a>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Exercise List */}
+                            {lesson.exercises.length > 0 && (
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                               {lesson.exercises.map((exercise, exIdx) => {
                                 const isCompleted = isExerciseCompleted(exercise);
 
@@ -820,7 +1045,8 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
                             </div>
                           )}
                         </div>
-                      ))}
+                      );
+                    })}
                     </div>
                   </div>
                 )}
