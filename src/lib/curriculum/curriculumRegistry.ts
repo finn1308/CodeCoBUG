@@ -1,5 +1,11 @@
 import { Course } from '@/lib/types/curriculum';
 import { CHAPTER_01_INTRO } from './chapter01_intro';
+import { CHAPTER_02_VARIABLES } from './chapter02_variables';
+import { CHAPTER_03_OPERATORS } from './chapter03_operators';
+import { CHAPTER_04_STRINGS } from './chapter04_strings';
+import { CHAPTER_05_DATA_STRUCTURES } from './chapter05_data_structures';
+import { CHAPTER_06_CONDITIONALS } from './chapter06_conditionals';
+import { CHAPTER_07_LOOPS } from './chapter07_loops';
 
 /**
  * Authoritative CodeCoBUG Python Mastery Curriculum
@@ -16,6 +22,12 @@ export const OFFICIAL_PYTHON_COURSE: Course = {
   isPublished: true,
   topics: [
     CHAPTER_01_INTRO,
+    CHAPTER_02_VARIABLES,
+    CHAPTER_03_OPERATORS,
+    CHAPTER_04_STRINGS,
+    CHAPTER_05_DATA_STRUCTURES,
+    CHAPTER_06_CONDITIONALS,
+    CHAPTER_07_LOOPS,
   ],
 };
 
