@@ -6,6 +6,11 @@ import { CHAPTER_04_STRINGS } from './chapter04_strings';
 import { CHAPTER_05_DATA_STRUCTURES } from './chapter05_data_structures';
 import { CHAPTER_06_CONDITIONALS } from './chapter06_conditionals';
 import { CHAPTER_07_LOOPS } from './chapter07_loops';
+import { CHAPTER_08_FUNCTIONS } from './chapter08_functions';
+import { CHAPTER_09_ERRORS_MODULES } from './chapter09_errors_modules';
+import { CHAPTER_10_FILES_DATA } from './chapter10_files_data';
+import { CHAPTER_11_OOP } from './chapter11_oop';
+import { CHAPTER_12_ADVANCED_TOPICS } from './chapter12_advanced_topics';
 
 /**
  * Authoritative CodeCoBUG Python Mastery Curriculum
@@ -28,6 +33,11 @@ export const OFFICIAL_PYTHON_COURSE: Course = {
     CHAPTER_05_DATA_STRUCTURES,
     CHAPTER_06_CONDITIONALS,
     CHAPTER_07_LOOPS,
+    CHAPTER_08_FUNCTIONS,
+    CHAPTER_09_ERRORS_MODULES,
+    CHAPTER_10_FILES_DATA,
+    CHAPTER_11_OOP,
+    CHAPTER_12_ADVANCED_TOPICS,
   ],
 };
 
