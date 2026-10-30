@@ -1436,3 +1436,611 @@ npm run build
 - [x] **Điều hướng & Định tuyến thân thiện**: Bổ sung chuyển hướng trong `next.config.ts` cho `/practice`, `/workspace`, `/courses`, `/learn`.
 - [x] **Kiểm thử thực tế**: 19 bộ kiểm thử tự động với > 3,200 assertions vượt qua 100% (0 lỗi). TypeScript và ESLint sạch 100%. Next.js production build thành công 10/10 routes.
 
+# AGENT.md
+# CODECOBUG - MASTER DEVELOPMENT RULES
+
+Version: 2.0  
+Project: CodeCoBUG  
+Purpose: Full-stack Python Learning Platform
+
+---
+
+# 1. PROJECT MISSION
+
+CodeCoBUG is an interactive Python learning platform for beginners and intermediate learners.
+
+The platform must provide:
+
+- Structured Python curriculum.
+- Interactive Python code editor.
+- Real Python code execution.
+- Automated exercise evaluation.
+- AI-powered tutoring.
+- Personalized learning paths.
+- Error analysis and skill tracking.
+- Spaced review and practice.
+- Project-based learning.
+- Persistent user accounts and learning progress.
+
+The goal is to build a complete learning product, not a static educational website.
+
+## Core Principles
+
+1. Functionality before decoration.
+2. Real data before mock data.
+3. Reusable architecture.
+4. Consistent user experience.
+5. Verified correctness.
+6. Secure handling of user data.
+7. Mobile-first responsiveness.
+8. Incremental development and testing.
+
+---
+
+# 2. MANDATORY DEVELOPMENT RULES
+
+Before modifying any code:
+
+- [ ] Read this entire AGENT.md.
+- [ ] Inspect the existing project structure.
+- [ ] Understand the existing architecture.
+- [ ] Inspect related components, routes, APIs and database models.
+- [ ] Check existing implementations before creating new ones.
+- [ ] Identify dependencies and potential regressions.
+- [ ] Create a suitable checkpoint before major changes.
+
+Never:
+
+- Delete working functionality without justification.
+- Replace the existing architecture without a documented reason.
+- Create fake buttons or non-functional features.
+- Use mock data as if it were real user data.
+- Hardcode sensitive API keys.
+- Mark features complete without testing.
+- Duplicate existing pages or database entities unnecessarily.
+- Rewrite the entire project when a targeted fix is sufficient.
+
+When requirements conflict, preserve data integrity, security and existing verified functionality.
+
+---
+
+# 3. TECHNOLOGY AND ARCHITECTURE
+
+Inspect the current stack before making technology decisions.
+
+Prefer maintaining existing technologies when they are appropriate.
+
+Recommended architecture principles:
+
+- Component-based frontend.
+- Type-safe application logic.
+- Reusable UI components.
+- Centralized API and data access.
+- Validated backend operations.
+- Persistent relational data where appropriate.
+- Secure authentication and authorization.
+- Isolated Python execution.
+- Automated testing.
+
+Every feature must have a clear connection between:
+
+Frontend → Backend → Business Logic → Database → User Interface.
+
+Do not implement frontend-only simulations of backend features.
+
+---
+
+# 4. PYTHON CURRICULUM SOURCES
+
+CodeCoBUG uses two main educational references.
+
+## Source A: W3Schools Python
+
+https://www.w3schools.com/python/
+
+Purpose:
+
+- Topic coverage.
+- Syntax references.
+- Basic concepts.
+- Quick reference.
+- Additional knowledge topics.
+
+## Source B: Python Crash Course 3rd Edition
+
+https://github.com/ehmatthes/pcc_3e/
+
+Purpose:
+
+- Structured learning progression.
+- Practical programming.
+- Problem-solving.
+- Project-based learning.
+- Testing and debugging.
+- Data visualization.
+- Web development.
+
+The repository is an educational reference. Do not assume every file or book resource can be redistributed.
+
+## Copyright Rules
+
+- Do not copy entire chapters into CodeCoBUG.
+- Do not reproduce the book's complete exercise sets or solutions.
+- Do not copy large passages from W3Schools.
+- Write original Vietnamese explanations.
+- Create original examples and exercises.
+- Link to the original sources where appropriate.
+- Check applicable licenses before redistributing third-party code or assets.
+- Preserve attribution where required.
+
+---
+
+# 5. UNIFIED PYTHON CURRICULUM
+
+Maintain ONE unified curriculum.
+
+Do not create separate W3Schools and PCC3E learning systems.
+
+## PART I: PYTHON FUNDAMENTALS
+
+- [ ] Chapter 1: Getting Started.
+- [ ] Chapter 2: Variables and Simple Data Types.
+- [ ] Chapter 3: Introducing Lists.
+- [ ] Chapter 4: Working with Lists.
+- [ ] Chapter 5: If Statements.
+- [ ] Chapter 6: Dictionaries.
+- [ ] Chapter 7: User Input and While Loops.
+- [ ] Chapter 8: Functions.
+- [ ] Chapter 9: Classes.
+- [ ] Chapter 10: Files and Exceptions.
+- [ ] Chapter 11: Testing Your Code.
+
+Supplementary W3Schools topics must be mapped into the appropriate chapters:
+
+- Tuples.
+- Sets.
+- Numbers and casting.
+- Strings.
+- Booleans.
+- Operators.
+- For loops.
+- Modules.
+- Lambda.
+- Scope.
+- JSON.
+- Dates.
+- Math.
+- Regular expressions.
+- Iterators.
+- PIP and packages.
+
+Do not create duplicate lessons for concepts that already exist.
+
+## PART II: PROJECT-BASED LEARNING
+
+### Project 1: Alien Invasion
+
+- [ ] Pygame fundamentals.
+- [ ] Game loop.
+- [ ] Event handling.
+- [ ] Player movement.
+- [ ] Bullets and enemies.
+- [ ] Collision detection.
+- [ ] Scoring.
+- [ ] Game states.
+- [ ] Project checkpoints.
+
+### Project 2: Data Visualization
+
+- [ ] Data fundamentals.
+- [ ] Matplotlib.
+- [ ] Plotly.
+- [ ] Data processing.
+- [ ] API data.
+- [ ] Visualization project.
+
+### Project 3: Web Applications
+
+- [ ] Django fundamentals.
+- [ ] URLs and views.
+- [ ] Templates.
+- [ ] Models and database.
+- [ ] CRUD.
+- [ ] Authentication.
+- [ ] Testing.
+- [ ] Deployment concepts.
+
+Each project must be a separate learning module with its own prerequisites, lessons, exercises and checkpoints.
+
+---
+
+# 6. LESSON CONTENT STANDARD
+
+Every lesson must include:
+
+- [ ] Lesson title.
+- [ ] Learning objectives.
+- [ ] Prerequisites.
+- [ ] Original Vietnamese explanation.
+- [ ] Syntax and programming concepts.
+- [ ] Runnable Python examples.
+- [ ] Expected output.
+- [ ] Line-by-line explanation when useful.
+- [ ] Common mistakes.
+- [ ] Guided practice.
+- [ ] Independent exercises.
+- [ ] Challenge exercise.
+- [ ] Summary.
+- [ ] Related lessons.
+
+Content must be accurate, understandable and appropriate for beginners.
+
+Do not publish empty lessons or placeholder explanations.
+
+---
+
+# 7. EXERCISE SYSTEM
+
+Every exercise must have:
+
+- [ ] Unique exercise ID.
+- [ ] Linked lesson ID.
+- [ ] Exercise title.
+- [ ] Original problem statement.
+- [ ] Difficulty level.
+- [ ] Skill tags.
+- [ ] Starter code when appropriate.
+- [ ] Sample input.
+- [ ] Expected output.
+- [ ] Public test cases.
+- [ ] Hidden test cases.
+- [ ] Hints.
+- [ ] Completion criteria.
+
+Where applicable, create at least three meaningful test cases:
+
+1. Normal case.
+2. Boundary case.
+3. Edge or error-prone case.
+
+Do not use arbitrary test cases that do not validate the intended concept.
+
+---
+
+# 8. PYTHON EDITOR AND JUDGE ENGINE
+
+The learning workflow must be:
+
+Open exercise → Write code → Run → Evaluate → Save result → Update progress.
+
+## Editor
+
+- [ ] Display exercise instructions.
+- [ ] Display examples and expected output.
+- [ ] Support code editing.
+- [ ] Support code execution.
+- [ ] Display stdout.
+- [ ] Display stderr.
+- [ ] Display syntax and runtime errors.
+- [ ] Support mobile-friendly editing.
+
+## Judge Engine
+
+- [ ] Execute submitted code using an appropriate runtime.
+- [ ] Evaluate test cases deterministically.
+- [ ] Distinguish syntax errors from runtime errors.
+- [ ] Distinguish incorrect output from correct output.
+- [ ] Support hidden tests.
+- [ ] Protect private test cases.
+- [ ] Apply execution time and resource limits.
+- [ ] Save actual submission results.
+
+AI must NEVER replace the Judge Engine as the authority for correctness.
+
+Never claim that untrusted Python code is securely sandboxed unless proper isolation has been implemented and verified.
+
+---
+
+# 9. AI TUTOR
+
+AI Tutor should support:
+
+- [ ] Explaining Python concepts.
+- [ ] Explaining code line by line.
+- [ ] Helping identify bugs.
+- [ ] Providing progressive hints.
+- [ ] Generating original exercises.
+- [ ] Analyzing recurring mistakes.
+- [ ] Identifying weak skills.
+- [ ] Recommending lessons.
+- [ ] Recommending review exercises.
+- [ ] Supporting project learning.
+
+AI must use the learner's actual learning context when available.
+
+AI must not:
+
+- Invent submission results.
+- Modify Judge Engine results.
+- Mark exercises complete without verified results.
+- Access another user's private data.
+- Reveal hidden test cases.
+
+## API Key Security
+
+- [ ] Never expose API keys in frontend code.
+- [ ] Never print secrets in logs.
+- [ ] Validate provider configuration.
+- [ ] Handle invalid keys and provider failures.
+- [ ] Provide clear error messages.
+- [ ] Use secure storage appropriate to the current architecture.
+
+---
+
+# 10. LEARNING PROGRESS AND REVIEW
+
+All learning progress must be based on real persisted records.
+
+## Progress Tracking
+
+- [ ] Track lesson progress.
+- [ ] Track exercise attempts.
+- [ ] Track correct and incorrect submissions.
+- [ ] Track skill mastery.
+- [ ] Track project checkpoints.
+- [ ] Display accurate dashboard statistics.
+- [ ] Preserve progress after refreshing.
+- [ ] Maintain user-specific records.
+
+## Review System
+
+- [ ] Identify skills associated with incorrect submissions.
+- [ ] Detect recurring mistakes.
+- [ ] Recommend relevant lessons.
+- [ ] Generate review exercises.
+- [ ] Update mastery based on subsequent performance.
+
+Do not use random or hardcoded weakness statistics.
+
+---
+
+# 11. UI/UX DESIGN RULES
+
+Design direction: CodeCoBUG Teen Pastel Studio.
+
+## Visual Identity
+
+- Background: #F7F9FC
+- Text: #243047
+- Secondary text: #697386
+- Mint: #BFE8D0
+- Lavender: #DCCBFF
+- Sky blue: #C7E3FF
+- Peach: #FFCDBD
+- Soft yellow: #FFF0B8
+- Border: #E7EAF0
+
+## Design Principles
+
+- [ ] Clear visual hierarchy.
+- [ ] Rounded cards and controls.
+- [ ] Consistent spacing.
+- [ ] Readable typography.
+- [ ] Accessible color contrast.
+- [ ] Restrained shadows.
+- [ ] Meaningful micro-interactions.
+- [ ] Responsive desktop and mobile.
+- [ ] Clear loading, empty, error and success states.
+
+## Main Navigation
+
+Keep primary navigation simple:
+
+1. Tổng quan.
+2. Học Python.
+3. Luyện tập.
+
+Secondary features should be organized into appropriate menus or contextual controls.
+
+Do not overload the dashboard with every available feature.
+
+Every interactive element must have a real action.
+
+---
+
+# 12. DATABASE AND DATA INTEGRITY
+
+Before changing database structures:
+
+- [ ] Inspect existing schema.
+- [ ] Identify existing relationships.
+- [ ] Check migrations.
+- [ ] Check data ownership.
+- [ ] Plan backward-compatible changes.
+- [ ] Avoid destructive migrations.
+- [ ] Verify data persistence.
+
+Maintain consistent relationships between:
+
+Course → Chapter → Lesson → Exercise → Submission → Test Result → Skill → Review.
+
+Do not duplicate the same learning record across unrelated tables without a clear reason.
+
+Use authorization and appropriate database access controls.
+
+---
+
+# 13. SECURITY REQUIREMENTS
+
+- [ ] Validate user inputs.
+- [ ] Enforce authentication.
+- [ ] Enforce authorization.
+- [ ] Protect private user records.
+- [ ] Protect API keys.
+- [ ] Protect hidden test cases.
+- [ ] Prevent unauthorized database access.
+- [ ] Apply rate limits where appropriate.
+- [ ] Isolate untrusted code execution.
+- [ ] Avoid exposing internal errors or secrets.
+
+Security issues must be treated as high priority.
+
+---
+
+# 14. TESTING REQUIREMENTS
+
+Before marking a feature complete:
+
+- [ ] Run relevant unit tests.
+- [ ] Run integration tests.
+- [ ] Run type checking.
+- [ ] Run lint.
+- [ ] Run production build.
+- [ ] Test actual browser behavior when possible.
+- [ ] Inspect browser console.
+- [ ] Inspect server logs.
+- [ ] Check network errors.
+- [ ] Verify persisted data.
+
+For critical learning flows, perform end-to-end testing.
+
+Never fabricate test results.
+
+If a test cannot be executed, document why.
+
+---
+
+# 15. DEVELOPMENT WORKFLOW
+
+All development must follow this process:
+
+## Phase A: Inspect
+
+- [ ] Read AGENT.md.
+- [ ] Inspect relevant source code.
+- [ ] Understand current behavior.
+- [ ] Identify dependencies.
+
+## Phase B: Plan
+
+- [ ] Define the exact scope.
+- [ ] List affected files.
+- [ ] Identify risks.
+- [ ] Define acceptance criteria.
+
+## Phase C: Implement
+
+- [ ] Implement the smallest coherent change.
+- [ ] Reuse existing components.
+- [ ] Maintain architecture consistency.
+- [ ] Preserve existing functionality.
+
+## Phase D: Test
+
+- [ ] Run relevant tests.
+- [ ] Verify real behavior.
+- [ ] Fix discovered regressions.
+- [ ] Retest affected functionality.
+
+## Phase E: Document
+
+- [ ] Update this AGENT.md.
+- [ ] Update relevant documentation.
+- [ ] Record test results.
+- [ ] Record remaining issues.
+
+Never skip testing just to finish faster.
+
+---
+
+# 16. CHECKLIST STATUS RULES
+
+Use these statuses:
+
+- [ ] NOT STARTED
+- [ ] IN PROGRESS
+- [ ] BLOCKED
+- [x] VERIFIED COMPLETE
+
+A task may only be marked VERIFIED COMPLETE when:
+
+1. Implementation exists.
+2. The relevant workflow has been tested.
+3. Expected behavior has been verified.
+4. No known critical regression remains.
+5. Supporting evidence is documented.
+
+A visually completed page does not mean its backend functionality is complete.
+
+Do not mark an entire phase complete if only some tasks have been implemented.
+
+---
+
+# 17. DOCUMENTATION FILES
+
+Maintain these files when relevant:
+
+- docs/CODECOBUG_AUDIT.md
+- docs/PYTHON_CURRICULUM_MAPPING.md
+- docs/PYTHON_LEARNING_PREREQUISITES.md
+- docs/PCC3E_INTEGRATION_AUDIT.md
+- docs/PCC3E_FINAL_INTEGRATION_REPORT.md
+- docs/CODECOBUG_TEST_REPORT.md
+- docs/CODECOBUG_DATA_MODEL.md
+
+Do not create duplicate documentation unnecessarily.
+
+Update existing documents whenever possible.
+
+---
+
+# 18. FINAL DEFINITION OF DONE
+
+CodeCoBUG is considered ready for handover only when:
+
+- [ ] Application starts successfully.
+- [ ] Main routes work.
+- [ ] Authentication works when configured.
+- [ ] Curriculum content is real.
+- [ ] Lessons load correctly.
+- [ ] Exercises load correctly.
+- [ ] Python code executes correctly.
+- [ ] Judge Engine evaluates submissions correctly.
+- [ ] Submission records persist.
+- [ ] Progress updates correctly.
+- [ ] AI Tutor handles its configured provider correctly.
+- [ ] Review system uses actual learning records.
+- [ ] Mobile and desktop layouts work.
+- [ ] Relevant automated tests pass.
+- [ ] Production build succeeds.
+- [ ] Known limitations are documented.
+- [ ] AGENT.md accurately reflects the current project.
+
+Never claim 100% completion without evidence.
+
+The final report must distinguish:
+
+- VERIFIED COMPLETE
+- PARTIALLY IMPLEMENTED
+- BLOCKED
+- NOT IMPLEMENTED
+
+---
+
+# 19. FINAL INSTRUCTION TO THE AGENT
+
+Always read this file before starting development.
+
+Work incrementally.
+
+Complete one coherent feature at a time.
+
+Test before moving to the next feature.
+
+Preserve existing working functionality.
+
+Never substitute a static UI for a real implementation.
+
+Never fabricate data or test results.
+
+The ultimate objective is a reliable, integrated, full-stack Python learning platform.
