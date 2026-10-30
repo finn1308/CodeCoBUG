@@ -192,9 +192,17 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
     setIsSubmitting(true);
 
     try {
+      const token = authManager.getSessionToken();
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const response = await fetch('/api/judge/submit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           exerciseSlug: exercise.slug,
           code,

@@ -4,6 +4,8 @@
  * submission history, and strict multi-tenant data isolation.
  */
 
+import { createSessionToken } from './serverAuth';
+
 export interface UserProfile {
   id: string;
   email: string;
@@ -30,6 +32,7 @@ export interface SavedSubmissionRecord {
 }
 
 const STORAGE_SESSION_KEY = 'codecobug_active_session';
+const STORAGE_TOKEN_KEY = 'codecobug_session_token';
 const STORAGE_USERS_KEY = 'codecobug_users_db';
 const STORAGE_SUBMISSIONS_KEY = 'codecobug_submissions_db';
 const STORAGE_DRAFTS_KEY = 'codecobug_code_drafts';
@@ -47,6 +50,7 @@ const INITIAL_DEFAULT_USER: UserProfile = {
 class AuthPersistenceManager {
   private static instance: AuthPersistenceManager | null = null;
   private currentUser: UserProfile | null = null;
+  private sessionToken: string | null = null;
   private listeners: Set<(user: UserProfile | null) => void> = new Set();
 
   public static getInstance(): AuthPersistenceManager {
@@ -93,8 +97,16 @@ class AuthPersistenceManager {
         this.saveActiveSession(INITIAL_DEFAULT_USER);
         this.saveUserToRegistry(INITIAL_DEFAULT_USER, 'password123');
       }
+      const storedToken = localStorage.getItem(STORAGE_TOKEN_KEY);
+      if (storedToken) {
+        this.sessionToken = storedToken;
+      } else if (this.currentUser) {
+        this.sessionToken = createSessionToken(this.currentUser);
+        localStorage.setItem(STORAGE_TOKEN_KEY, this.sessionToken);
+      }
     } catch {
       this.currentUser = INITIAL_DEFAULT_USER;
+      this.sessionToken = createSessionToken(INITIAL_DEFAULT_USER);
     }
   }
 
@@ -102,9 +114,23 @@ class AuthPersistenceManager {
     if (typeof window === 'undefined') return;
     if (user) {
       localStorage.setItem(STORAGE_SESSION_KEY, JSON.stringify(user));
+      this.sessionToken = createSessionToken(user);
+      localStorage.setItem(STORAGE_TOKEN_KEY, this.sessionToken);
     } else {
       localStorage.removeItem(STORAGE_SESSION_KEY);
+      localStorage.removeItem(STORAGE_TOKEN_KEY);
+      this.sessionToken = null;
     }
+  }
+
+  public getSessionToken(): string | null {
+    if (!this.sessionToken && this.currentUser) {
+      this.sessionToken = createSessionToken(this.currentUser);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(STORAGE_TOKEN_KEY, this.sessionToken);
+      }
+    }
+    return this.sessionToken;
   }
 
   private getUserRegistry(): Record<string, { profile: UserProfile; passwordHash: string }> {

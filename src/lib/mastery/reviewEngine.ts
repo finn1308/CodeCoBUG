@@ -1,6 +1,7 @@
 import { MasteryEngine, SkillMasteryRecord } from './masteryEngine';
 import { SKILLS_TAXONOMY, EXERCISE_SKILLS_MAP } from './skillsTaxonomy';
 import { SavedSubmissionRecord } from '../auth/authManager';
+import { getExerciseBySlug } from '../fixtures/sampleCurriculum';
 
 export interface ReviewItem {
   id: string;
@@ -25,6 +26,24 @@ const EXERCISE_TITLES_MAP: Record<string, string> = {
   'hoan-doi-hai-bien': 'Hoán đổi hai biến',
   'swap-two-variables': 'Hoán đổi hai biến',
 };
+
+function resolveExerciseTitle(slug: string): string {
+  const match = getExerciseBySlug(slug);
+  return match?.exercise.title || EXERCISE_TITLES_MAP[slug] || slug;
+}
+
+function resolveExerciseSkill(slug: string): { code: string; name: string } {
+  if (EXERCISE_SKILLS_MAP[slug] && EXERCISE_SKILLS_MAP[slug].length > 0) {
+    const code = EXERCISE_SKILLS_MAP[slug][0];
+    return { code, name: SKILLS_TAXONOMY[code]?.name || code };
+  }
+  const match = getExerciseBySlug(slug);
+  if (match?.exercise.skillTags && match.exercise.skillTags.length > 0) {
+    const tag = match.exercise.skillTags[0];
+    return { code: tag, name: SKILLS_TAXONOMY[tag]?.name || tag.replace(/_/g, ' ') };
+  }
+  return { code: 'python_core', name: 'Kỹ năng Python cơ bản' };
+}
 
 export class ReviewEngine {
   /**
@@ -55,17 +74,15 @@ export class ReviewEngine {
       );
 
       if (!alreadyQueued && !hasSolvedLater) {
-        const skills = EXERCISE_SKILLS_MAP[fail.exerciseSlug] || ['python_print_syntax'];
-        const mainSkillCode = skills[0];
-        const skillName = SKILLS_TAXONOMY[mainSkillCode]?.name || 'Kỹ năng lập trình';
+        const skillInfo = resolveExerciseSkill(fail.exerciseSlug);
 
         updatedQueue.unshift({
           id: `rev-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
           userId,
           exerciseSlug: fail.exerciseSlug,
-          exerciseTitle: EXERCISE_TITLES_MAP[fail.exerciseSlug] || fail.exerciseSlug,
-          targetSkillCode: mainSkillCode,
-          targetSkillName: skillName,
+          exerciseTitle: resolveExerciseTitle(fail.exerciseSlug),
+          targetSkillCode: skillInfo.code,
+          targetSkillName: skillInfo.name,
           reason: 'failed_submission',
           reasonDescription: `Nộp bài chưa đạt (${fail.verdict.toUpperCase()}). Cần ôn tập và hoàn thiện.`,
           priority: 1,
@@ -88,7 +105,7 @@ export class ReviewEngine {
             id: `rev-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
             userId,
             exerciseSlug: exSlug,
-            exerciseTitle: EXERCISE_TITLES_MAP[exSlug] || exSlug,
+            exerciseTitle: resolveExerciseTitle(exSlug),
             targetSkillCode: weak.skillCode,
             targetSkillName: weak.skillName,
             reason: 'low_mastery',
