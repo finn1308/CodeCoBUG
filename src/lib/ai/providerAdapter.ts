@@ -78,7 +78,7 @@ export class AIProviderAdapter {
     messages: AIMessage[],
     maxTokens = 2048
   ): Promise<AIProviderResponse> {
-    const model = config.model || 'gemini-1.5-flash';
+    const model = config.model || 'gemini-2.5-flash';
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(config.apiKey.trim())}`;
 
     // Separate system instruction from conversation history

@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
       config: {
         provider: config.provider || 'gemini',
         apiKey: String(config.apiKey).trim(),
-        model: config.model || (config.provider === 'gemini' ? 'gemini-1.5-flash' : 'gpt-4o-mini'),
+        model: config.model || (config.provider === 'gemini' ? 'gemini-2.5-flash' : 'gpt-4o-mini'),
         temperature: typeof config.temperature === 'number' ? config.temperature : 0.7,
         baseUrl: config.baseUrl,
       },

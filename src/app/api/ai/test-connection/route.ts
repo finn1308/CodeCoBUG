@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     const config: AIProviderConfig = {
       provider,
       apiKey: String(apiKey).trim(),
-      model: model || (provider === 'gemini' ? 'gemini-1.5-flash' : 'gpt-4o-mini'),
+      model: model || (provider === 'gemini' ? 'gemini-2.5-flash' : 'gpt-4o-mini'),
       baseUrl,
     };
 

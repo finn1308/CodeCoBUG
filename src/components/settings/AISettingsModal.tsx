@@ -19,15 +19,17 @@ export interface AISettings {
 const DEFAULT_SETTINGS: AISettings = {
   provider: 'gemini',
   apiKey: '',
-  model: 'gemini-1.5-flash',
+  model: 'gemini-2.5-flash',
   temperature: 0.7,
 };
 
 const PROVIDER_MODELS: Record<string, { id: string; name: string }[]> = {
   gemini: [
-    { id: 'gemini-1.5-flash', name: 'Google Gemini 1.5 Flash (Nhanh & Tối ưu)' },
-    { id: 'gemini-1.5-pro', name: 'Google Gemini 1.5 Pro (Suy luận sâu)' },
-    { id: 'gemini-2.0-flash-exp', name: 'Google Gemini 2.0 Flash (Thử nghiệm)' },
+    { id: 'gemini-2.5-flash', name: 'Google Gemini 2.5 Flash (Khuyên dùng - Nhanh & Mới nhất)' },
+    { id: 'gemini-2.5-pro', name: 'Google Gemini 2.5 Pro (Suy luận sâu & Tư duy mạnh)' },
+    { id: 'gemini-2.0-flash', name: 'Google Gemini 2.0 Flash (Tốc độ cao)' },
+    { id: 'gemini-1.5-flash', name: 'Google Gemini 1.5 Flash (Bản cũ)' },
+    { id: 'gemini-1.5-pro', name: 'Google Gemini 1.5 Pro (Bản cũ)' },
   ],
   openai: [
     { id: 'gpt-4o-mini', name: 'OpenAI GPT-4o Mini (Tiết kiệm)' },
