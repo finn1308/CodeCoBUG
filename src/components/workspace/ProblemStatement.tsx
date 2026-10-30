@@ -30,7 +30,16 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
   };
 
   return (
-    <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+    <div
+      style={{
+        padding: '20px 22px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '18px',
+        maxWidth: '100%',
+        boxSizing: 'border-box',
+      }}
+    >
       {/* Exercise Header */}
       <div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', flexWrap: 'wrap' }}>
@@ -47,29 +56,48 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
           )}
         </div>
 
-        <h1 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.3 }}>
+        <h1
+          style={{
+            fontSize: '1.35rem',
+            fontWeight: 800,
+            color: 'var(--text-primary)',
+            lineHeight: 1.35,
+            letterSpacing: '-0.01em',
+          }}
+        >
           {exercise.title}
         </h1>
       </div>
 
-      {/* Description */}
+      {/* Description Panel */}
       <div
         style={{
           color: 'var(--text-secondary)',
-          fontSize: '0.92rem',
-          lineHeight: 1.7,
+          fontSize: '0.90rem',
+          lineHeight: 1.65,
           backgroundColor: 'var(--bg-tertiary)',
-          padding: '18px',
+          padding: '16px 18px',
           borderRadius: 'var(--radius-lg)',
           border: '1px solid var(--border-subtle)',
           boxShadow: 'var(--shadow-xs)',
+          wordBreak: 'break-word',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', color: 'var(--text-primary)', fontWeight: 700 }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            marginBottom: '8px',
+            color: 'var(--text-primary)',
+            fontWeight: 700,
+            fontSize: '0.92rem',
+          }}
+        >
           <FileText size={16} style={{ color: 'var(--pastel-sky-text)' }} />
           <span>Mô tả bài toán</span>
         </div>
-        <p style={{ whiteSpace: 'pre-line' }}>{exercise.description}</p>
+        <p style={{ whiteSpace: 'pre-line', margin: 0 }}>{exercise.description}</p>
       </div>
 
       {/* Constraints & Requirements */}
@@ -79,15 +107,34 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
             backgroundColor: 'var(--pastel-sky-light)',
             border: '1px solid var(--pastel-sky)',
             borderRadius: 'var(--radius-lg)',
-            padding: '16px 18px',
-            fontSize: '0.86rem',
+            padding: '14px 18px',
+            fontSize: '0.85rem',
+            wordBreak: 'break-word',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--pastel-sky-text)', fontWeight: 700, marginBottom: '8px' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              color: 'var(--pastel-sky-text)',
+              fontWeight: 700,
+              marginBottom: '8px',
+            }}
+          >
             <AlertCircle size={16} />
             <span>Yêu cầu & Điều kiện hoàn thành</span>
           </div>
-          <ul style={{ paddingLeft: '20px', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <ul
+            style={{
+              paddingLeft: '20px',
+              color: 'var(--text-secondary)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '6px',
+              margin: 0,
+            }}
+          >
             <li>
               Vượt qua <strong>toàn bộ test case</strong> (gồm test công khai và test ẩn).
             </li>
@@ -105,20 +152,37 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
         </div>
       )}
 
-      {/* 3 Example Scenarios */}
+      {/* Example Scenarios */}
       <div>
-        <h2 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '4px' }}>
+        <h2
+          style={{
+            fontSize: '1rem',
+            fontWeight: 700,
+            color: 'var(--text-primary)',
+            marginBottom: '4px',
+          }}
+        >
           Ví dụ minh họa ({exercise.examples.length} ví dụ)
         </h2>
-        <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '12px' }}>
+        <p style={{ fontSize: '0.80rem', color: 'var(--text-secondary)', marginBottom: '12px' }}>
           Chương trình của bạn phải xử lý chính xác các trường hợp cơ bản và trường hợp biên sau:
         </p>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {exercise.examples.map((example, idx) => (
-            <div key={example.id || idx} className="example-card">
+            <div
+              key={example.id || idx}
+              className="example-card"
+              style={{
+                borderRadius: 'var(--radius-lg)',
+                backgroundColor: 'var(--bg-surface)',
+                border: '1px solid var(--border-subtle)',
+                padding: '14px 16px',
+                marginTop: 0,
+              }}
+            >
               <div className="example-header">
-                <span style={{ fontWeight: 700 }}>Ví dụ {idx + 1}</span>
+                <span style={{ fontWeight: 700, fontSize: '0.86rem' }}>Ví dụ {idx + 1}</span>
                 {example.explanation && (
                   <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
                     {example.explanation}
@@ -144,6 +208,7 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
                           gap: '3px',
                           fontSize: '0.74rem',
                           fontWeight: 600,
+                          padding: '2px 4px',
                         }}
                         title="Sao chép input vào clipboard"
                       >
@@ -165,6 +230,7 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
                             gap: '3px',
                             fontSize: '0.74rem',
                             fontWeight: 600,
+                            padding: '2px 4px',
                           }}
                           title="Nạp dữ liệu vào tab Input của Terminal"
                         >
@@ -174,13 +240,33 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
                       )}
                     </div>
                   </div>
-                  <pre className="io-content">{example.inputData}</pre>
+                  <pre
+                    className="io-content"
+                    style={{
+                      maxHeight: '120px',
+                      overflowX: 'auto',
+                      overflowY: 'auto',
+                      borderRadius: 'var(--radius-md)',
+                    }}
+                  >
+                    {example.inputData}
+                  </pre>
                 </div>
               )}
 
               <div className="io-block">
                 <div className="io-label">OUTPUT MONG ĐỢI</div>
-                <pre className="io-content" style={{ color: 'var(--status-success-text)', fontWeight: 600 }}>
+                <pre
+                  className="io-content"
+                  style={{
+                    color: 'var(--status-success-text)',
+                    fontWeight: 600,
+                    maxHeight: '120px',
+                    overflowX: 'auto',
+                    overflowY: 'auto',
+                    borderRadius: 'var(--radius-md)',
+                  }}
+                >
                   {example.expectedOutput}
                 </pre>
               </div>
@@ -204,7 +290,7 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
           onClick={() => setHintsOpen((prev) => !prev)}
           style={{
             width: '100%',
-            padding: '14px 18px',
+            padding: '12px 16px',
             background: 'transparent',
             border: 'none',
             display: 'flex',
@@ -213,7 +299,8 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
             cursor: 'pointer',
             color: 'var(--text-primary)',
             fontWeight: 700,
-            fontSize: '0.88rem',
+            fontSize: '0.86rem',
+            transition: 'background-color 150ms ease',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -224,9 +311,22 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
         </button>
 
         {hintsOpen && (
-          <div style={{ padding: '0 18px 16px', fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.6, borderTop: '1px solid var(--border-subtle)', paddingTop: '12px' }}>
-            <p>1. Đọc kỹ kiểu dữ liệu đầu vào. Với các bài tính toán hoặc số học, hãy nhớ ép kiểu bằng <code>int()</code> hoặc <code>float()</code>.</p>
-            <p style={{ marginTop: '6px' }}>2. Đảm bảo định dạng xuất chuỗi khớp chính xác từng ký tự và khoảng trắng theo mẫu Output mong đợi.</p>
+          <div
+            style={{
+              padding: '0 16px 14px',
+              fontSize: '0.83rem',
+              color: 'var(--text-secondary)',
+              lineHeight: 1.6,
+              borderTop: '1px solid var(--border-subtle)',
+              paddingTop: '12px',
+            }}
+          >
+            <p style={{ margin: 0 }}>
+              1. Đọc kỹ kiểu dữ liệu đầu vào. Với các bài tính toán hoặc số học, hãy nhớ ép kiểu bằng <code>int()</code> hoặc <code>float()</code>.
+            </p>
+            <p style={{ margin: '6px 0 0 0' }}>
+              2. Đảm bảo định dạng xuất chuỗi khớp chính xác từng ký tự và khoảng trắng theo mẫu Output mong đợi.
+            </p>
           </div>
         )}
       </div>

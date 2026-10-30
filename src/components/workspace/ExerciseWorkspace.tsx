@@ -16,15 +16,9 @@ import {
   FileText,
   Code2,
   Terminal as TerminalIcon,
-  Bot,
-  Sparkles,
-  X,
-  Send,
-  Key,
-  Lightbulb,
-  AlertTriangle,
+  Play,
+  CheckCircle2,
   Loader2,
-  HelpCircle,
 } from 'lucide-react';
 
 interface ExerciseWorkspaceProps {
@@ -268,61 +262,133 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
         isAITutorOpen: isAITutorOpen,
       }}
     >
-      {/* Mobile Tab Switcher (< 1024px) */}
+      {/* Mobile Tab Switcher (< 1024px) - Keeps Run easy to reach */}
       <div className="mobile-tab-bar">
-        <button
-          type="button"
-          className="btn"
-          style={{
-            padding: '6px 14px',
-            fontSize: '0.82rem',
-            borderRadius: 'var(--radius-full)',
-            backgroundColor: mobileTab === 'problem' ? 'var(--pastel-mint)' : 'transparent',
-            color: mobileTab === 'problem' ? 'var(--pastel-mint-text)' : 'var(--text-secondary)',
-            border: mobileTab === 'problem' ? '1px solid var(--pastel-mint-active)' : '1px solid transparent',
-            fontWeight: mobileTab === 'problem' ? 700 : 500,
-          }}
-          onClick={() => setMobileTab('problem')}
-        >
-          <FileText size={14} />
-          <span>Đề bài</span>
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <button
+            type="button"
+            className="btn"
+            style={{
+              padding: '6px 12px',
+              fontSize: '0.80rem',
+              borderRadius: 'var(--radius-full)',
+              backgroundColor: mobileTab === 'problem' ? 'var(--pastel-mint)' : 'var(--bg-tertiary)',
+              color: mobileTab === 'problem' ? 'var(--pastel-mint-text)' : 'var(--text-secondary)',
+              border: mobileTab === 'problem' ? '1px solid var(--pastel-mint-active)' : '1px solid var(--border-subtle)',
+              fontWeight: mobileTab === 'problem' ? 700 : 500,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+            }}
+            onClick={() => setMobileTab('problem')}
+          >
+            <FileText size={14} />
+            <span>Đề bài</span>
+          </button>
 
-        <button
-          type="button"
-          className="btn"
-          style={{
-            padding: '6px 14px',
-            fontSize: '0.82rem',
-            borderRadius: 'var(--radius-full)',
-            backgroundColor: mobileTab === 'editor' ? 'var(--pastel-mint)' : 'transparent',
-            color: mobileTab === 'editor' ? 'var(--pastel-mint-text)' : 'var(--text-secondary)',
-            border: mobileTab === 'editor' ? '1px solid var(--pastel-mint-active)' : '1px solid transparent',
-            fontWeight: mobileTab === 'editor' ? 700 : 500,
-          }}
-          onClick={() => setMobileTab('editor')}
-        >
-          <Code2 size={14} />
-          <span>Editor</span>
-        </button>
+          <button
+            type="button"
+            className="btn"
+            style={{
+              padding: '6px 12px',
+              fontSize: '0.80rem',
+              borderRadius: 'var(--radius-full)',
+              backgroundColor: mobileTab === 'editor' ? 'var(--pastel-mint)' : 'var(--bg-tertiary)',
+              color: mobileTab === 'editor' ? 'var(--pastel-mint-text)' : 'var(--text-secondary)',
+              border: mobileTab === 'editor' ? '1px solid var(--pastel-mint-active)' : '1px solid var(--border-subtle)',
+              fontWeight: mobileTab === 'editor' ? 700 : 500,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+            }}
+            onClick={() => setMobileTab('editor')}
+          >
+            <Code2 size={14} />
+            <span>Editor</span>
+          </button>
 
-        <button
-          type="button"
-          className="btn"
-          style={{
-            padding: '6px 14px',
-            fontSize: '0.82rem',
-            borderRadius: 'var(--radius-full)',
-            backgroundColor: mobileTab === 'terminal' ? 'var(--pastel-mint)' : 'transparent',
-            color: mobileTab === 'terminal' ? 'var(--pastel-mint-text)' : 'var(--text-secondary)',
-            border: mobileTab === 'terminal' ? '1px solid var(--pastel-mint-active)' : '1px solid transparent',
-            fontWeight: mobileTab === 'terminal' ? 700 : 500,
-          }}
-          onClick={() => setMobileTab('terminal')}
-        >
-          <TerminalIcon size={14} />
-          <span>Terminal / Kết quả</span>
-        </button>
+          <button
+            type="button"
+            className="btn"
+            style={{
+              padding: '6px 12px',
+              fontSize: '0.80rem',
+              borderRadius: 'var(--radius-full)',
+              backgroundColor: mobileTab === 'terminal' ? 'var(--pastel-mint)' : 'var(--bg-tertiary)',
+              color: mobileTab === 'terminal' ? 'var(--pastel-mint-text)' : 'var(--text-secondary)',
+              border: mobileTab === 'terminal' ? '1px solid var(--pastel-mint-active)' : '1px solid var(--border-subtle)',
+              fontWeight: mobileTab === 'terminal' ? 700 : 500,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+            }}
+            onClick={() => setMobileTab('terminal')}
+          >
+            <TerminalIcon size={14} />
+            <span>Terminal / Kết quả</span>
+          </button>
+        </div>
+
+        {/* Quick mobile Run button: always reachable regardless of selected tab */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <button
+            type="button"
+            className="btn"
+            disabled={isRunning || isSubmitting}
+            onClick={handleRun}
+            style={{
+              padding: '6px 12px',
+              fontSize: '0.80rem',
+              borderRadius: 'var(--radius-md)',
+              backgroundColor: 'var(--pastel-sky)',
+              color: 'var(--pastel-sky-text)',
+              border: '1px solid var(--pastel-sky-text)',
+              fontWeight: 700,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+              cursor: isRunning || isSubmitting ? 'not-allowed' : 'pointer',
+              opacity: isRunning || isSubmitting ? 0.7 : 1,
+            }}
+            title="Chạy thử code nhanh trên mobile"
+          >
+            {isRunning ? (
+              <Loader2 size={13} className="spin" />
+            ) : (
+              <Play size={13} fill="currentColor" />
+            )}
+            <span>{isRunning ? 'Đang chạy' : 'Chạy'}</span>
+          </button>
+
+          <button
+            type="button"
+            className="btn"
+            disabled={isRunning || isSubmitting}
+            onClick={handleSubmit}
+            style={{
+              padding: '6px 12px',
+              fontSize: '0.80rem',
+              borderRadius: 'var(--radius-md)',
+              backgroundColor: 'var(--pastel-mint)',
+              color: 'var(--pastel-mint-text)',
+              border: '1px solid var(--pastel-mint-active)',
+              fontWeight: 700,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+              cursor: isRunning || isSubmitting ? 'not-allowed' : 'pointer',
+              opacity: isRunning || isSubmitting ? 0.7 : 1,
+            }}
+            title="Nộp bài và chấm điểm ngay trên mobile"
+          >
+            {isSubmitting ? (
+              <Loader2 size={13} className="spin" />
+            ) : (
+              <CheckCircle2 size={13} />
+            )}
+            <span>{isSubmitting ? 'Đang chấm' : 'Nộp'}</span>
+          </button>
+        </div>
       </div>
 
       {/* Workspace Body */}

@@ -74,23 +74,43 @@ export const TerminalOutput: React.FC<TerminalOutputProps> = ({
   const verdict = submissionReport?.verdict;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        width: '100%',
+        minWidth: 0,
+        boxSizing: 'border-box',
+      }}
+    >
       {/* Pane Header & Tabs */}
-      <div className="pane-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+      <div
+        className="pane-header"
+        style={{
+          padding: '6px 12px',
+          minHeight: '44px',
+          borderBottom: '1px solid var(--border-subtle)',
+          backgroundColor: 'var(--bg-tertiary)',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
           <button
             type="button"
             className="btn btn-ghost"
             style={{
               padding: '4px 10px',
               fontSize: '0.78rem',
-              color: activeTab === 'console' ? 'var(--text-primary)' : 'var(--text-muted)',
-              background: activeTab === 'console' ? 'var(--bg-elevated)' : 'transparent',
-              borderRadius: 'var(--radius-sm)',
+              fontWeight: activeTab === 'console' ? 700 : 500,
+              color: activeTab === 'console' ? 'var(--text-primary)' : 'var(--text-secondary)',
+              background: activeTab === 'console' ? 'var(--bg-surface)' : 'transparent',
+              borderRadius: 'var(--radius-md)',
+              border: activeTab === 'console' ? '1px solid var(--border-subtle)' : '1px solid transparent',
+              boxShadow: activeTab === 'console' ? 'var(--shadow-xs)' : 'none',
             }}
             onClick={() => setActiveTab('console')}
           >
-            <TerminalIcon size={14} style={{ color: 'var(--terminal-prompt)' }} />
+            <TerminalIcon size={14} style={{ color: 'var(--pastel-sky-text)' }} />
             <span>Terminal</span>
           </button>
 
@@ -100,13 +120,16 @@ export const TerminalOutput: React.FC<TerminalOutputProps> = ({
             style={{
               padding: '4px 10px',
               fontSize: '0.78rem',
-              color: activeTab === 'tests' ? 'var(--text-primary)' : 'var(--text-muted)',
-              background: activeTab === 'tests' ? 'var(--bg-elevated)' : 'transparent',
-              borderRadius: 'var(--radius-sm)',
+              fontWeight: activeTab === 'tests' ? 700 : 500,
+              color: activeTab === 'tests' ? 'var(--text-primary)' : 'var(--text-secondary)',
+              background: activeTab === 'tests' ? 'var(--bg-surface)' : 'transparent',
+              borderRadius: 'var(--radius-md)',
+              border: activeTab === 'tests' ? '1px solid var(--border-subtle)' : '1px solid transparent',
+              boxShadow: activeTab === 'tests' ? 'var(--shadow-xs)' : 'none',
             }}
             onClick={() => setActiveTab('tests')}
           >
-            <CheckCircle2 size={14} style={{ color: '#34d399' }} />
+            <CheckCircle2 size={14} style={{ color: 'var(--status-success-text)' }} />
             <span>
               Kết quả kiểm thử{' '}
               {submissionReport && `(${passedCount}/${totalCount})`}
@@ -119,13 +142,16 @@ export const TerminalOutput: React.FC<TerminalOutputProps> = ({
             style={{
               padding: '4px 10px',
               fontSize: '0.78rem',
-              color: activeTab === 'stdin' ? 'var(--text-primary)' : 'var(--text-muted)',
-              background: activeTab === 'stdin' ? 'var(--bg-elevated)' : 'transparent',
-              borderRadius: 'var(--radius-sm)',
+              fontWeight: activeTab === 'stdin' ? 700 : 500,
+              color: activeTab === 'stdin' ? 'var(--text-primary)' : 'var(--text-secondary)',
+              background: activeTab === 'stdin' ? 'var(--bg-surface)' : 'transparent',
+              borderRadius: 'var(--radius-md)',
+              border: activeTab === 'stdin' ? '1px solid var(--border-subtle)' : '1px solid transparent',
+              boxShadow: activeTab === 'stdin' ? 'var(--shadow-xs)' : 'none',
             }}
             onClick={() => setActiveTab('stdin')}
           >
-            <Keyboard size={14} style={{ color: 'var(--accent-amber)' }} />
+            <Keyboard size={14} style={{ color: 'var(--status-warning-text)' }} />
             <span>Dữ liệu vào (Input)</span>
           </button>
 
@@ -135,20 +161,23 @@ export const TerminalOutput: React.FC<TerminalOutputProps> = ({
             style={{
               padding: '4px 10px',
               fontSize: '0.78rem',
-              color: activeTab === 'history' ? 'var(--text-primary)' : 'var(--text-muted)',
-              background: activeTab === 'history' ? 'var(--bg-elevated)' : 'transparent',
-              borderRadius: 'var(--radius-sm)',
+              fontWeight: activeTab === 'history' ? 700 : 500,
+              color: activeTab === 'history' ? 'var(--text-primary)' : 'var(--text-secondary)',
+              background: activeTab === 'history' ? 'var(--bg-surface)' : 'transparent',
+              borderRadius: 'var(--radius-md)',
+              border: activeTab === 'history' ? '1px solid var(--border-subtle)' : '1px solid transparent',
+              boxShadow: activeTab === 'history' ? 'var(--shadow-xs)' : 'none',
             }}
             onClick={() => setActiveTab('history')}
             title="Lịch sử các lần nộp bài được lưu trữ trên tài khoản"
           >
-            <History size={14} style={{ color: 'var(--accent-purple)' }} />
+            <History size={14} style={{ color: 'var(--pastel-lavender-text)' }} />
             <span>Lịch sử ({pastSubmissions.length})</span>
           </button>
         </div>
 
         {/* Right Info: Pyodide Wasm Runtime Status & Execution Metrics */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           {pyodideStatus && (
             <div
               style={{
@@ -156,10 +185,18 @@ export const TerminalOutput: React.FC<TerminalOutputProps> = ({
                 alignItems: 'center',
                 gap: '5px',
                 fontSize: '0.72rem',
-                color: pyodideStatus.isReady ? '#34d399' : pyodideStatus.isLoading ? 'var(--accent-light)' : 'var(--text-muted)',
-                background: 'rgba(0,0,0,0.2)',
+                fontWeight: 600,
+                color: pyodideStatus.isReady
+                  ? 'var(--status-success-text)'
+                  : pyodideStatus.isLoading
+                  ? 'var(--pastel-sky-text)'
+                  : 'var(--text-muted)',
+                background: pyodideStatus.isReady
+                  ? 'var(--pastel-mint-light)'
+                  : 'var(--bg-surface)',
+                border: '1px solid var(--border-subtle)',
                 padding: '2px 8px',
-                borderRadius: '4px',
+                borderRadius: 'var(--radius-full)',
               }}
               title={pyodideStatus.message}
             >
@@ -169,7 +206,16 @@ export const TerminalOutput: React.FC<TerminalOutputProps> = ({
           )}
 
           {executionTimeMs !== undefined && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                fontSize: '0.72rem',
+                color: 'var(--text-muted)',
+                padding: '2px 6px',
+              }}
+            >
               <Clock size={12} />
               <span>{executionTimeMs} ms</span>
             </div>
@@ -179,7 +225,12 @@ export const TerminalOutput: React.FC<TerminalOutputProps> = ({
             <button
               type="button"
               className="btn btn-ghost"
-              style={{ padding: '3px 8px', fontSize: '0.72rem' }}
+              style={{
+                padding: '3px 8px',
+                fontSize: '0.72rem',
+                borderRadius: 'var(--radius-md)',
+                color: 'var(--text-secondary)',
+              }}
               onClick={onClearLogs}
               title="Xóa màn hình Terminal"
             >
@@ -192,7 +243,12 @@ export const TerminalOutput: React.FC<TerminalOutputProps> = ({
             <button
               type="button"
               className="btn btn-ghost"
-              style={{ padding: '3px 6px', fontSize: '0.72rem' }}
+              style={{
+                padding: '3px 6px',
+                fontSize: '0.72rem',
+                borderRadius: 'var(--radius-md)',
+                color: 'var(--text-secondary)',
+              }}
               onClick={onToggleCollapse}
               title={isCollapsed ? 'Mở rộng Terminal' : 'Thu gọn Terminal'}
               aria-label={isCollapsed ? 'Mở rộng Terminal' : 'Thu gọn Terminal'}
@@ -205,368 +261,386 @@ export const TerminalOutput: React.FC<TerminalOutputProps> = ({
 
       {/* Pane Content */}
       {!isCollapsed && (
-        <div style={{ flex: 1, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-        {/* TAB 1: CONSOLE */}
-        {activeTab === 'console' && (
-          <div className="terminal-output">
-            {isRunning && (
-              <div className="terminal-line terminal-line-system" style={{ color: 'var(--accent-light)', marginBottom: '8px' }}>
-                ⏳ Đang thực thi mã nguồn Python trên Pyodide WebAssembly...
-              </div>
-            )}
-
-            {logs.length === 0 && !isRunning ? (
-              <div style={{ color: 'var(--text-muted)', fontSize: '0.82rem', padding: '16px 0' }}>
-                $ python main.py
-                <div style={{ marginTop: '8px', fontStyle: 'italic', color: '#475569' }}>
-                  (Nhấn &quot;Run Code&quot; để thực thi Python ngay trong trình duyệt. Nhấn &quot;Nộp bài&quot; để chấm điểm).
+        <div style={{ flex: 1, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+          {/* TAB 1: CONSOLE */}
+          {activeTab === 'console' && (
+            <div className="terminal-output" style={{ overflowX: 'auto', minWidth: 0 }}>
+              {isRunning && (
+                <div className="terminal-line terminal-line-system" style={{ color: 'var(--pastel-sky-text)', marginBottom: '8px' }}>
+                  ⏳ Đang thực thi mã nguồn Python trên Pyodide WebAssembly...
                 </div>
-              </div>
-            ) : (
-              logs.map((log) => (
-                <div
-                  key={log.id}
-                  className={`terminal-line terminal-line-${log.type}`}
-                >
-                  {log.content}
+              )}
+
+              {logs.length === 0 && !isRunning ? (
+                <div style={{ color: 'var(--text-muted)', fontSize: '0.82rem', padding: '16px 0' }}>
+                  $ python main.py
+                  <div style={{ marginTop: '8px', fontStyle: 'italic', color: '#64748b' }}>
+                    (Nhấn &quot;Chạy thử&quot; để thực thi Python ngay trong trình duyệt. Nhấn &quot;Nộp bài&quot; để chấm điểm).
+                  </div>
                 </div>
-              ))
-            )}
-          </div>
-        )}
+              ) : (
+                logs.map((log) => (
+                  <div
+                    key={log.id}
+                    className={`terminal-line terminal-line-${log.type}`}
+                  >
+                    {log.content}
+                  </div>
+                ))
+              )}
+            </div>
+          )}
 
-        {/* TAB 2: TEST RESULTS / JUDGE BREAKDOWN */}
-        {activeTab === 'tests' && (
-          <div style={{ flex: 1, padding: '16px', overflowY: 'auto', background: 'var(--bg-secondary)' }}>
-            {isSubmitting && (
-              <div style={{ textAlign: 'center', padding: '30px 0', color: 'var(--accent-light)' }}>
-                <Clock size={28} style={{ margin: '0 auto 8px', animation: 'spin 1s linear infinite' }} />
-                <p style={{ fontWeight: 600 }}>Hệ thống Judge Engine đang chấm bài...</p>
-                <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                  Đang chạy bài làm qua từng bộ test công khai và test ẩn...
-                </p>
-              </div>
-            )}
+          {/* TAB 2: TEST RESULTS / JUDGE BREAKDOWN */}
+          {activeTab === 'tests' && (
+            <div style={{ flex: 1, padding: '16px', overflowY: 'auto', background: 'var(--bg-secondary)', minWidth: 0 }}>
+              {isSubmitting && (
+                <div style={{ textAlign: 'center', padding: '30px 0', color: 'var(--text-primary)' }}>
+                  <Clock size={28} style={{ margin: '0 auto 8px', animation: 'spin 1s linear infinite', color: 'var(--pastel-sky-text)' }} />
+                  <p style={{ fontWeight: 600 }}>Hệ thống Judge Engine đang chấm bài...</p>
+                  <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+                    Đang chạy bài làm qua từng bộ test công khai và test ẩn...
+                  </p>
+                </div>
+              )}
 
-            {!isSubmitting && !submissionReport && (
-              <div style={{ textAlign: 'center', padding: '30px 0', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                <CheckCircle2 size={28} style={{ margin: '0 auto 8px', opacity: 0.4 }} />
-                <p style={{ fontWeight: 600 }}>Chưa có phiên chấm bài nào.</p>
-                <p style={{ fontSize: '0.75rem', marginTop: '4px' }}>
-                  Chạy thử bằng nút &quot;Run Code&quot; không chấm điểm. Hãy nhấn nút &quot;Nộp bài&quot; để kích hoạt Judge Engine đánh giá toàn diện.
-                </p>
-              </div>
-            )}
+              {!isSubmitting && !submissionReport && (
+                <div style={{ textAlign: 'center', padding: '30px 0', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                  <CheckCircle2 size={28} style={{ margin: '0 auto 8px', opacity: 0.4 }} />
+                  <p style={{ fontWeight: 600 }}>Chưa có phiên chấm bài nào.</p>
+                  <p style={{ fontSize: '0.75rem', marginTop: '4px' }}>
+                    Chạy thử bằng nút &quot;Chạy thử&quot; không chấm điểm. Hãy nhấn nút &quot;Nộp bài&quot; để kích hoạt Judge Engine đánh giá toàn diện.
+                  </p>
+                </div>
+              )}
 
-            {!isSubmitting && submissionReport && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                {/* Overall Verdict Banner */}
-                <div
-                  style={{
-                    padding: '14px 18px',
-                    borderRadius: 'var(--radius-md)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    background:
-                      verdict === 'accepted'
-                        ? 'rgba(16, 185, 129, 0.15)'
-                        : 'rgba(239, 68, 68, 0.15)',
-                    border: `1px solid ${
-                      verdict === 'accepted'
-                        ? 'rgba(16, 185, 129, 0.35)'
-                        : 'rgba(239, 68, 68, 0.35)'
-                    }`,
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    {verdict === 'accepted' ? (
-                      <CheckCircle2 size={24} style={{ color: '#34d399' }} />
-                    ) : (
-                      <XCircle size={24} style={{ color: '#fb7185' }} />
-                    )}
-                    <div>
-                      <div style={{ fontWeight: 700, fontSize: '0.98rem', color: verdict === 'accepted' ? '#34d399' : '#fb7185' }}>
-                        {verdict === 'accepted'
-                          ? 'ACCEPTED (ĐẠT HOÀN THÀNH)'
-                          : verdict === 'wrong_answer'
-                          ? 'WRONG ANSWER (SAI KẾT QUẢ)'
-                          : verdict === 'runtime_error'
-                          ? 'RUNTIME ERROR (LỖI THỰC THI)'
-                          : 'COMPILE ERROR (LỖI CÚ PHÁP)'}
+              {!isSubmitting && submissionReport && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {/* Overall Verdict Banner */}
+                  <div
+                    style={{
+                      padding: '14px 18px',
+                      borderRadius: 'var(--radius-lg)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      background:
+                        verdict === 'accepted'
+                          ? 'var(--pastel-mint-light)'
+                          : 'rgba(239, 68, 68, 0.10)',
+                      border: `1px solid ${
+                        verdict === 'accepted'
+                          ? 'var(--pastel-mint-active)'
+                          : 'rgba(239, 68, 68, 0.30)'
+                      }`,
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      {verdict === 'accepted' ? (
+                        <CheckCircle2 size={24} style={{ color: 'var(--status-success-text)' }} />
+                      ) : (
+                        <XCircle size={24} style={{ color: 'var(--status-error-text)' }} />
+                      )}
+                      <div>
+                        <div
+                          style={{
+                            fontWeight: 700,
+                            fontSize: '0.98rem',
+                            color: verdict === 'accepted' ? 'var(--status-success-text)' : 'var(--status-error-text)',
+                          }}
+                        >
+                          {verdict === 'accepted'
+                            ? 'ACCEPTED (ĐẠT HOÀN THÀNH)'
+                            : verdict === 'wrong_answer'
+                            ? 'WRONG ANSWER (SAI KẾT QUẢ)'
+                            : verdict === 'runtime_error'
+                            ? 'RUNTIME ERROR (LỖI THỰC THI)'
+                            : 'COMPILE ERROR (LỖI CÚ PHÁP)'}
+                        </div>
+                        <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                          {submissionReport.verdictMessage}
+                        </div>
                       </div>
-                      <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                        {submissionReport.verdictMessage}
+                    </div>
+
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                        <Award size={15} style={{ color: 'var(--pastel-mint-text)' }} />
+                        <span>{submissionReport.score}/{submissionReport.totalPoints} Điểm</span>
+                      </div>
+                      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                        Vượt qua {passedCount}/{totalCount} tests
                       </div>
                     </div>
                   </div>
 
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem', fontWeight: 700, color: 'var(--accent-light)' }}>
-                      <Award size={15} />
-                      <span>{submissionReport.score}/{submissionReport.totalPoints} Điểm</span>
-                    </div>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                      Vượt qua {passedCount}/{totalCount} tests
-                    </div>
-                  </div>
-                </div>
+                  {/* Itemized Test Cases Breakdown */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {testResults.map((test) => (
+                      <div
+                        key={test.testCaseId || test.orderIndex}
+                        style={{
+                          background: 'var(--bg-surface)',
+                          border: `1px solid ${
+                            test.isPassed
+                              ? 'var(--pastel-mint-active)'
+                              : 'rgba(239, 68, 68, 0.25)'
+                          }`,
+                          borderRadius: 'var(--radius-lg)',
+                          padding: '12px 14px',
+                          boxShadow: 'var(--shadow-xs)',
+                        }}
+                      >
+                        {/* Test Item Header */}
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            {test.isPassed ? (
+                              <CheckCircle2 size={16} style={{ color: 'var(--status-success-text)' }} />
+                            ) : (
+                              <XCircle size={16} style={{ color: 'var(--status-error-text)' }} />
+                            )}
+                            <span style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-primary)' }}>
+                              Test #{test.orderIndex} {test.isHidden ? '(Test ẩn)' : '(Công khai)'}
+                            </span>
+                            {test.isHidden && (
+                              <span
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '3px',
+                                  fontSize: '0.68rem',
+                                  color: 'var(--text-muted)',
+                                  background: 'var(--bg-tertiary)',
+                                  padding: '1px 5px',
+                                  borderRadius: 'var(--radius-sm)',
+                                }}
+                              >
+                                <Lock size={10} />
+                                <span>Ẩn</span>
+                              </span>
+                            )}
+                          </div>
 
-                {/* Itemized Test Cases Breakdown */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  {testResults.map((test) => (
-                    <div
-                      key={test.testCaseId || test.orderIndex}
-                      style={{
-                        background: 'var(--bg-tertiary)',
-                        border: `1px solid ${
-                          test.isPassed
-                            ? 'rgba(16, 185, 129, 0.25)'
-                            : 'rgba(239, 68, 68, 0.25)'
-                        }`,
-                        borderRadius: 'var(--radius-md)',
-                        padding: '12px 14px',
-                      }}
-                    >
-                      {/* Test Item Header */}
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          {test.isPassed ? (
-                            <CheckCircle2 size={16} style={{ color: '#34d399' }} />
-                          ) : (
-                            <XCircle size={16} style={{ color: '#fb7185' }} />
-                          )}
-                          <span style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-primary)' }}>
-                            Test #{test.orderIndex} {test.isHidden ? '(Test ẩn)' : '(Công khai)'}
-                          </span>
-                          {test.isHidden && (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                              {test.executionTimeMs} ms
+                            </span>
                             <span
+                              className="badge"
                               style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '3px',
-                                fontSize: '0.68rem',
-                                color: 'var(--text-muted)',
-                                background: 'rgba(255,255,255,0.06)',
-                                padding: '1px 5px',
-                                borderRadius: '4px',
+                                background: test.isPassed ? 'var(--pastel-mint-light)' : 'rgba(239, 68, 68, 0.12)',
+                                color: test.isPassed ? 'var(--status-success-text)' : 'var(--status-error-text)',
+                                fontSize: '0.72rem',
+                                borderRadius: 'var(--radius-md)',
+                                padding: '2px 8px',
                               }}
                             >
-                              <Lock size={10} />
-                              <span>Ẩn</span>
+                              {test.isPassed ? 'Đạt' : 'Chưa đạt'}
                             </span>
-                          )}
+                          </div>
                         </div>
 
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                            {test.executionTimeMs} ms
-                          </span>
-                          <span
-                            className="badge"
-                            style={{
-                              background: test.isPassed ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                              color: test.isPassed ? '#34d399' : '#fb7185',
-                              fontSize: '0.72rem',
-                            }}
-                          >
-                            {test.isPassed ? 'Đạt' : 'Chưa đạt'}
-                          </span>
-                        </div>
-                      </div>
+                        {/* Public Test Details (Input, Expected, Actual) */}
+                        {!test.isHidden && (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.78rem' }}>
+                            {test.inputData !== undefined && test.inputData.length > 0 && (
+                              <div>
+                                <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Input: </span>
+                                <code style={{ background: 'var(--bg-tertiary)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', color: 'var(--pastel-sky-text)', fontFamily: 'var(--font-mono)' }}>
+                                  {test.inputData.replace(/\n/g, ' ↵ ')}
+                                </code>
+                              </div>
+                            )}
 
-                      {/* Public Test Details (Input, Expected, Actual) */}
-                      {!test.isHidden && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.78rem' }}>
-                          {test.inputData !== undefined && test.inputData.length > 0 && (
                             <div>
-                              <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Input: </span>
-                              <code style={{ background: 'var(--bg-primary)', padding: '2px 6px', borderRadius: '4px', color: 'var(--accent-light)', fontFamily: 'var(--font-mono)' }}>
-                                {test.inputData.replace(/\n/g, ' ↵ ')}
+                              <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Kết quả mong đợi: </span>
+                              <code style={{ background: 'var(--bg-tertiary)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', color: 'var(--status-success-text)', fontFamily: 'var(--font-mono)' }}>
+                                {test.expectedOutput}
                               </code>
                             </div>
-                          )}
 
-                          <div>
-                            <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Kết quả mong đợi: </span>
-                            <code style={{ background: 'var(--bg-primary)', padding: '2px 6px', borderRadius: '4px', color: '#34d399', fontFamily: 'var(--font-mono)' }}>
-                              {test.expectedOutput}
-                            </code>
+                            <div>
+                              <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Kết quả thực tế: </span>
+                              <code style={{ background: 'var(--bg-tertiary)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', color: test.isPassed ? 'var(--status-success-text)' : 'var(--status-error-text)', fontFamily: 'var(--font-mono)' }}>
+                                {test.actualOutput || '(không có output)'}
+                              </code>
+                            </div>
                           </div>
+                        )}
 
-                          <div>
-                            <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Kết quả thực tế: </span>
-                            <code style={{ background: 'var(--bg-primary)', padding: '2px 6px', borderRadius: '4px', color: test.isPassed ? '#34d399' : '#fb7185', fontFamily: 'var(--font-mono)' }}>
-                              {test.actualOutput || '(không có output)'}
-                            </code>
+                        {/* Hidden Test Case Security Shield */}
+                        {test.isHidden && (
+                          <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontStyle: 'italic', marginTop: '4px' }}>
+                            Dữ liệu đầu vào và kết quả mẫu của Test ẩn được bảo vệ trên hệ thống để đánh giá năng lực tư duy tổng quát.
                           </div>
-                        </div>
-                      )}
+                        )}
 
-                      {/* Hidden Test Case Security Shield */}
-                      {test.isHidden && (
-                        <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontStyle: 'italic', marginTop: '4px' }}>
-                          Dữ liệu đầu vào và kết quả mẫu của Test ẩn được bảo vệ trên hệ thống để đánh giá năng lực tư duy tổng quát.
-                        </div>
-                      )}
-
-                      {/* Error Message */}
-                      {test.errorMessage && !test.isPassed && (
-                        <div style={{ marginTop: '8px', fontSize: '0.76rem', color: '#fb7185', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <AlertTriangle size={13} />
-                          <span>{test.errorMessage}</span>
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                        {/* Error Message */}
+                        {test.errorMessage && !test.isPassed && (
+                          <div style={{ marginTop: '8px', fontSize: '0.76rem', color: 'var(--status-error-text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <AlertTriangle size={13} />
+                            <span>{test.errorMessage}</span>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* TAB 3: CUSTOM STDIN */}
-        {activeTab === 'stdin' && (
-          <div style={{ flex: 1, padding: '14px 16px', display: 'flex', flexDirection: 'column', background: 'var(--bg-secondary)' }}>
-            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '8px' }}>
-              Dữ liệu đầu vào cho lệnh <code>input()</code> khi chạy thử (mỗi dòng tương ứng với 1 lần gọi <code>input()</code>):
+              )}
             </div>
-            <textarea
-              value={customStdin}
-              onChange={(e) => onStdinChange(e.target.value)}
-              placeholder="Ví dụ:&#10;5&#10;10"
-              style={{
-                flex: 1,
-                background: 'var(--terminal-bg)',
-                color: 'var(--terminal-text)',
-                border: '1px solid var(--border-medium)',
-                borderRadius: 'var(--radius-sm)',
-                padding: '10px',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.85rem',
-                resize: 'none',
-                outline: 'none',
-              }}
-            />
-          </div>
-        )}
+          )}
 
-        {/* TAB 4: SUBMISSION HISTORY (PERSISTENCE EVIDENCE) */}
-        {activeTab === 'history' && (
-          <div style={{ flex: 1, padding: '16px', overflowY: 'auto', background: 'var(--bg-secondary)' }}>
-            {pastSubmissions.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '36px 0', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                <History size={32} style={{ margin: '0 auto 10px', opacity: 0.35 }} />
-                <p style={{ fontWeight: 600 }}>Chưa có lịch sử nộp bài.</p>
-                <p style={{ fontSize: '0.75rem', marginTop: '4px' }}>
-                  Các lần nộp bài sẽ được tự động lưu trữ vào hồ sơ của bạn và tồn tại bền vững sau khi tải lại trang.
-                </p>
+          {/* TAB 3: CUSTOM STDIN */}
+          {activeTab === 'stdin' && (
+            <div style={{ flex: 1, padding: '14px 16px', display: 'flex', flexDirection: 'column', background: 'var(--bg-secondary)', minWidth: 0 }}>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '8px' }}>
+                Dữ liệu đầu vào cho lệnh <code>input()</code> khi chạy thử (mỗi dòng tương ứng với 1 lần gọi <code>input()</code>):
               </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
-                  <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
-                    Lịch sử nộp bài ({pastSubmissions.length} lần nộp)
-                  </span>
-                  <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                    Dữ liệu được cô lập theo tài khoản người dùng
-                  </span>
+              <textarea
+                value={customStdin}
+                onChange={(e) => onStdinChange(e.target.value)}
+                placeholder="Ví dụ:&#10;5&#10;10"
+                style={{
+                  flex: 1,
+                  background: 'var(--terminal-bg)',
+                  color: 'var(--terminal-text)',
+                  border: '1px solid var(--border-medium)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '10px 12px',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.85rem',
+                  resize: 'none',
+                  outline: 'none',
+                }}
+              />
+            </div>
+          )}
+
+          {/* TAB 4: SUBMISSION HISTORY (PERSISTENCE EVIDENCE) */}
+          {activeTab === 'history' && (
+            <div style={{ flex: 1, padding: '16px', overflowY: 'auto', background: 'var(--bg-secondary)', minWidth: 0 }}>
+              {pastSubmissions.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '36px 0', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                  <History size={32} style={{ margin: '0 auto 10px', opacity: 0.35 }} />
+                  <p style={{ fontWeight: 600 }}>Chưa có lịch sử nộp bài.</p>
+                  <p style={{ fontSize: '0.75rem', marginTop: '4px' }}>
+                    Các lần nộp bài sẽ được tự động lưu trữ vào hồ sơ của bạn và tồn tại bền vững sau khi tải lại trang.
+                  </p>
                 </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+                    <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
+                      Lịch sử nộp bài ({pastSubmissions.length} lần nộp)
+                    </span>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                      Dữ liệu được cô lập theo tài khoản người dùng
+                    </span>
+                  </div>
 
-                {pastSubmissions.map((sub, idx) => {
-                  const isAccepted = sub.verdict === 'accepted';
-                  const isExpanded = expandedSubmissionId === sub.id;
-                  const dateStr = new Date(sub.submittedAt).toLocaleString('vi-VN');
+                  {pastSubmissions.map((sub, idx) => {
+                    const isAccepted = sub.verdict === 'accepted';
+                    const isExpanded = expandedSubmissionId === sub.id;
+                    const dateStr = new Date(sub.submittedAt).toLocaleString('vi-VN');
 
-                  return (
-                    <div
-                      key={sub.id}
-                      style={{
-                        background: 'var(--bg-tertiary)',
-                        border: `1px solid ${isAccepted ? 'rgba(16, 185, 129, 0.25)' : 'rgba(239, 68, 68, 0.25)'}`,
-                        borderRadius: 'var(--radius-md)',
-                        padding: '12px 14px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '8px',
-                      }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          {isAccepted ? (
-                            <CheckCircle2 size={16} style={{ color: '#34d399' }} />
-                          ) : (
-                            <XCircle size={16} style={{ color: '#fb7185' }} />
-                          )}
-                          <span style={{ fontWeight: 600, fontSize: '0.85rem', color: isAccepted ? '#34d399' : '#fb7185' }}>
-                            {isAccepted ? 'Accepted' : sub.verdict.toUpperCase()}
-                          </span>
-                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                            #{pastSubmissions.length - idx} • {dateStr}
-                          </span>
-                        </div>
+                    return (
+                      <div
+                        key={sub.id}
+                        style={{
+                          background: 'var(--bg-surface)',
+                          border: `1px solid ${isAccepted ? 'var(--pastel-mint-active)' : 'rgba(239, 68, 68, 0.25)'}`,
+                          borderRadius: 'var(--radius-lg)',
+                          padding: '12px 14px',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '8px',
+                          boxShadow: 'var(--shadow-xs)',
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            {isAccepted ? (
+                              <CheckCircle2 size={16} style={{ color: 'var(--status-success-text)' }} />
+                            ) : (
+                              <XCircle size={16} style={{ color: 'var(--status-error-text)' }} />
+                            )}
+                            <span style={{ fontWeight: 600, fontSize: '0.85rem', color: isAccepted ? 'var(--status-success-text)' : 'var(--status-error-text)' }}>
+                              {isAccepted ? 'Accepted' : sub.verdict.toUpperCase()}
+                            </span>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                              #{pastSubmissions.length - idx} • {dateStr}
+                            </span>
+                          </div>
 
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <span style={{ fontSize: '0.74rem', fontWeight: 600, color: 'var(--accent-light)' }}>
-                            {sub.score}/{sub.totalPoints} pts
-                          </span>
-                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                            {sub.passedTestsCount}/{sub.totalTestsCount} tests
-                          </span>
-                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                            {sub.executionTimeMs}ms
-                          </span>
-                          <button
-                            type="button"
-                            className="btn btn-ghost"
-                            style={{ padding: '2px 8px', fontSize: '0.72rem', color: 'var(--accent-light)' }}
-                            onClick={() => setExpandedSubmissionId(isExpanded ? null : sub.id)}
-                          >
-                            {isExpanded ? 'Ẩn code' : 'Xem code'}
-                          </button>
-                          {onRestoreSubmissionCode && (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                            <span style={{ fontSize: '0.74rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+                              {sub.score}/{sub.totalPoints} pts
+                            </span>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                              {sub.passedTestsCount}/{sub.totalTestsCount} tests
+                            </span>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                              {sub.executionTimeMs}ms
+                            </span>
                             <button
                               type="button"
                               className="btn btn-ghost"
-                              style={{ padding: '2px 8px', fontSize: '0.72rem', color: 'var(--text-secondary)' }}
-                              onClick={() => onRestoreSubmissionCode(sub.submittedCode)}
-                              title="Khôi phục lại đoạn mã này vào trình soạn thảo"
+                              style={{ padding: '2px 8px', fontSize: '0.72rem', color: 'var(--pastel-sky-text)', borderRadius: 'var(--radius-sm)' }}
+                              onClick={() => setExpandedSubmissionId(isExpanded ? null : sub.id)}
                             >
-                              <RotateCcw size={12} />
-                              <span>Nạp lại</span>
+                              {isExpanded ? 'Ẩn code' : 'Xem code'}
                             </button>
-                          )}
+                            {onRestoreSubmissionCode && (
+                              <button
+                                type="button"
+                                className="btn btn-ghost"
+                                style={{
+                                  padding: '2px 8px',
+                                  fontSize: '0.72rem',
+                                  color: 'var(--text-secondary)',
+                                  borderRadius: 'var(--radius-sm)',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '4px',
+                                }}
+                                onClick={() => onRestoreSubmissionCode(sub.submittedCode)}
+                                title="Khôi phục lại đoạn mã này vào trình soạn thảo"
+                              >
+                                <RotateCcw size={12} />
+                                <span>Nạp lại</span>
+                              </button>
+                            )}
+                          </div>
                         </div>
-                      </div>
 
-                      {isExpanded && (
-                        <div style={{ marginTop: '6px' }}>
-                          <pre
-                            style={{
-                              background: 'var(--terminal-bg)',
-                              border: '1px solid var(--border-subtle)',
-                              borderRadius: 'var(--radius-sm)',
-                              padding: '10px',
-                              fontSize: '0.78rem',
-                              fontFamily: 'var(--font-mono)',
-                              color: 'var(--terminal-text)',
-                              overflowX: 'auto',
-                              maxHeight: '180px',
-                              margin: 0,
-                            }}
-                          >
-                            {sub.submittedCode}
-                          </pre>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+                        {isExpanded && (
+                          <div style={{ marginTop: '6px' }}>
+                            <pre
+                              style={{
+                                background: 'var(--terminal-bg)',
+                                border: '1px solid var(--border-subtle)',
+                                borderRadius: 'var(--radius-md)',
+                                padding: '10px 12px',
+                                fontSize: '0.78rem',
+                                fontFamily: 'var(--font-mono)',
+                                color: 'var(--terminal-text)',
+                                overflowX: 'auto',
+                                maxHeight: '180px',
+                                margin: 0,
+                              }}
+                            >
+                              {sub.submittedCode}
+                            </pre>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

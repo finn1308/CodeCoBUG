@@ -93,11 +93,30 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
   const charsCount = value.length;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        width: '100%',
+        minWidth: 0,
+        boxSizing: 'border-box',
+      }}
+    >
       {/* Editor Toolbar */}
-      <div className="pane-header" style={{ padding: '8px 14px', flexWrap: 'wrap', gap: '8px' }}>
+      <div
+        className="pane-header"
+        style={{
+          padding: '8px 14px',
+          flexWrap: 'wrap',
+          gap: '8px',
+          minHeight: '44px',
+          borderBottom: '1px solid var(--border-subtle)',
+          backgroundColor: 'var(--bg-tertiary)',
+        }}
+      >
         {/* Left: File tag, language badge, theme toggle & zoom */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           <div className="pane-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Code2 size={16} style={{ color: 'var(--pastel-mint-text)' }} />
             <span style={{ fontWeight: 700, fontSize: '0.86rem' }}>main.py</span>
@@ -106,12 +125,27 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
             </Badge>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '3px',
+              backgroundColor: 'var(--bg-surface)',
+              padding: '2px 6px',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--border-subtle)',
+            }}
+          >
             {/* Theme Toggle Button */}
             <button
               type="button"
               className="btn btn-ghost"
-              style={{ padding: '3px 7px', fontSize: '0.72rem', borderRadius: 'var(--radius-sm)' }}
+              style={{
+                padding: '3px 6px',
+                fontSize: '0.72rem',
+                borderRadius: 'var(--radius-sm)',
+                color: 'var(--text-secondary)',
+              }}
               onClick={toggleTheme}
               title={editorTheme === 'vs-dark' ? 'Chuyển sang giao diện Sáng' : 'Chuyển sang giao diện Tối'}
               aria-label="Đổi giao diện trình soạn thảo"
@@ -123,18 +157,38 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
             <button
               type="button"
               className="btn btn-ghost"
-              style={{ padding: '3px 6px', fontSize: '0.72rem', borderRadius: 'var(--radius-sm)' }}
+              style={{
+                padding: '3px 5px',
+                fontSize: '0.72rem',
+                borderRadius: 'var(--radius-sm)',
+                color: 'var(--text-secondary)',
+              }}
               onClick={() => setFontSize((prev) => Math.max(11, prev - 1))}
               title="Giảm cỡ chữ"
               aria-label="Giảm cỡ chữ"
             >
               <ZoomOut size={13} />
             </button>
-            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{fontSize}px</span>
+            <span
+              style={{
+                fontSize: '0.70rem',
+                color: 'var(--text-secondary)',
+                fontWeight: 600,
+                minWidth: '28px',
+                textAlign: 'center',
+              }}
+            >
+              {fontSize}px
+            </span>
             <button
               type="button"
               className="btn btn-ghost"
-              style={{ padding: '3px 6px', fontSize: '0.72rem', borderRadius: 'var(--radius-sm)' }}
+              style={{
+                padding: '3px 5px',
+                fontSize: '0.72rem',
+                borderRadius: 'var(--radius-sm)',
+                color: 'var(--text-secondary)',
+              }}
               onClick={() => setFontSize((prev) => Math.min(22, prev + 1))}
               title="Tăng cỡ chữ"
               aria-label="Tăng cỡ chữ"
@@ -145,15 +199,23 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
         </div>
 
         {/* Right: Code stats, copy, reset, and PRIMARY ACTION BUTTONS (Run & Submit) */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }} className="desktop-only-stats">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+          <span
+            style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginRight: '4px' }}
+            className="desktop-only-stats"
+          >
             {linesCount} dòng • {charsCount} ký tự
           </span>
 
           <button
             type="button"
             className="btn btn-ghost"
-            style={{ padding: '4px 8px', fontSize: '0.75rem', borderRadius: 'var(--radius-sm)' }}
+            style={{
+              padding: '4px 7px',
+              fontSize: '0.75rem',
+              borderRadius: 'var(--radius-md)',
+              color: 'var(--text-secondary)',
+            }}
             onClick={handleCopy}
             title="Sao chép mã nguồn"
             aria-label="Sao chép mã nguồn"
@@ -164,7 +226,15 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
           <button
             type="button"
             className="btn btn-ghost"
-            style={{ padding: '4px 8px', fontSize: '0.75rem', borderRadius: 'var(--radius-sm)', display: 'flex', alignItems: 'center', gap: '4px' }}
+            style={{
+              padding: '4px 8px',
+              fontSize: '0.75rem',
+              borderRadius: 'var(--radius-md)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              color: 'var(--text-secondary)',
+            }}
             onClick={handleReset}
             disabled={disabled || isRunning || isSubmitting}
             title="Đặt lại code ban đầu"
@@ -174,14 +244,28 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
             <span>Reset</span>
           </button>
 
-          {/* RUN BUTTON: Pyodide execution */}
+          {/* RUN BUTTON: Prominent Pyodide execution button */}
           {onRun && (
             <Button
               variant="secondary"
               size="sm"
               onClick={onRun}
               disabled={disabled || isRunning || isSubmitting}
-              leftIcon={isRunning ? <Loader2 size={13} className="spin" /> : <Play size={13} fill="currentColor" />}
+              isLoading={isRunning}
+              leftIcon={
+                isRunning ? (
+                  <Loader2 size={13} className="spin" />
+                ) : (
+                  <Play size={13} fill="currentColor" style={{ color: 'var(--pastel-sky-text)' }} />
+                )
+              }
+              style={{
+                fontWeight: 700,
+                backgroundColor: 'var(--pastel-sky-light)',
+                border: '1px solid var(--pastel-sky)',
+                color: 'var(--pastel-sky-text)',
+                boxShadow: 'var(--shadow-xs)',
+              }}
               title="Chạy thử nghiệm trên Pyodide WebAssembly (không tính điểm bài tập)"
             >
               <span>{isRunning ? 'Đang chạy...' : 'Chạy thử'}</span>
@@ -195,7 +279,18 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
               size="sm"
               onClick={onSubmit}
               disabled={disabled || isRunning || isSubmitting}
-              leftIcon={isSubmitting ? <Loader2 size={13} className="spin" /> : <CheckCircle2 size={14} />}
+              isLoading={isSubmitting}
+              leftIcon={
+                isSubmitting ? (
+                  <Loader2 size={13} className="spin" />
+                ) : (
+                  <CheckCircle2 size={14} />
+                )
+              }
+              style={{
+                fontWeight: 700,
+                boxShadow: 'var(--shadow-xs)',
+              }}
               title="Nộp bài và chấm toàn bộ test case công khai & ẩn"
             >
               <span>{isSubmitting ? 'Đang chấm...' : 'Nộp bài'}</span>
@@ -207,7 +302,12 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
             <button
               type="button"
               className="btn btn-ghost"
-              style={{ padding: '4px 6px', fontSize: '0.75rem', borderRadius: 'var(--radius-sm)' }}
+              style={{
+                padding: '4px 6px',
+                fontSize: '0.75rem',
+                borderRadius: 'var(--radius-md)',
+                color: 'var(--text-secondary)',
+              }}
               onClick={onToggleTerminal}
               title={isTerminalCollapsed ? 'Mở rộng Terminal' : 'Thu gọn Terminal'}
               aria-label={isTerminalCollapsed ? 'Mở rộng Terminal' : 'Thu gọn Terminal'}
@@ -219,7 +319,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
       </div>
 
       {/* Editor Body */}
-      <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
+      <div style={{ flex: 1, position: 'relative', overflow: 'hidden', minWidth: 0 }}>
         <Monaco
           height="100%"
           language="python"
@@ -235,6 +335,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
             minimap: { enabled: false },
             scrollBeyondLastLine: false,
             automaticLayout: true,
+            wordWrap: 'on',
             lineNumbers: 'on',
             renderWhitespace: 'selection',
             bracketPairColorization: { enabled: true },
