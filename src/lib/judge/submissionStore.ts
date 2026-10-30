@@ -1,5 +1,6 @@
 import { createServerSupabaseClient } from '../supabase/server';
 import { createAdminSupabaseClient } from '../supabase/admin';
+import { Verdict } from '../types/runtime';
 
 export interface AuthoritativeSubmissionRecord {
   id: string;
@@ -7,7 +8,7 @@ export interface AuthoritativeSubmissionRecord {
   exerciseId: string;
   exerciseSlug: string;
   submittedCode: string;
-  verdict: 'accepted' | 'wrong_answer' | 'runtime_error' | 'time_limit_exceeded' | 'compile_error';
+  verdict: Verdict;
   score: number;
   totalPoints: number;
   passedTestsCount: number;
@@ -52,9 +53,9 @@ export async function saveAuthoritativeSubmission(
   ) {
     try {
       let supabaseClient;
-      if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      try {
         supabaseClient = createAdminSupabaseClient();
-      } else {
+      } catch {
         supabaseClient = await createServerSupabaseClient();
       }
 

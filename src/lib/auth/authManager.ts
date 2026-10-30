@@ -4,7 +4,7 @@
  * submission history, and strict multi-tenant data isolation.
  */
 
-import { createSessionToken } from './serverAuth';
+import { createSessionToken } from './sessionToken';
 
 export interface UserProfile {
   id: string;

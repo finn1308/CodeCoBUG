@@ -1,23 +1,39 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Exercise } from '@/lib/types/curriculum';
-import { FileText, AlertCircle, Award, Copy, Check, ChevronDown, ChevronUp, Lightbulb, CornerDownRight } from 'lucide-react';
+import Link from 'next/link';
+import { Exercise, Lesson } from '@/lib/types/curriculum';
+import {
+  FileText,
+  AlertCircle,
+  Award,
+  Copy,
+  Check,
+  ChevronDown,
+  ChevronUp,
+  Lightbulb,
+  CornerDownRight,
+  BookOpen,
+  ExternalLink,
+} from 'lucide-react';
 import { Badge } from '@/components/ui';
 
 interface ProblemStatementProps {
   exercise: Exercise;
+  lesson?: Lesson;
   topicTitle?: string;
   onApplyInput?: (input: string) => void;
 }
 
 export const ProblemStatement: React.FC<ProblemStatementProps> = ({
   exercise,
+  lesson,
   topicTitle,
   onApplyInput,
 }) => {
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
   const [hintsOpen, setHintsOpen] = useState(false);
+  const [lessonOpen, setLessonOpen] = useState(false);
 
   const handleCopyInput = async (inputData: string, idx: number) => {
     try {
@@ -68,6 +84,151 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
           {exercise.title}
         </h1>
       </div>
+
+      {/* Lesson / Theory Reference Block */}
+      {lesson && (
+        <div
+          style={{
+            backgroundColor: 'var(--bg-surface)',
+            border: '1px solid var(--border-subtle)',
+            borderRadius: 'var(--radius-lg)',
+            overflow: 'hidden',
+            boxShadow: 'var(--shadow-xs)',
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setLessonOpen((prev) => !prev)}
+            style={{
+              width: '100%',
+              padding: '12px 16px',
+              background: 'transparent',
+              border: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              cursor: 'pointer',
+              color: 'var(--text-primary)',
+              fontWeight: 700,
+              fontSize: '0.86rem',
+              transition: 'background-color 150ms ease',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <BookOpen size={16} style={{ color: 'var(--pastel-lavender-text)' }} />
+              <span>Lý thuyết bài học: {lesson.title}</span>
+            </div>
+            {lessonOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </button>
+
+          {lessonOpen && (
+            <div
+              style={{
+                padding: '0 16px 14px',
+                fontSize: '0.83rem',
+                color: 'var(--text-secondary)',
+                lineHeight: 1.6,
+                borderTop: '1px solid var(--border-subtle)',
+                paddingTop: '12px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px',
+              }}
+            >
+              {lesson.learningObjectives && lesson.learningObjectives.length > 0 && (
+                <div>
+                  <div style={{ fontWeight: 700, color: 'var(--text-primary)', marginBottom: '4px' }}>
+                    🎯 Mục tiêu bài học:
+                  </div>
+                  <ul style={{ margin: 0, paddingLeft: '18px' }}>
+                    {lesson.learningObjectives.map((obj, i) => (
+                      <li key={i}>{obj}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {lesson.theoryContent && (
+                <div>
+                  <div style={{ fontWeight: 700, color: 'var(--text-primary)', marginBottom: '4px' }}>
+                    📖 Tóm tắt kiến thức:
+                  </div>
+                  <div style={{ whiteSpace: 'pre-line', backgroundColor: 'var(--bg-tertiary)', padding: '10px 12px', borderRadius: 'var(--radius-md)' }}>
+                    {lesson.theoryContent}
+                  </div>
+                </div>
+              )}
+
+              {lesson.codeExamples && lesson.codeExamples.length > 0 && (
+                <div>
+                  <div style={{ fontWeight: 700, color: 'var(--text-primary)', marginBottom: '4px' }}>
+                    💻 Ví dụ code:
+                  </div>
+                  {lesson.codeExamples.map((ex, i) => (
+                    <div key={i} style={{ marginBottom: '8px', backgroundColor: 'var(--bg-tertiary)', padding: '8px 12px', borderRadius: 'var(--radius-md)' }}>
+                      {ex.title && <div style={{ fontWeight: 600, fontSize: '0.78rem', color: 'var(--text-muted)' }}>{ex.title}</div>}
+                      <pre style={{ margin: '4px 0', fontFamily: 'monospace', fontSize: '0.82rem', overflowX: 'auto' }}>{ex.code}</pre>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {lesson.commonMistakes && lesson.commonMistakes.length > 0 && (
+                <div style={{ backgroundColor: 'var(--pastel-peach-light)', border: '1px solid var(--pastel-peach)', padding: '10px 12px', borderRadius: 'var(--radius-md)' }}>
+                  <div style={{ fontWeight: 700, color: 'var(--pastel-peach-text)', marginBottom: '4px' }}>
+                    ⚠️ Sai lầm thường gặp:
+                  </div>
+                  {lesson.commonMistakes.map((m, i) => (
+                    <div key={i} style={{ marginBottom: '6px' }}>
+                      <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>• {m.mistake}</div>
+                      <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>💡 Cách sửa: {m.fix}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {lesson.referenceLinks && lesson.referenceLinks.length > 0 && (
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '4px' }}>
+                  {lesson.referenceLinks.map((ref, i) => (
+                    <a
+                      key={i}
+                      href={ref.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        fontSize: '0.76rem',
+                        color: 'var(--pastel-sky-text)',
+                        textDecoration: 'none',
+                        fontWeight: 600,
+                      }}
+                    >
+                      <ExternalLink size={12} />
+                      {ref.title}
+                    </a>
+                  ))}
+                </div>
+              )}
+
+              <div style={{ marginTop: '4px' }}>
+                <Link
+                  href="/curriculum"
+                  style={{
+                    fontSize: '0.78rem',
+                    color: 'var(--pastel-mint-text)',
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                  }}
+                >
+                  ← Mở toàn bộ giáo trình
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Description Panel */}
       <div
@@ -321,12 +482,24 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
               paddingTop: '12px',
             }}
           >
-            <p style={{ margin: 0 }}>
-              1. Đọc kỹ kiểu dữ liệu đầu vào. Với các bài tính toán hoặc số học, hãy nhớ ép kiểu bằng <code>int()</code> hoặc <code>float()</code>.
-            </p>
-            <p style={{ margin: '6px 0 0 0' }}>
-              2. Đảm bảo định dạng xuất chuỗi khớp chính xác từng ký tự và khoảng trắng theo mẫu Output mong đợi.
-            </p>
+            {exercise.hints && exercise.hints.length > 0 ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {exercise.hints.map((hint, idx) => (
+                  <p key={idx} style={{ margin: 0 }}>
+                    {idx + 1}. {hint}
+                  </p>
+                ))}
+              </div>
+            ) : (
+              <>
+                <p style={{ margin: 0 }}>
+                  1. Đọc kỹ kiểu dữ liệu đầu vào. Với các bài tính toán hoặc số học, hãy nhớ ép kiểu bằng <code>int()</code> hoặc <code>float()</code>.
+                </p>
+                <p style={{ margin: '6px 0 0 0' }}>
+                  2. Đảm bảo định dạng xuất chuỗi khớp chính xác từng ký tự và khoảng trắng theo mẫu Output mong đợi.
+                </p>
+              </>
+            )}
           </div>
         )}
       </div>

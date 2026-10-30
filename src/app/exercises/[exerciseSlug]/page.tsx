@@ -19,6 +19,7 @@ export default async function ExercisePage({ params }: ExercisePageProps) {
   return (
     <ExerciseWorkspace
       exercise={match.exercise}
+      lesson={match.lesson}
       topicTitle={match.topic.title}
     />
   );

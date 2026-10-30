@@ -21,13 +21,21 @@ import {
   BarChart2,
 } from 'lucide-react';
 import { authManager, UserProfile, SavedSubmissionRecord } from '@/lib/auth/authManager';
+import { Course } from '@/lib/types/curriculum';
+import { OFFICIAL_PYTHON_COURSE } from '@/lib/curriculum';
 import { SAMPLE_TEST_COURSE } from '@/lib/fixtures/sampleCurriculum';
 import { MasteryEngine, LearnerMasteryReport } from '@/lib/mastery/masteryEngine';
 import { ReviewEngine, ReviewItem } from '@/lib/mastery/reviewEngine';
 import { Card, Badge, Button } from '@/components/ui';
 import { CurriculumBrowser } from '@/components/curriculum';
 
-export const LearningDashboard: React.FC = () => {
+export interface LearningDashboardProps {
+  course?: Course;
+}
+
+export const LearningDashboard: React.FC<LearningDashboardProps> = ({
+  course = OFFICIAL_PYTHON_COURSE,
+}) => {
   const [user, setUser] = useState<UserProfile | null>(authManager.getCurrentUser());
   const [submissions, setSubmissions] = useState<SavedSubmissionRecord[]>([]);
   const [masteryReport, setMasteryReport] = useState<LearnerMasteryReport | null>(null);
@@ -67,7 +75,7 @@ export const LearningDashboard: React.FC = () => {
   }, []);
 
   // Compute all curriculum exercises and real completion statuses
-  const allExercises = SAMPLE_TEST_COURSE.topics.flatMap((t) =>
+  const allExercises = course.topics.flatMap((t) =>
     t.lessons.flatMap((l) =>
       l.exercises.map((e) => ({
         ...e,
@@ -100,6 +108,25 @@ export const LearningDashboard: React.FC = () => {
       if (foundReviewExercise) {
         nextExercise = foundReviewExercise;
         recommendedReason = `Cần ôn tập: ${topReview.reasonDescription}`;
+      } else {
+        nextExercise = {
+          id: topReview.id,
+          lessonId: 'lesson-review',
+          topicId: 'topic-review',
+          slug: topReview.exerciseSlug,
+          title: topReview.exerciseTitle,
+          difficulty: 'easy' as const,
+          points: 10,
+          description: `Bài tập cần củng cố kiến thức: ${topReview.targetSkillName}`,
+          starterCode: '',
+          completionCriteria: { requiredTests: 'all' as const },
+          examples: [],
+          orderIndex: 1,
+          isPublished: true,
+          topicTitle: topReview.targetSkillName || 'Luyện tập',
+          topicSlug: 'luyen-tap',
+        };
+        recommendedReason = `Cần ôn tập: ${topReview.reasonDescription}`;
       }
     } else {
       const firstIncomplete = allExercises.find((e) => !acceptedExerciseSlugs.has(e.slug));
@@ -113,8 +140,28 @@ export const LearningDashboard: React.FC = () => {
     }
   }
 
+  if (!nextExercise) {
+    nextExercise = {
+      id: 'default-ex',
+      lessonId: 'lesson-01',
+      topicId: 'topic-01',
+      slug: 'in-loi-chao-codecobug',
+      title: 'Làm quen Python',
+      difficulty: 'very_easy' as const,
+      points: 10,
+      description: 'Làm quen với cú pháp và chương trình Python đầu tiên.',
+      starterCode: '',
+      completionCriteria: { requiredTests: 'all' as const },
+      examples: [],
+      orderIndex: 1,
+      isPublished: true,
+      topicTitle: 'Làm quen Python',
+      topicSlug: 'lam-quen-python',
+    };
+  }
+
   // Topic progress calculations (Strictly derived from real accepted submissions)
-  const topicProgressList = SAMPLE_TEST_COURSE.topics.map((topic) => {
+  const topicProgressList = course.topics.map((topic) => {
     const topicExs = topic.lessons.flatMap((l) => l.exercises);
     const totalInTopic = topicExs.length;
     const completedInTopic = topicExs.filter((e) => acceptedExerciseSlugs.has(e.slug)).length;
@@ -554,7 +601,7 @@ export const LearningDashboard: React.FC = () => {
           <BookOpen size={16} />
           <span>Tiến độ giáo trình Python</span>
         </div>
-        <CurriculumBrowser showCourseHeader={false} id="curriculum-browser-inner" />
+        <CurriculumBrowser course={course} showCourseHeader={false} id="curriculum-browser-inner" />
       </div>
     </div>
   );

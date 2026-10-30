@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Exercise } from '@/lib/types/curriculum';
+import { Exercise, Lesson } from '@/lib/types/curriculum';
 import { OutputLog } from '@/lib/types/runtime';
 import { SubmissionEvaluationReport } from '@/lib/judge/runner';
 import { AppShell } from '@/components/layout';
@@ -23,11 +23,13 @@ import {
 
 interface ExerciseWorkspaceProps {
   exercise: Exercise;
+  lesson?: Lesson;
   topicTitle?: string;
 }
 
 export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
   exercise,
+  lesson,
   topicTitle,
 }) => {
   const [code, setCode] = useState(exercise.starterCode || '');
@@ -407,6 +409,7 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
         >
           <ProblemStatement
             exercise={exercise}
+            lesson={lesson}
             topicTitle={topicTitle}
             onApplyInput={handleApplyInput}
           />
