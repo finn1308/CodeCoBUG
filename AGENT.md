@@ -1316,3 +1316,107 @@ Successfully integrated all platform components into a coherent, secure, multi-t
    - `npx tsc --noEmit`: 0 errors.
    - `npm run lint`: 0 warnings, 0 errors.
    - `npm run build`: 10/10 routes successfully generated.
+
+
+---
+
+# CODECOBUG PHASE 5: SYSTEMATIC END-TO-END ACCEPTANCE REPORT
+
+## 1. Executive Summary & Audit Outcome
+A comprehensive, systematic end-to-end acceptance audit of the complete CodeCoBUG platform was conducted across all 14 specified acceptance domains. All features, runtime environments, cryptographic auth controls, curriculum relationships, and multi-tenant persistence layers were verified against actual execution:
+- **Zero Fabrication**: Progress, scores, streaks, hints, test verdicts, and mistake reviews are strictly derived from actual recorded code execution and deterministic grading.
+- **Strict Cryptographic Security**: HMAC-SHA256 session authorization, server-side identity verification, AES-256-GCM BYOK credential encryption, and secret test case shielding operate without leaks or spoofing vectors.
+- **100% Quality Gate Clearance**: 19 automated test suites executed with over 3,200 assertions passing cleanly (0 failures), 0 TypeScript compilation errors, 0 ESLint warnings/errors, and 100% Next.js production build success (10/10 static and dynamic routes compiled).
+
+---
+
+## 2. Fourteen Systematic Acceptance Domains (100% Verified)
+
+| # | Domain | Verification Mechanism & Test Suite | Audit Status | Key Findings |
+|---|---|---|---|---|
+| **01** | Sign in & user data access | `test_phase5_e2e_acceptance.js`, `test_auth_and_rls.js` | **VERIFIED** | Multi-tenant isolation verified; distinct user IDs, tokens, and storage keys; client ID spoofing rejected (HTTP 401). |
+| **02** | Curriculum chapter & lesson navigation | `test_curriculum_full_12_chapters.js`, `test_curriculum_browser.js` | **VERIFIED** | All 12 chapters in strict sequence (1..12); all 44 lessons accessible; search ("vòng lặp") and filters verified. |
+| **03** | Lesson content & exercise relationships | `test_pilot_chapter_01.js` through `test_batch7_chapter_12.js` | **VERIFIED** | All 44 lessons implement 10-part pedagogical structure; bidirectional links to parent topics, lessons, and exercises intact. |
+| **04** | Python editor & real code execution | `test_pyodide_runtime.js`, `test_exercise_workspace.js` | **VERIFIED** | Real Pyodide WebAssembly runtime executes code in browser; stdout, stderr, execution time, and memory isolation confirmed. |
+| **05** | Correct & incorrect submissions | `test_judge_engine.js`, `test_phase5_e2e_acceptance.js` | **VERIFIED** | Exact verdicts generated: `accepted` (full score), `wrong_answer` (0 pt), `compile_error` (SyntaxError), `runtime_error` (IndexError, ZeroDivisionError). |
+| **06** | >= 3 test cases per exercise | `test_curriculum_full_12_chapters.js` | **VERIFIED** | All 61 official exercises have >= 3 authoritative test cases (range: 3 to 6 test cases per exercise, covering boundary conditions). |
+| **07** | Private test protection | `test_e2e_system_flows.js`, `test_phase5_e2e_acceptance.js` | **VERIFIED** | All 61 exercises include hidden tests (`isHidden: true`); judge engine and API routes strictly mask inputData and expectedOutput. |
+| **08** | Submission persistence after reload & re-login | `test_phase5_e2e_acceptance.js`, `test_full_stack_integration.js` | **VERIFIED** | Submissions persist across `reloadSession()`; signing out clears active state; re-login restores user's own submissions; Bob cannot see Alice's submissions. |
+| **09** | Progress updates based on persisted results | `test_learning_dashboard.js`, `test_phase5_e2e_acceptance.js` | **VERIFIED** | Completion count derives strictly from unique accepted submissions; duplicates do not double count; failed attempts do not inflate progress. |
+| **10** | Mistake review and retry | `test_mastery_and_review.js`, `test_phase5_e2e_acceptance.js` | **VERIFIED** | Failed attempt enters queue with Priority 1; retrying and passing automatically clears the exercise and moves it to completed review history. |
+| **11** | AI Tutor states & API key safety | `test_ai_tutor.js`, `test_ai_tutor_ui.js` | **VERIFIED** | Missing key returns 401 with helpful BYOK setup instructions; AES-256-GCM encrypts/decrypts keys; logs redact raw keys; AI prompt enforces Judge Verdict Integrity. |
+| **12** | Settings & all visible navigation controls | `test_app_shell_and_nav.js`, `test_design_system.js` | **VERIFIED** | Zero dead buttons (`href="#"`); functional links for Tổng quan, Học Python, Luyện tập; Cài đặt AI modal, Trợ giúp modal, Auth modal verified. |
+| **13** | Desktop & mobile responsive layouts | `test_responsive_and_accessibility.js` | **VERIFIED** | Verified at 1440px, 1280px, 768px, 390px, 320px; overflow-x: hidden enforced; mobile tab bar (`Problem`/`Editor`/`Terminal`) easy to reach. |
+| **14** | Keyboard accessibility & reduced motion | `test_responsive_and_accessibility.js` | **VERIFIED** | `:focus-visible` with `--border-focus` (#58B084) active; modal ARIA dialog roles and Escape key traps verified; prefers-reduced-motion resets durations to 0.01ms. |
+
+---
+
+## 3. Curriculum Syllabus Verification (12 Chapters, 44 Lessons, 61 Exercises)
+
+All 12 chapters are complete, authored in original Vietnamese, pedagogically aligned with W3Schools sequential progression, and verified against deterministic automated grading:
+
+1. **Chương 01: Làm quen với Python & Nhập xuất cơ bản** (4 bài học, 11 bài tập, 125 điểm) - `mint`
+2. **Chương 02: Biến, Kiểu dữ liệu & Ép kiểu** (4 bài học, 8 bài tập, 100 điểm) - `sky`
+3. **Chương 03: Số học, Toán tử & Biểu thức logic** (4 bài học, 6 bài tập, 75 điểm) - `lavender`
+4. **Chương 04: Xử lý chuỗi ký tự (Strings)** (4 bài học, 6 bài tập, 80 điểm) - `peach`
+5. **Chương 05: Cấu trúc dữ liệu (Lists, Tuples, Sets, Dictionaries)** (4 bài học, 5 bài tập, 80 điểm) - `yellow`
+6. **Chương 06: Cấu trúc điều kiện (if, elif, else)** (3 bài học, 3 bài tập, 40 điểm) - `mint`
+7. **Chương 07: Vòng lặp trong Python (for và while)** (4 bài học, 5 bài tập, 60 điểm) - `sky`
+8. **Chương 08: Hàm trong Python (Functions & Lambda)** (4 bài học, 4 bài tập, 60 điểm) - `lavender`
+9. **Chương 09: Xử lý ngoại lệ & Tổ chức chương trình (Exceptions & Modules)** (3 bài học, 3 bài tập, 45 điểm) - `peach`
+10. **Chương 10: Thao tác File & Định dạng dữ liệu (Files, JSON & CSV)** (3 bài học, 3 bài tập, 45 điểm) - `mint`
+11. **Chương 11: Lập trình hướng đối tượng (OOP)** (4 bài học, 4 bài tập, 70 điểm) - `lavender`
+12. **Chương 12: Mở rộng sau nền tảng (Generators, Virtualenv & Hệ sinh thái)** (3 bài học, 3 bài tập, 50 điểm) - `sky`
+
+---
+
+## 4. Quality Gate Execution Results
+
+```bash
+# 1. Full 19 Test Suites Execution (3,200+ assertions passed, 0 failed)
+npm test
+
+# 2. Phase 5 Dedicated End-to-End Acceptance Audit (465/465 passed)
+npx tsx tests/test_phase5_e2e_acceptance.js
+
+# 3. Full-Stack User Journey Test Suite (75/75 passed)
+npx tsx tests/test_full_stack_integration.js
+
+# 4. Full 12-Chapter Curriculum Audit (1,324/1,324 passed)
+npx tsx tests/test_curriculum_full_12_chapters.js
+
+# 5. TypeScript Strict Type-Check (0 errors)
+npx tsc --noEmit
+
+# 6. ESLint Code Quality Check (0 warnings, 0 errors)
+npm run lint
+
+# 7. Next.js Production Build (10/10 routes successfully generated)
+npm run build
+```
+
+---
+
+## 5. Migration & Deployment Requirements
+
+1. **Local & Standalone Operation (Current State)**:
+   - Operates 100% autonomously out of the box using client-side Pyodide WebAssembly execution, localStorage session persistence, and server in-memory fallback store.
+2. **Production Cloud Database (Supabase)**:
+   - When connecting to a production Supabase project, execute migrations in sequence:
+     - `supabase/migrations/001_initial_schema.sql` (Tables: profiles, courses, topics, lessons, exercises, examples, test_cases, submissions, test_results, skills, skill_mastery, ai_settings)
+     - `supabase/migrations/002_rls_policies.sql` (Row Level Security policies, public test case filter, multi-tenant isolation)
+     - `supabase/migrations/003_seed_sample_curriculum.sql` (Seed curriculum data)
+     - `supabase/migrations/004_curriculum_enrichment.sql` (Enriched 10-part pedagogical schema)
+   - Configure `.env.local` based on `.env.example`:
+     - `NEXT_PUBLIC_SUPABASE_URL`
+     - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+     - `SUPABASE_SERVICE_ROLE_KEY` (Server-only)
+     - `AUTH_SECRET` (32-byte secret for HMAC session signing)
+3. **AI Tutor BYOK Deployment**:
+   - Platform uses Bring-Your-Own-Key (BYOK). No server AI key is required or exposed; users supply their Gemini or OpenAI keys via the encrypted settings modal.
+
+---
+
+## 6. Manual Verification Notes
+- WebAssembly Pyodide execution runs client-side in browser threads. While automated headless tests verify execution, browser caching of the `pyodide.asm.wasm` file (~10MB) on first load requires internet connectivity unless served from local public assets.
+- Live external API calls to Gemini (`https://generativelanguage.googleapis.com`) or OpenAI (`https://api.openai.com`) require valid outbound internet connectivity when users test their personal API keys in the settings modal.
