@@ -20,6 +20,30 @@ export interface TestCase {
   orderIndex: number;
 }
 
+export interface LessonExample {
+  title?: string;
+  code: string;
+  expectedOutput: string;
+  explanation?: string;
+}
+
+export interface LessonCommonMistake {
+  mistake: string;
+  explanation: string;
+  fix: string;
+}
+
+export interface LessonGuidedTask {
+  title: string;
+  instructions: string;
+  hint?: string;
+}
+
+export interface LessonReferenceLink {
+  title: string;
+  url: string;
+}
+
 export interface Exercise {
   id: string;
   lessonId: string;
@@ -40,6 +64,9 @@ export interface Exercise {
   testCases?: TestCase[]; // Public test cases only on client
   orderIndex: number;
   isPublished: boolean;
+  skillTags?: string[];
+  expectedLearningOutcome?: string;
+  hints?: string[];
 }
 
 export interface Lesson {
@@ -48,6 +75,13 @@ export interface Lesson {
   slug: string;
   title: string;
   theoryContent?: string;
+  learningObjectives?: string[];
+  prerequisites?: string[];
+  codeExamples?: LessonExample[];
+  commonMistakes?: LessonCommonMistake[];
+  guidedPracticeTask?: LessonGuidedTask;
+  recap?: string[];
+  referenceLinks?: LessonReferenceLink[];
   exercises: Exercise[];
   orderIndex: number;
   isPublished: boolean;

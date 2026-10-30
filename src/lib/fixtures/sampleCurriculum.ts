@@ -1,4 +1,5 @@
 import { Course, Topic } from '../types/curriculum';
+import { getExerciseFromRegistry, getAllExercisesFromRegistry } from '../curriculum/curriculumRegistry';
 
 /**
  * TECHNICAL TEST FIXTURES
@@ -199,6 +200,13 @@ export const SAMPLE_TEST_COURSE: Course = {
 };
 
 export function getExerciseBySlug(slug: string) {
+  // Check official curriculum registry first
+  const officialMatch = getExerciseFromRegistry(slug);
+  if (officialMatch) {
+    return officialMatch;
+  }
+
+  // Fallback to test fixtures for regression testing
   for (const topic of SAMPLE_TEST_COURSE.topics) {
     for (const lesson of topic.lessons) {
       const match = lesson.exercises.find((ex) => ex.slug === slug);
@@ -211,11 +219,17 @@ export function getExerciseBySlug(slug: string) {
 }
 
 export function getAllExercises() {
-  const list = [];
+  const officialList = getAllExercisesFromRegistry();
+  const seenSlugs = new Set(officialList.map((item) => item.exercise.slug));
+  const list = [...officialList];
+
   for (const topic of SAMPLE_TEST_COURSE.topics) {
     for (const lesson of topic.lessons) {
       for (const ex of lesson.exercises) {
-        list.push({ exercise: ex, lesson, topic });
+        if (!seenSlugs.has(ex.slug)) {
+          seenSlugs.add(ex.slug);
+          list.push({ exercise: ex, lesson, topic });
+        }
       }
     }
   }
