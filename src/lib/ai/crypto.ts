@@ -72,8 +72,9 @@ export function redactApiKey(text: string, apiKey?: string): string {
     sanitized = sanitized.split(apiKey).join('[REDACTED_API_KEY]');
   }
 
-  // Redact common API key patterns: AIzaSy..., sk-..., etc.
+  // Redact common API key patterns: AIzaSy..., AQ..., sk-..., etc.
   sanitized = sanitized.replace(/AIzaSy[A-Za-z0-9_-]{33}/g, '[REDACTED_GEMINI_KEY]');
+  sanitized = sanitized.replace(/AQ\.[A-Za-z0-9_.-]{20,}/g, '[REDACTED_GEMINI_KEY]');
   sanitized = sanitized.replace(/sk-[A-Za-z0-9_-]{20,}/g, '[REDACTED_OPENAI_KEY]');
   sanitized = sanitized.replace(/sk-ant-[A-Za-z0-9_-]{20,}/g, '[REDACTED_ANTHROPIC_KEY]');
 

@@ -278,10 +278,11 @@ export class AIProviderAdapter {
     }
 
     // Format pre-flight validation
-    if (config.provider === 'gemini' && !config.apiKey.startsWith('AIza')) {
+    const trimmedKey = config.apiKey.trim();
+    if (config.provider === 'gemini' && !trimmedKey.startsWith('AIza') && !trimmedKey.startsWith('AQ.')) {
       return {
         success: false,
-        message: 'Định dạng API Key Gemini không hợp lệ (Khóa từ Google AI Studio bắt đầu bằng "AIza").',
+        message: 'Định dạng API Key Gemini không hợp lệ (Khóa từ Google AI Studio bắt đầu bằng "AIza" hoặc "AQ.").',
       };
     }
     if (config.provider === 'openai' && !config.apiKey.startsWith('sk-')) {

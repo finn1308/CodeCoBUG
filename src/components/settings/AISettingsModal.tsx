@@ -281,7 +281,7 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({ isOpen, onClos
               }}
               placeholder={
                 settings.provider === 'gemini'
-                  ? 'AIzaSy...'
+                  ? 'AIzaSy... hoặc AQ.Ab...'
                   : settings.provider === 'openai'
                   ? 'sk-proj-...'
                   : 'sk-ant-...'
