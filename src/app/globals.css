@@ -1312,6 +1312,45 @@ body {
   transform: translateY(-1px);
 }
 
+.ai-drawer-backdrop {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .ai-drawer-backdrop {
+    display: block !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(36, 48, 71, 0.4);
+    backdrop-filter: blur(2px);
+    z-index: 99;
+  }
+
+  .ai-drawer-panel {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    max-width: 400px !important;
+    z-index: 100 !important;
+    box-shadow: var(--shadow-modal) !important;
+    animation: drawerSlideIn 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+@keyframes drawerSlideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
 /* ==========================================================================
    Compact Toast Notifications (LucianLabs-inspired under MIT License)
    ========================================================================== */

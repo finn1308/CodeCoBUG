@@ -467,18 +467,25 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
 
         {/* AI Tutor Slide Drawer */}
         {isAITutorOpen && (
-          <aside
-            style={{
-              width: '380px',
-              maxWidth: '100vw',
-              display: 'flex',
-              flexDirection: 'column',
-              boxShadow: 'var(--shadow-modal)',
-              zIndex: 40,
-            }}
-          >
-            <AITutorPanel
-              isDrawer={true}
+          <>
+            <div
+              className="ai-drawer-backdrop"
+              onClick={() => setIsAITutorOpen(false)}
+            />
+            <aside
+              className="ai-drawer-panel"
+              style={{
+                width: '380px',
+                maxWidth: '100vw',
+                display: 'flex',
+                flexDirection: 'column',
+                boxShadow: 'var(--shadow-modal)',
+                zIndex: 100,
+                backgroundColor: 'var(--bg-surface)',
+              }}
+            >
+              <AITutorPanel
+                isDrawer={true}
               exerciseContext={{
                 title: exercise.title,
                 slug: exercise.slug,
@@ -523,7 +530,8 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
               }}
             />
           </aside>
-        )}
+        </>
+      )}
       </div>
 
       {/* Settings Modal */}
