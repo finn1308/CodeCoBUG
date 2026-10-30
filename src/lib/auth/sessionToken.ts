@@ -15,6 +15,21 @@ export interface SessionPayload {
 }
 
 /**
+ * Universal base64url helpers compatible with both Node.js and browser Webpack buffer polyfills.
+ */
+function toBase64Url(base64: string): string {
+  return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function fromBase64Url(base64url: string): string {
+  let base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
+  while (base64.length % 4 !== 0) {
+    base64 += '=';
+  }
+  return base64;
+}
+
+/**
  * Creates a cryptographically signed HMAC-SHA256 session token for a UserProfile.
  */
 export function createSessionToken(user: UserProfile, expiresInMs = DEFAULT_TOKEN_EXPIRY_MS): string {
@@ -29,10 +44,10 @@ export function createSessionToken(user: UserProfile, expiresInMs = DEFAULT_TOKE
     expiresAt: now + expiresInMs,
   };
 
-  const payloadB64 = Buffer.from(JSON.stringify(payload)).toString('base64url');
+  const payloadB64 = toBase64Url(Buffer.from(JSON.stringify(payload), 'utf8').toString('base64'));
   const hmac = crypto.createHmac('sha256', AUTH_SECRET);
   hmac.update(payloadB64);
-  const signature = hmac.digest('base64url');
+  const signature = toBase64Url(hmac.digest('base64'));
 
   return `${payloadB64}.${signature}`;
 }
@@ -52,21 +67,21 @@ export function verifySessionToken(token: string): UserProfile | null {
   // Recalculate HMAC signature
   const hmac = crypto.createHmac('sha256', AUTH_SECRET);
   hmac.update(payloadB64);
-  const expectedSig = hmac.digest('base64url');
+  const expectedSig = toBase64Url(hmac.digest('base64'));
 
   // Timing safe compare to avoid side-channel attacks
   try {
-    const sigBuf = Buffer.from(signature);
-    const expectedBuf = Buffer.from(expectedSig);
+    const sigBuf = Buffer.from(signature, 'utf8');
+    const expectedBuf = Buffer.from(expectedSig, 'utf8');
     if (sigBuf.length !== expectedBuf.length || !crypto.timingSafeEqual(sigBuf, expectedBuf)) {
       return null;
     }
 
-    const payloadJson = Buffer.from(payloadB64, 'base64url').toString('utf8');
+    const payloadJson = Buffer.from(fromBase64Url(payloadB64), 'base64').toString('utf8');
     const payload: SessionPayload = JSON.parse(payloadJson);
 
     // Check expiration
-    if (Date.now() > payload.expiresAt) {
+    if (payload.expiresAt && Date.now() > payload.expiresAt) {
       return null;
     }
 
@@ -82,4 +97,3 @@ export function verifySessionToken(token: string): UserProfile | null {
     return null;
   }
 }
-
