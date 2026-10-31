@@ -5,6 +5,7 @@
  */
 
 import { createSessionToken } from './sessionToken';
+import { getExerciseFromRegistry } from '../curriculum/curriculumRegistry';
 
 export interface UserProfile {
   id: string;
@@ -14,6 +15,17 @@ export interface UserProfile {
   points: number;
   avatarUrl?: string;
   createdAt: string;
+}
+
+export interface SavedSubmissionTestCaseResult {
+  orderIndex: number;
+  inputData?: string;
+  expectedOutput?: string;
+  actualOutput?: string;
+  isPassed: boolean;
+  errorMessage?: string;
+  executionTimeMs?: number;
+  isHidden?: boolean;
 }
 
 export interface SavedSubmissionRecord {
@@ -29,6 +41,7 @@ export interface SavedSubmissionRecord {
   executionTimeMs: number;
   submittedAt: string;
   errorDetails?: string;
+  testCaseResults?: SavedSubmissionTestCaseResult[];
 }
 
 const STORAGE_SESSION_KEY = 'codecobug_active_session';
@@ -36,6 +49,8 @@ const STORAGE_TOKEN_KEY = 'codecobug_session_token';
 const STORAGE_USERS_KEY = 'codecobug_users_db';
 const STORAGE_SUBMISSIONS_KEY = 'codecobug_submissions_db';
 const STORAGE_DRAFTS_KEY = 'codecobug_code_drafts';
+const STORAGE_PBL_PROGRESS_KEY = 'codecobug_pbl_progress';
+const STORAGE_LESSONS_PROGRESS_KEY = 'codecobug_lessons_progress';
 
 // Demo initial user for instant onboarding
 const INITIAL_DEFAULT_USER: UserProfile = {
@@ -240,6 +255,77 @@ class AuthPersistenceManager {
             }
             this.notify();
           }
+
+          // Auto-sync Project-Based Learning checkpoint progress if accepted
+          if (record.exerciseSlug.startsWith('ex-ai-')) {
+            const chkNum = record.exerciseSlug.split('-')[2];
+            const chkMap: Record<string, string> = {
+              '01': 'khoi-tao-pygame-va-cai-dat-cua-so',
+              '02': 'cau-truc-game-loop-va-clock',
+              '03': 'xu-ly-su-kien-ban-phim-chuot',
+              '04': 'tao-nhan-vat-phi-thuyen-ship',
+              '05': 'xu-ly-dan-laser-va-sprite-groups',
+              '06': 'ham-doi-quai-vat-alien-fleet',
+              '07': 'quan-ly-va-cham-hitbox',
+              '08': 'tinh-diem-va-trang-thai-game',
+            };
+            if (chkMap[chkNum]) {
+              this.saveProjectCheckpoint('project-alien-invasion', chkMap[chkNum], true);
+            }
+          } else if (record.exerciseSlug.startsWith('ex-dv-')) {
+            const chkNum = record.exerciseSlug.split('-')[2];
+            const chkMap: Record<string, string> = {
+              '01': 'gioi-thieu-du-lieu-va-cau-truc-du-lieu',
+              '02': 'gioi-thieu-matplotlib-va-bieu-do-duong',
+              '03': 'bieu-do-phan-tan-va-random-walk',
+              '04': 'gioi-thieu-plotly-va-xac-suat-xuc-xac',
+              '05': 'doc-va-phan-tich-csv-thoi-tiet',
+              '06': 'truc-quan-hoa-geojson-dong-dat',
+              '07': 'lam-viec-voi-web-rest-api',
+              '08': 'du-an-truc-quan-hoa-hoan-chinh',
+            };
+            if (chkMap[chkNum]) {
+              this.saveProjectCheckpoint('project-data-visualization', chkMap[chkNum], true);
+            }
+          } else if (record.exerciseSlug.startsWith('ex-web-')) {
+            const chkNum = record.exerciseSlug.split('-')[2];
+            const chkMap: Record<string, string> = {
+              '01': 'gioi-thieu-django-va-khoi-tao-du-an',
+              '02': 'mo-hinh-request-response-va-urls',
+              '03': 'xay-dung-views-xu-ly-nghiep-vu',
+              '04': 'django-templates-ke-thua',
+              '05': 'database-va-django-models',
+              '06': 'crud-voi-django-forms',
+              '07': 'he-thong-authentication-dang-nhap',
+              '08': 'phan-quyen-va-bao-mat-du-lieu',
+              '09': 'kiem-thu-ung-dung-testing',
+              '10': 'quy-chuan-deployment-dam-may',
+            };
+            if (chkMap[chkNum]) {
+              this.saveProjectCheckpoint('project-django-web-app', chkMap[chkNum], true);
+            }
+          }
+
+          // Auto-sync lesson progress
+          try {
+            const exMatch = getExerciseFromRegistry(record.exerciseSlug);
+            if (exMatch && exMatch.lesson) {
+              const lessonExercises = exMatch.lesson.exercises.map((e) => e.slug);
+              const userAcceptedSlugs = new Set(
+                list
+                  .filter((s) => s.userId === this.currentUser?.id && s.verdict === 'accepted')
+                  .map((s) => s.exerciseSlug)
+              );
+              const allLessonSolved = lessonExercises.length > 0 && lessonExercises.every((slug) => userAcceptedSlugs.has(slug));
+              if (allLessonSolved) {
+                this.saveLessonProgress(exMatch.lesson.slug, 'completed');
+              } else {
+                this.saveLessonProgress(exMatch.lesson.slug, 'in_progress');
+              }
+            }
+          } catch {
+            // ignore
+          }
         }
       } catch (err) {
         console.error('Failed to save submission to localStorage:', err);
@@ -310,6 +396,133 @@ class AuthPersistenceManager {
     } catch {
       return null;
     }
+  }
+
+  // --- PROJECT-BASED LEARNING (PBL) CHECKPOINT PROGRESS PERSISTENCE ---
+
+  public saveProjectCheckpoint(projectId: string, checkpointSlug: string, isCompleted: boolean): void {
+    if (!this.currentUser || typeof window === 'undefined') return;
+
+    try {
+      const raw = localStorage.getItem(STORAGE_PBL_PROGRESS_KEY);
+      const map: Record<string, string[]> = raw ? JSON.parse(raw) : {};
+      const key = `${this.currentUser.id}:${projectId}`;
+      const currentList: string[] = map[key] || [];
+
+      if (isCompleted) {
+        if (!currentList.includes(checkpointSlug)) {
+          currentList.push(checkpointSlug);
+        }
+      } else {
+        const idx = currentList.indexOf(checkpointSlug);
+        if (idx !== -1) currentList.splice(idx, 1);
+      }
+
+      map[key] = currentList;
+      localStorage.setItem(STORAGE_PBL_PROGRESS_KEY, JSON.stringify(map));
+      this.notify();
+    } catch (err) {
+      console.warn('Failed to save project checkpoint:', err);
+    }
+  }
+
+  public getCompletedCheckpoints(projectId: string): string[] {
+    if (!this.currentUser || typeof window === 'undefined') return [];
+
+    try {
+      const raw = localStorage.getItem(STORAGE_PBL_PROGRESS_KEY);
+      if (!raw) return [];
+      const map: Record<string, string[]> = JSON.parse(raw);
+      const key = `${this.currentUser.id}:${projectId}`;
+      return map[key] || [];
+    } catch {
+      return [];
+    }
+  }
+
+  public isCheckpointCompleted(projectId: string, checkpointSlug: string): boolean {
+    const list = this.getCompletedCheckpoints(projectId);
+    return list.includes(checkpointSlug);
+  }
+
+  public getProjectProgress(
+    projectId: string,
+    totalCheckpoints: number
+  ): { completedCount: number; percentage: number; isCompleted: boolean } {
+    const list = this.getCompletedCheckpoints(projectId);
+    const completedCount = list.length;
+    const percentage = totalCheckpoints > 0 ? Math.round((completedCount / totalCheckpoints) * 100) : 0;
+    return {
+      completedCount,
+      percentage,
+      isCompleted: completedCount >= totalCheckpoints && totalCheckpoints > 0,
+    };
+  }
+
+  // --- LESSON PROGRESS PERSISTENCE ---
+
+  public saveLessonProgress(lessonSlug: string, status: 'in_progress' | 'completed'): void {
+    if (!this.currentUser || typeof window === 'undefined') return;
+
+    try {
+      const raw = localStorage.getItem(STORAGE_LESSONS_PROGRESS_KEY);
+      const map: Record<string, Record<string, 'in_progress' | 'completed'>> = raw ? JSON.parse(raw) : {};
+      const userMap = map[this.currentUser.id] || {};
+
+      // Do not downgrade completed to in_progress
+      if (userMap[lessonSlug] === 'completed' && status === 'in_progress') {
+        return;
+      }
+
+      userMap[lessonSlug] = status;
+      map[this.currentUser.id] = userMap;
+      localStorage.setItem(STORAGE_LESSONS_PROGRESS_KEY, JSON.stringify(map));
+      this.notify();
+    } catch (err) {
+      console.warn('Failed to save lesson progress:', err);
+    }
+  }
+
+  public getLessonProgressMap(): Record<string, 'in_progress' | 'completed'> {
+    if (!this.currentUser || typeof window === 'undefined') return {};
+
+    try {
+      const raw = localStorage.getItem(STORAGE_LESSONS_PROGRESS_KEY);
+      if (!raw) return {};
+      const map: Record<string, Record<string, 'in_progress' | 'completed'>> = JSON.parse(raw);
+      return map[this.currentUser.id] || {};
+    } catch {
+      return {};
+    }
+  }
+
+  public getLessonStatus(
+    lessonSlug: string,
+    lessonExerciseSlugs: string[] = []
+  ): 'not_started' | 'in_progress' | 'completed' {
+    if (!this.currentUser) return 'not_started';
+
+    const progressMap = this.getLessonProgressMap();
+
+    // If lesson has exercises, status is strictly derived from actual accepted submissions
+    if (lessonExerciseSlugs.length > 0) {
+      const userSubmissions = this.getAllUserSubmissions();
+      const acceptedSlugs = new Set(
+        userSubmissions.filter((s) => s.verdict === 'accepted').map((s) => s.exerciseSlug)
+      );
+
+      const allSolved = lessonExerciseSlugs.every((slug) => acceptedSlugs.has(slug));
+      if (allSolved) {
+        return 'completed';
+      }
+
+      const anySolved = lessonExerciseSlugs.some((slug) => acceptedSlugs.has(slug));
+      if (anySolved) {
+        return 'in_progress';
+      }
+    }
+
+    return progressMap[lessonSlug] || 'not_started';
   }
 }
 

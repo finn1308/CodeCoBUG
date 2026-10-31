@@ -315,3 +315,18 @@ All tables must have RLS explicitly enabled:
 
 > [!CRITICAL]
 > `test_cases.is_hidden = true` rows are **NEVER** accessible to standard client queries. The Judge Engine API uses the Supabase `service_role` key on the server side to fetch hidden tests, compare outputs, and return only the boolean pass/fail status and execution metrics without ever revealing the hidden inputs or expected outputs to the client.
+
+---
+
+## 4. Client-Side State & Local Storage Schema
+
+For guest users and instant offline-first client persistence, `authManager` maintains key-value data structures under the following isolated localStorage keys:
+
+| Storage Key | Type | Description |
+| :--- | :--- | :--- |
+| `codecobug_user` | `UserProfile` | Active user account (Guest or Supabase profile) |
+| `codecobug_submissions` | `SavedSubmissionRecord[]` | Complete submission log including individual `testCaseResults` arrays |
+| `codecobug_lessons_progress` | `Record<string, LessonProgressRecord>` | Lesson progress map (`not_started`, `in_progress`, `completed`), strictly updated when linked exercises are solved |
+| `codecobug_project_progress` | `Record<string, ProjectProgressRecord>` | Checkpoint completion states for Alien Invasion, Data Visualization, Django Web App |
+| `codecobug_ai_credentials` | `EncryptedTokenEnvelope` | AES-256-GCM encrypted BYOK keys (`iv:authTag:ciphertext`) |
+| `codecobug_sidebar_collapsed` | `boolean` | Desktop navigation bar state |

@@ -11,12 +11,23 @@ export const CHAPTER_02_VARIABLES: Topic = {
   isPublished: true,
   isLocked: false,
   accentColor: 'sky',
+  level: 'beginner',
+  prerequisites: ['topic-01-lam-quen-python'],
   lessons: [
     {
       id: 'lesson-02-01-khai-bao-bien',
       topicId: 'topic-02-bien-va-kieu-du-lieu',
       slug: 'khai-bao-bien-va-quy-tac-dat-ten',
       title: 'Bài 01: Khai báo biến & Quy tắc đặt tên (PEP 8)',
+      level: 'beginner',
+      visualExplanation: 'Mô hình biến và ô nhớ trong Python:\n[Tên biến: diem_so] ──(trỏ tới)──► [Đối tượng ô nhớ: 50 (int)]\ndiem_so = 80        ──(trỏ lại)──► [Đối tượng ô nhớ mới: 80 (int)]',
+      miniChallenge: {
+        title: 'Hồ sơ nhân vật Game',
+        instructions: 'Khai báo 3 biến nhân vật: ten_nhan_vat = "Arthur", cap_do = 5, mau_hp = 100. Sau đó in ra 1 dòng tóm tắt thông số.',
+        hint: 'Dùng f-string: print(f"Nhan vat {ten_nhan_vat} - Lv.{cap_do} - HP: {mau_hp}")',
+        expectedOutputSnippet: 'HP:',
+      },
+      relatedLessons: ['nhap-du-lieu-input', 'cac-kieu-du-lieu-co-ban'],
       theoryContent: `Trong Python, **biến (Variable)** là tên gọi đại diện cho một vùng ô nhớ lưu trữ giá trị dữ liệu. Không giống như C++ hay Java đòi hỏi khai báo kiểu tường minh (như \`int x = 5;\`), Python là ngôn ngữ có kiểu dữ liệu động (dynamically typed) — biến được tự động tạo ra ngay khi bạn gán giá trị cho nó bằng dấu bằng \`=\`.
 
 **Quy tắc đặt tên biến chuẩn trong Python (PEP 8)**:
@@ -153,6 +164,15 @@ export const CHAPTER_02_VARIABLES: Topic = {
       topicId: 'topic-02-bien-va-kieu-du-lieu',
       slug: 'cac-kieu-du-lieu-co-ban',
       title: 'Bài 02: Các kiểu dữ liệu cơ bản (int, float, str, bool)',
+      level: 'beginner',
+      visualExplanation: 'Bốn kiểu dữ liệu nguyên thủy cơ bản trong Python:\n┌──────────┬──────────────────┬─────────────────┐\n│ Kiểu     │ Ý nghĩa          │ Ví dụ           │\n├──────────┼──────────────────┼─────────────────┤\n│ int      │ Số nguyên        │ 42, -5, 0       │\n│ float    │ Số thực thập phân│ 3.14, -0.5      │\n│ str      │ Chuỗi ký tự      │ "CodeCoBUG"     │\n│ bool     │ Đúng hoặc Sai    │ True, False     │\n└──────────┴──────────────────┴─────────────────┘',
+      miniChallenge: {
+        title: 'Kiểm tra kiểu dữ liệu đối lập',
+        instructions: 'Tạo một biến x mang chuỗi "99" và biến y mang số thực 99.0. Dùng print(type(x)) và print(type(y)) để thấy sự khác biệt.',
+        hint: 'Biến có ngoặc kép luôn là <class \'str\'>, số thập phân là <class \'float\'>.',
+        expectedOutputSnippet: "<class 'str'>",
+      },
+      relatedLessons: ['khai-bao-bien-va-quy-tac-dat-ten', 'kiem-tra-va-ep-kieu-du-lieu'],
       theoryContent: `Trong Python có 4 kiểu dữ liệu cơ bản thường gặp nhất:
 1. **\`int\` (Integer)**: Số nguyên dương, âm hoặc bằng 0, không có phần thập phân (ví dụ: \`42\`, \`-7\`, \`0\`).
 2. **\`float\` (Floating point)**: Số thực có chứa dấu phẩy thập phân (trong lập trình dùng dấu chấm \`.\`, ví dụ: \`3.14\`, \`-0.5\`, \`2.0\`).
@@ -269,6 +289,15 @@ Bạn có thể dùng hàm **\`type(bien)\`** để kiểm tra kiểu dữ liệ
       topicId: 'topic-02-bien-va-kieu-du-lieu',
       slug: 'kiem-tra-va-ep-kieu-du-lieu',
       title: 'Bài 03: Ép kiểu dữ liệu (Type Casting)',
+      level: 'beginner',
+      visualExplanation: 'Chuyển đổi kiểu dữ liệu (Type Casting):\n"123" (str)    ──► int("123")    ──► 123 (int)\n"3.14" (str)   ──► float("3.14") ──► 3.14 (float)\n7.89 (float)   ──► int(7.89)     ──► 7 (int - cắt bỏ phần thập phân)\n42 (int)       ──► str(42)       ──► "42" (str)',
+      miniChallenge: {
+        title: 'Máy tính tuổi tương lai',
+        instructions: 'Nhập tuổi hiện tại từ bàn phím bằng int(input()), tính tuổi sau 5 năm nữa và in ra thông báo "5 nam nua ban se {tuoi_moi} tuoi".',
+        hint: 'tuoi = int(input()); print(f"5 nam nua ban se {tuoi + 5} tuoi")',
+        expectedOutputSnippet: '5 nam nua ban se',
+      },
+      relatedLessons: ['cac-kieu-du-lieu-co-ban', 'gan-nhieu-bien-va-nhap-xuat'],
       theoryContent: `**Ép kiểu (Type Casting)** là kỹ thuật chuyển đổi giá trị từ kiểu dữ liệu này sang kiểu dữ liệu khác. Đây là kỹ năng cực kỳ quan trọng vì hàm \`input()\` luôn trả về chuỗi (\`str\`), do đó nếu muốn tính toán số học, ta bắt buộc phải ép sang \`int\` hoặc \`float\`.
 
 Các hàm ép kiểu tiêu biểu:
@@ -390,6 +419,15 @@ Các hàm ép kiểu tiêu biểu:
       topicId: 'topic-02-bien-va-kieu-du-lieu',
       slug: 'gan-nhieu-bien-va-nhap-xuat',
       title: 'Bài 04: Gán nhiều biến & Nhập xuất đồng thời',
+      level: 'beginner',
+      visualExplanation: 'Kỹ thuật Pythonic Unpacking & Swapping:\nGán song song:   a, b = 1, 2       (a = 1, b = 2)\nGán chuỗi:       x = y = z = 0     (cả 3 cùng bằng 0)\nHoán vị:         a, b = b, a       (hoán đổi giá trị tức thời không cần biến tạm)\nĐọc 1 dòng:      x, y = map(int, input().split())',
+      miniChallenge: {
+        title: 'Đảo ngược 3 số nhanh chóng',
+        instructions: 'Cho 3 biến a = 1, b = 2, c = 3. Hãy dùng một câu lệnh gán duy nhất để đảo ngược thứ tự thành c, b, a và in ra.',
+        hint: 'a, b, c = c, b, a; print(a, b, c)',
+        expectedOutputSnippet: '3 2 1',
+      },
+      relatedLessons: ['kiem-tra-va-ep-kieu-du-lieu'],
       theoryContent: `Một trong những nét đẹp độc đáo của Python là cú pháp **Gán nhiều biến trên cùng một dòng (Multiple Assignment / Unpacking)**.
 
 1. **Gán nhiều giá trị cho nhiều biến**:

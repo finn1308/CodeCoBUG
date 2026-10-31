@@ -148,6 +148,30 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
                 </div>
               )}
 
+              {lesson.prerequisites && lesson.prerequisites.length > 0 && (
+                <div>
+                  <div style={{ fontWeight: 700, color: 'var(--text-primary)', marginBottom: '4px' }}>
+                    🔑 Kiến thức cần biết trước:
+                  </div>
+                  <ul style={{ margin: 0, paddingLeft: '18px' }}>
+                    {lesson.prerequisites.map((req, i) => (
+                      <li key={i}>{req}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {lesson.visualExplanation && (
+                <div style={{ backgroundColor: 'var(--pastel-sky-light)', border: '1px solid var(--pastel-sky)', padding: '10px 12px', borderRadius: 'var(--radius-md)' }}>
+                  <div style={{ fontWeight: 700, color: 'var(--pastel-sky-text)', marginBottom: '4px' }}>
+                    💡 Mô hình tư duy trực quan:
+                  </div>
+                  <div style={{ whiteSpace: 'pre-line', fontSize: '0.82rem', color: 'var(--text-primary)' }}>
+                    {lesson.visualExplanation}
+                  </div>
+                </div>
+              )}
+
               {lesson.theoryContent && (
                 <div>
                   <div style={{ fontWeight: 700, color: 'var(--text-primary)', marginBottom: '4px' }}>
@@ -168,6 +192,17 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
                     <div key={i} style={{ marginBottom: '8px', backgroundColor: 'var(--bg-tertiary)', padding: '8px 12px', borderRadius: 'var(--radius-md)' }}>
                       {ex.title && <div style={{ fontWeight: 600, fontSize: '0.78rem', color: 'var(--text-muted)' }}>{ex.title}</div>}
                       <pre style={{ margin: '4px 0', fontFamily: 'monospace', fontSize: '0.82rem', overflowX: 'auto' }}>{ex.code}</pre>
+                      {ex.expectedOutput && (
+                        <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                          <span style={{ fontWeight: 600 }}>Kết quả: </span>
+                          <span style={{ fontFamily: 'monospace' }}>{ex.expectedOutput}</span>
+                        </div>
+                      )}
+                      {ex.explanation && (
+                        <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '2px', fontStyle: 'italic' }}>
+                          {ex.explanation}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -184,6 +219,51 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({
                       <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>💡 Cách sửa: {m.fix}</div>
                     </div>
                   ))}
+                </div>
+              )}
+
+              {lesson.guidedPracticeTask && (
+                <div style={{ backgroundColor: 'var(--pastel-mint-light)', border: '1px solid var(--pastel-mint)', padding: '10px 12px', borderRadius: 'var(--radius-md)' }}>
+                  <div style={{ fontWeight: 700, color: 'var(--pastel-mint-text)', marginBottom: '4px' }}>
+                    🛠️ Thực hành có hướng dẫn: {lesson.guidedPracticeTask.title}
+                  </div>
+                  <div style={{ fontSize: '0.82rem', color: 'var(--text-primary)' }}>
+                    {lesson.guidedPracticeTask.instructions}
+                  </div>
+                  {lesson.guidedPracticeTask.hint && (
+                    <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                      💡 Gợi ý: {lesson.guidedPracticeTask.hint}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {lesson.miniChallenge && (
+                <div style={{ backgroundColor: 'var(--pastel-lavender-light)', border: '1px solid var(--pastel-lavender)', padding: '10px 12px', borderRadius: 'var(--radius-md)' }}>
+                  <div style={{ fontWeight: 700, color: 'var(--pastel-lavender-text)', marginBottom: '4px' }}>
+                    🏆 Thử thách nâng cao: {lesson.miniChallenge.title}
+                  </div>
+                  <div style={{ fontSize: '0.82rem', color: 'var(--text-primary)' }}>
+                    {lesson.miniChallenge.instructions}
+                  </div>
+                  {lesson.miniChallenge.hint && (
+                    <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                      💡 Gợi ý: {lesson.miniChallenge.hint}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {lesson.recap && lesson.recap.length > 0 && (
+                <div>
+                  <div style={{ fontWeight: 700, color: 'var(--text-primary)', marginBottom: '4px' }}>
+                    📌 Tổng kết cốt lõi:
+                  </div>
+                  <ul style={{ margin: 0, paddingLeft: '18px' }}>
+                    {lesson.recap.map((point, i) => (
+                      <li key={i}>{point}</li>
+                    ))}
+                  </ul>
                 </div>
               )}
 

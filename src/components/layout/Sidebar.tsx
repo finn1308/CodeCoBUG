@@ -14,11 +14,15 @@ import {
   User,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Sparkles,
   Award,
   HelpCircle,
   FileCode,
   History,
+  Layers,
+  Compass,
+  GraduationCap,
 } from 'lucide-react';
 import { authManager, UserProfile } from '@/lib/auth/authManager';
 import { Badge } from '@/components/ui';
@@ -28,7 +32,7 @@ export interface SidebarProps {
   onToggleCollapse?: () => void;
   onOpenAuth: () => void;
   onOpenAISettings: () => void;
-  onOpenWeaknessTracker: (initialTab?: 'skills' | 'queue' | 'policy') => void;
+  onOpenWeaknessTracker: (initialTab?: 'skills' | 'queue' | 'policy' | 'history') => void;
   onToggleAITutor?: () => void;
   onOpenHelp?: () => void;
 }
@@ -55,6 +59,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const isHome = pathname === '/';
   const isCurriculum = pathname.startsWith('/curriculum');
   const isExercise = pathname.startsWith('/exercises');
+
+  // Accordion open/close state for submenu groups (mặc định mở nếu đang ở đúng mục, hoặc người dùng tự đóng/mở)
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    home: isHome,
+    curriculum: isCurriculum,
+    practice: isExercise,
+  });
+
+  const toggleSection = (key: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setOpenSections((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
 
   return (
     <aside
@@ -122,17 +142,52 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <nav className="sidebar-nav-list" aria-label="3 Điểm đến chính">
         {/* 1. Tổng quan (Dashboard) */}
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <Link
-            href="/"
-            className={`sidebar-nav-item ${isHome ? 'sidebar-nav-item-active' : ''}`}
-            title="1. Tổng quan — Bảng điều khiển học tập"
-          >
-            <LayoutDashboard size={18} style={{ flexShrink: 0 }} />
-            {!isCollapsed && <span>Tổng quan</span>}
-          </Link>
+          <div style={{ display: 'flex', alignItems: 'center', width: '100%', position: 'relative' }}>
+            <Link
+              href="/"
+              className={`sidebar-nav-item ${isHome ? 'sidebar-nav-item-active' : ''}`}
+              style={{ flex: 1, paddingRight: isCollapsed ? undefined : '36px' }}
+              title="1. Tổng quan — Bảng điều khiển học tập"
+            >
+              <LayoutDashboard size={18} style={{ flexShrink: 0 }} />
+              {!isCollapsed && <span>Tổng quan</span>}
+            </Link>
+            {!isCollapsed && (
+              <button
+                type="button"
+                onClick={(e) => toggleSection('home', e)}
+                style={{
+                  position: 'absolute',
+                  right: '8px',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: isHome ? 'var(--pastel-mint-text)' : 'var(--text-muted)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '4px',
+                  borderRadius: 'var(--radius-sm)',
+                  transition: 'transform var(--transition-base), color var(--transition-base)',
+                }}
+                title={openSections.home ? 'Thu gọn mục con' : 'Mở rộng mục con'}
+                aria-label={openSections.home ? 'Thu gọn mục con Tổng quan' : 'Mở rộng mục con Tổng quan'}
+              >
+                {openSections.home ? <ChevronDown size={15} /> : <ChevronRight size={15} />}
+              </button>
+            )}
+          </div>
 
-          {!isCollapsed && (
+          {!isCollapsed && openSections.home && (
             <div className="sidebar-submenu">
+              <Link
+                href="/learning-path"
+                className={`sidebar-sub-item ${pathname === '/learning-path' ? 'sidebar-sub-item-active' : ''}`}
+                title="Lộ trình học Python cá nhân hóa thích ứng"
+              >
+                <Compass size={14} style={{ color: 'var(--pastel-sky-text)', flexShrink: 0 }} />
+                <span>Lộ trình cá nhân hóa</span>
+              </Link>
               <button
                 type="button"
                 className="sidebar-sub-item"
@@ -148,16 +203,43 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* 2. Học Python (Curriculum) */}
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <Link
-            href="/#curriculum"
-            className={`sidebar-nav-item ${isCurriculum ? 'sidebar-nav-item-active' : ''}`}
-            title="2. Học Python — Giáo trình & Chủ đề"
-          >
-            <BookOpen size={18} style={{ flexShrink: 0 }} />
-            {!isCollapsed && <span>Học Python</span>}
-          </Link>
+          <div style={{ display: 'flex', alignItems: 'center', width: '100%', position: 'relative' }}>
+            <Link
+              href="/#curriculum"
+              className={`sidebar-nav-item ${isCurriculum ? 'sidebar-nav-item-active' : ''}`}
+              style={{ flex: 1, paddingRight: isCollapsed ? undefined : '36px' }}
+              title="2. Học Python — Giáo trình & Chủ đề"
+            >
+              <BookOpen size={18} style={{ flexShrink: 0 }} />
+              {!isCollapsed && <span>Học Python</span>}
+            </Link>
+            {!isCollapsed && (
+              <button
+                type="button"
+                onClick={(e) => toggleSection('curriculum', e)}
+                style={{
+                  position: 'absolute',
+                  right: '8px',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: isCurriculum ? 'var(--pastel-mint-text)' : 'var(--text-muted)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '4px',
+                  borderRadius: 'var(--radius-sm)',
+                  transition: 'transform var(--transition-base), color var(--transition-base)',
+                }}
+                title={openSections.curriculum ? 'Thu gọn mục con' : 'Mở rộng mục con'}
+                aria-label={openSections.curriculum ? 'Thu gọn mục con Học Python' : 'Mở rộng mục con Học Python'}
+              >
+                {openSections.curriculum ? <ChevronDown size={15} /> : <ChevronRight size={15} />}
+              </button>
+            )}
+          </div>
 
-          {!isCollapsed && (
+          {!isCollapsed && openSections.curriculum && (
             <div className="sidebar-submenu">
               <Link
                 href="/curriculum"
@@ -167,22 +249,57 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <FileCode size={14} style={{ color: 'var(--pastel-sky-text)', flexShrink: 0 }} />
                 <span>Chủ đề & Bài học</span>
               </Link>
+              <Link
+                href="/projects"
+                className={`sidebar-sub-item ${pathname.startsWith('/projects') ? 'sidebar-sub-item-active' : ''}`}
+                title="3 Dự án lớn thực chiến (Pygame, Data, Web)"
+              >
+                <Layers size={14} style={{ color: 'var(--pastel-lavender-text)', flexShrink: 0 }} />
+                <span>Dự án thực chiến</span>
+              </Link>
             </div>
           )}
         </div>
 
         {/* 3. Luyện tập (Practice Workspace & Mistakes Review) */}
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <Link
-            href="/exercises/in-loi-chao-codecobug"
-            className={`sidebar-nav-item ${isExercise ? 'sidebar-nav-item-active' : ''}`}
-            title="3. Luyện tập — Không gian lập trình & Ôn tập lỗi sai"
-          >
-            <Code2 size={18} style={{ flexShrink: 0 }} />
-            {!isCollapsed && <span>Luyện tập</span>}
-          </Link>
+          <div style={{ display: 'flex', alignItems: 'center', width: '100%', position: 'relative' }}>
+            <Link
+              href="/exercises/in-loi-chao-codecobug"
+              className={`sidebar-nav-item ${isExercise ? 'sidebar-nav-item-active' : ''}`}
+              style={{ flex: 1, paddingRight: isCollapsed ? undefined : '36px' }}
+              title="3. Luyện tập — Không gian lập trình & Ôn tập lỗi sai"
+            >
+              <Code2 size={18} style={{ flexShrink: 0 }} />
+              {!isCollapsed && <span>Luyện tập</span>}
+            </Link>
+            {!isCollapsed && (
+              <button
+                type="button"
+                onClick={(e) => toggleSection('practice', e)}
+                style={{
+                  position: 'absolute',
+                  right: '8px',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: isExercise ? 'var(--pastel-mint-text)' : 'var(--text-muted)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '4px',
+                  borderRadius: 'var(--radius-sm)',
+                  transition: 'transform var(--transition-base), color var(--transition-base)',
+                }}
+                title={openSections.practice ? 'Thu gọn mục con' : 'Mở rộng mục con'}
+                aria-label={openSections.practice ? 'Thu gọn mục con Luyện tập' : 'Mở rộng mục con Luyện tập'}
+              >
+                {openSections.practice ? <ChevronDown size={15} /> : <ChevronRight size={15} />}
+              </button>
+            )}
+          </div>
 
-          {!isCollapsed && (
+          {!isCollapsed && openSections.practice && (
             <div className="sidebar-submenu">
               <Link
                 href="/exercises/in-loi-chao-codecobug"
@@ -191,6 +308,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
               >
                 <Code2 size={14} style={{ color: 'var(--pastel-mint-text)', flexShrink: 0 }} />
                 <span>Phòng lab code</span>
+              </Link>
+              <Link
+                href="/exams"
+                className={`sidebar-sub-item ${pathname.startsWith('/exams') ? 'sidebar-sub-item-active' : ''}`}
+                title="Hệ thống thi thử & Đánh giá năng lực chuẩn hóa"
+              >
+                <GraduationCap size={14} style={{ color: 'var(--pastel-lavender-text)', flexShrink: 0 }} />
+                <span>Đánh giá & Thi thử</span>
               </Link>
               <button
                 type="button"
@@ -204,7 +329,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <button
                 type="button"
                 className="sidebar-sub-item"
-                onClick={() => onOpenWeaknessTracker('policy')}
+                onClick={() => onOpenWeaknessTracker('history')}
                 title="Xem lại lịch sử các lần nộp bài"
               >
                 <History size={14} style={{ color: 'var(--pastel-sky-text)', flexShrink: 0 }} />

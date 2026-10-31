@@ -1,11 +1,17 @@
 import { notFound } from 'next/navigation';
-import { getExerciseBySlug } from '@/lib/fixtures/sampleCurriculum';
+import { getExerciseBySlug, getAllExercises } from '@/lib/fixtures/sampleCurriculum';
 import { ExerciseWorkspace } from '@/components/workspace/ExerciseWorkspace';
 
 interface ExercisePageProps {
   params: Promise<{
     exerciseSlug: string;
   }>;
+}
+
+export async function generateStaticParams() {
+  return getAllExercises().map((item) => ({
+    exerciseSlug: item.exercise.slug,
+  }));
 }
 
 export default async function ExercisePage({ params }: ExercisePageProps) {

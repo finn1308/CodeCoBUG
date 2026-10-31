@@ -19,25 +19,23 @@ export interface AISettings {
 const DEFAULT_SETTINGS: AISettings = {
   provider: 'gemini',
   apiKey: '',
-  model: 'gemini-2.5-flash',
+  model: 'gemini-2.0-flash',
   temperature: 0.7,
 };
 
 const PROVIDER_MODELS: Record<string, { id: string; name: string }[]> = {
   gemini: [
-    { id: 'gemini-2.5-flash', name: 'Google Gemini 2.5 Flash (Khuyên dùng - Nhanh & Mới nhất)' },
-    { id: 'gemini-2.5-pro', name: 'Google Gemini 2.5 Pro (Suy luận sâu & Tư duy mạnh)' },
-    { id: 'gemini-2.0-flash', name: 'Google Gemini 2.0 Flash (Tốc độ cao)' },
-    { id: 'gemini-1.5-flash', name: 'Google Gemini 1.5 Flash (Bản cũ)' },
-    { id: 'gemini-1.5-pro', name: 'Google Gemini 1.5 Pro (Bản cũ)' },
+    { id: 'gemini-2.0-flash', name: 'Google Gemini 2.0 Flash (Khuyên dùng - Nhanh & Mới nhất)' },
+    { id: 'gemini-1.5-flash', name: 'Google Gemini 1.5 Flash (Siêu tốc & Tiết kiệm)' },
+    { id: 'gemini-1.5-pro', name: 'Google Gemini 1.5 Pro (Suy luận sâu & Code nâng cao)' },
   ],
   openai: [
     { id: 'gpt-4o-mini', name: 'OpenAI GPT-4o Mini (Tiết kiệm)' },
     { id: 'gpt-4o', name: 'OpenAI GPT-4o (Đa phương thức cao cấp)' },
   ],
   anthropic: [
-    { id: 'claude-3-5-sonnet', name: 'Anthropic Claude 3.5 Sonnet' },
-    { id: 'claude-3-5-haiku', name: 'Anthropic Claude 3.5 Haiku' },
+    { id: 'claude-3-5-sonnet-20241022', name: 'Anthropic Claude 3.5 Sonnet' },
+    { id: 'claude-3-5-haiku-20241022', name: 'Anthropic Claude 3.5 Haiku' },
   ],
   custom: [
     { id: 'custom-model', name: 'Custom OpenAI-Compatible Model' },
@@ -58,6 +56,15 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({ isOpen, onClos
         const stored = localStorage.getItem('codecobug_ai_settings');
         if (stored) {
           const parsed = JSON.parse(stored);
+          if (parsed.model && (parsed.model.startsWith('gemini-3.') || parsed.model.startsWith('gemini-4.') || parsed.model === 'gemini-flash-latest')) {
+            parsed.model = 'gemini-2.0-flash';
+          }
+          if (parsed.model === 'claude-3-5-sonnet') {
+            parsed.model = 'claude-3-5-sonnet-20241022';
+          }
+          if (parsed.model === 'claude-3-5-haiku') {
+            parsed.model = 'claude-3-5-haiku-20241022';
+          }
           setSettings((prev) => ({ ...prev, ...parsed }));
         }
       } catch {

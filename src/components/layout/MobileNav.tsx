@@ -18,6 +18,10 @@ import {
   HelpCircle,
   FileCode,
   History,
+  Layers,
+  Compass,
+  ChevronDown,
+  ChevronRight,
 } from 'lucide-react';
 import { authManager, UserProfile } from '@/lib/auth/authManager';
 import { Badge } from '@/components/ui';
@@ -27,7 +31,7 @@ export interface MobileNavProps {
   onClose: () => void;
   onOpenAuth: () => void;
   onOpenAISettings: () => void;
-  onOpenWeaknessTracker: (initialTab?: 'skills' | 'queue' | 'policy') => void;
+  onOpenWeaknessTracker: (initialTab?: 'skills' | 'queue' | 'policy' | 'history') => void;
   onToggleAITutor?: () => void;
   onOpenHelp?: () => void;
 }
@@ -69,11 +73,27 @@ export const MobileNav: React.FC<MobileNavProps> = ({
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
-
   const isHome = pathname === '/';
   const isCurriculum = pathname.startsWith('/curriculum');
   const isExercise = pathname.startsWith('/exercises');
+
+  // Accordion open/close state for submenu groups
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    home: isHome,
+    curriculum: isCurriculum,
+    practice: isExercise,
+  });
+
+  const toggleSection = (key: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setOpenSections((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
+
+  if (!isOpen) return null;
 
   return (
     <div
@@ -152,104 +172,197 @@ export const MobileNav: React.FC<MobileNavProps> = ({
         >
           {/* 1. Tổng quan (Dashboard) */}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <Link
-              href="/"
-              onClick={onClose}
-              className={`sidebar-nav-item ${isHome ? 'sidebar-nav-item-active' : ''}`}
-              style={{ minHeight: '48px', padding: '12px 16px' }}
-            >
-              <LayoutDashboard size={20} />
-              <span>Tổng quan</span>
-            </Link>
-
-            <div className="sidebar-submenu" style={{ margin: '4px 0 6px 18px', paddingLeft: '14px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', width: '100%', position: 'relative' }}>
+              <Link
+                href="/"
+                onClick={onClose}
+                className={`sidebar-nav-item ${isHome ? 'sidebar-nav-item-active' : ''}`}
+                style={{ flex: 1, minHeight: '48px', padding: '12px 16px', paddingRight: '48px' }}
+              >
+                <LayoutDashboard size={20} />
+                <span>Tổng quan</span>
+              </Link>
               <button
                 type="button"
-                className="sidebar-sub-item"
-                style={{ minHeight: '44px', padding: '8px 12px' }}
-                onClick={() => {
-                  onClose();
-                  onOpenWeaknessTracker('skills');
+                onClick={(e) => toggleSection('home', e)}
+                style={{
+                  position: 'absolute',
+                  right: '10px',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: isHome ? 'var(--pastel-mint-text)' : 'var(--text-muted)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '8px',
+                  borderRadius: 'var(--radius-sm)',
                 }}
+                title={openSections.home ? 'Thu gọn mục con' : 'Mở rộng mục con'}
+                aria-label={openSections.home ? 'Thu gọn mục con Tổng quan' : 'Mở rộng mục con Tổng quan'}
               >
-                <TrendingUp size={16} style={{ color: 'var(--pastel-mint-text)' }} />
-                <span>Thống kê chi tiết</span>
+                {openSections.home ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
               </button>
             </div>
+
+            {openSections.home && (
+              <div className="sidebar-submenu" style={{ margin: '4px 0 6px 18px', paddingLeft: '14px' }}>
+                <Link
+                  href="/learning-path"
+                  onClick={onClose}
+                  className={`sidebar-sub-item ${pathname === '/learning-path' ? 'sidebar-sub-item-active' : ''}`}
+                  style={{ minHeight: '44px', padding: '8px 12px' }}
+                >
+                  <Compass size={16} style={{ color: 'var(--pastel-sky-text)' }} />
+                  <span>Lộ trình cá nhân hóa</span>
+                </Link>
+                <button
+                  type="button"
+                  className="sidebar-sub-item"
+                  style={{ minHeight: '44px', padding: '8px 12px' }}
+                  onClick={() => {
+                    onClose();
+                    onOpenWeaknessTracker('skills');
+                  }}
+                >
+                  <TrendingUp size={16} style={{ color: 'var(--pastel-mint-text)' }} />
+                  <span>Thống kê chi tiết</span>
+                </button>
+              </div>
+            )}
           </div>
 
           {/* 2. Học Python (Curriculum) */}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <Link
-              href="/#curriculum"
-              onClick={onClose}
-              className={`sidebar-nav-item ${isCurriculum ? 'sidebar-nav-item-active' : ''}`}
-              style={{ minHeight: '48px', padding: '12px 16px' }}
-            >
-              <BookOpen size={20} />
-              <span>Học Python</span>
-            </Link>
-
-            <div className="sidebar-submenu" style={{ margin: '4px 0 6px 18px', paddingLeft: '14px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', width: '100%', position: 'relative' }}>
               <Link
-                href="/curriculum"
+                href="/#curriculum"
                 onClick={onClose}
-                className={`sidebar-sub-item ${isCurriculum ? 'sidebar-sub-item-active' : ''}`}
-                style={{ minHeight: '44px', padding: '8px 12px' }}
+                className={`sidebar-nav-item ${isCurriculum ? 'sidebar-nav-item-active' : ''}`}
+                style={{ flex: 1, minHeight: '48px', padding: '12px 16px', paddingRight: '48px' }}
               >
-                <FileCode size={16} style={{ color: 'var(--pastel-sky-text)' }} />
-                <span>Chủ đề & Bài học</span>
+                <BookOpen size={20} />
+                <span>Học Python</span>
               </Link>
+              <button
+                type="button"
+                onClick={(e) => toggleSection('curriculum', e)}
+                style={{
+                  position: 'absolute',
+                  right: '10px',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: isCurriculum ? 'var(--pastel-mint-text)' : 'var(--text-muted)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '8px',
+                  borderRadius: 'var(--radius-sm)',
+                }}
+                title={openSections.curriculum ? 'Thu gọn mục con' : 'Mở rộng mục con'}
+                aria-label={openSections.curriculum ? 'Thu gọn mục con Học Python' : 'Mở rộng mục con Học Python'}
+              >
+                {openSections.curriculum ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+              </button>
             </div>
+
+            {openSections.curriculum && (
+              <div className="sidebar-submenu" style={{ margin: '4px 0 6px 18px', paddingLeft: '14px' }}>
+                <Link
+                  href="/curriculum"
+                  onClick={onClose}
+                  className={`sidebar-sub-item ${isCurriculum ? 'sidebar-sub-item-active' : ''}`}
+                  style={{ minHeight: '44px', padding: '8px 12px' }}
+                >
+                  <FileCode size={16} style={{ color: 'var(--pastel-sky-text)' }} />
+                  <span>Chủ đề & Bài học</span>
+                </Link>
+                <Link
+                  href="/projects"
+                  onClick={onClose}
+                  className={`sidebar-sub-item ${pathname.startsWith('/projects') ? 'sidebar-sub-item-active' : ''}`}
+                  style={{ minHeight: '44px', padding: '8px 12px' }}
+                >
+                  <Layers size={16} style={{ color: 'var(--pastel-lavender-text)' }} />
+                  <span>Dự án thực chiến</span>
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* 3. Luyện tập (Practice) */}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <Link
-              href="/exercises/in-loi-chao-codecobug"
-              onClick={onClose}
-              className={`sidebar-nav-item ${isExercise ? 'sidebar-nav-item-active' : ''}`}
-              style={{ minHeight: '48px', padding: '12px 16px' }}
-            >
-              <Code2 size={20} />
-              <span>Luyện tập</span>
-            </Link>
-
-            <div className="sidebar-submenu" style={{ margin: '4px 0 6px 18px', paddingLeft: '14px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', width: '100%', position: 'relative' }}>
               <Link
                 href="/exercises/in-loi-chao-codecobug"
                 onClick={onClose}
-                className={`sidebar-sub-item ${isExercise ? 'sidebar-sub-item-active' : ''}`}
-                style={{ minHeight: '44px', padding: '8px 12px' }}
+                className={`sidebar-nav-item ${isExercise ? 'sidebar-nav-item-active' : ''}`}
+                style={{ flex: 1, minHeight: '48px', padding: '12px 16px', paddingRight: '48px' }}
               >
-                <Code2 size={16} style={{ color: 'var(--pastel-mint-text)' }} />
-                <span>Phòng lab code</span>
+                <Code2 size={20} />
+                <span>Luyện tập</span>
               </Link>
               <button
                 type="button"
-                className="sidebar-sub-item"
-                style={{ minHeight: '44px', padding: '8px 12px' }}
-                onClick={() => {
-                  onClose();
-                  onOpenWeaknessTracker('queue');
+                onClick={(e) => toggleSection('practice', e)}
+                style={{
+                  position: 'absolute',
+                  right: '10px',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: isExercise ? 'var(--pastel-mint-text)' : 'var(--text-muted)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '8px',
+                  borderRadius: 'var(--radius-sm)',
                 }}
+                title={openSections.practice ? 'Thu gọn mục con' : 'Mở rộng mục con'}
+                aria-label={openSections.practice ? 'Thu gọn mục con Luyện tập' : 'Mở rộng mục con Luyện tập'}
               >
-                <Target size={16} style={{ color: 'var(--pastel-peach-text)' }} />
-                <span>Ôn tập bài sai</span>
-              </button>
-              <button
-                type="button"
-                className="sidebar-sub-item"
-                style={{ minHeight: '44px', padding: '8px 12px' }}
-                onClick={() => {
-                  onClose();
-                  onOpenWeaknessTracker('policy');
-                }}
-              >
-                <History size={16} style={{ color: 'var(--pastel-sky-text)' }} />
-                <span>Lịch sử nộp bài</span>
+                {openSections.practice ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
               </button>
             </div>
+
+            {openSections.practice && (
+              <div className="sidebar-submenu" style={{ margin: '4px 0 6px 18px', paddingLeft: '14px' }}>
+                <Link
+                  href="/exercises/in-loi-chao-codecobug"
+                  onClick={onClose}
+                  className={`sidebar-sub-item ${isExercise ? 'sidebar-sub-item-active' : ''}`}
+                  style={{ minHeight: '44px', padding: '8px 12px' }}
+                >
+                  <Code2 size={16} style={{ color: 'var(--pastel-mint-text)' }} />
+                  <span>Phòng lab code</span>
+                </Link>
+                <button
+                  type="button"
+                  className="sidebar-sub-item"
+                  style={{ minHeight: '44px', padding: '8px 12px' }}
+                  onClick={() => {
+                    onClose();
+                    onOpenWeaknessTracker('queue');
+                  }}
+                >
+                  <Target size={16} style={{ color: 'var(--pastel-peach-text)' }} />
+                  <span>Ôn tập bài sai</span>
+                </button>
+                <button
+                  type="button"
+                  className="sidebar-sub-item"
+                  style={{ minHeight: '44px', padding: '8px 12px' }}
+                  onClick={() => {
+                    onClose();
+                    onOpenWeaknessTracker('history');
+                  }}
+                >
+                  <History size={16} style={{ color: 'var(--pastel-sky-text)' }} />
+                  <span>Lịch sử nộp bài</span>
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Contextual AI Tutor Access */}

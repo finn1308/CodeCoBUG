@@ -2,6 +2,7 @@ import { MasteryEngine, SkillMasteryRecord } from './masteryEngine';
 import { SKILLS_TAXONOMY, EXERCISE_SKILLS_MAP } from './skillsTaxonomy';
 import { SavedSubmissionRecord } from '../auth/authManager';
 import { getExerciseBySlug } from '../fixtures/sampleCurriculum';
+import { getExerciseFromRegistry } from '../curriculum/curriculumRegistry';
 
 export interface ReviewItem {
   id: string;
@@ -28,8 +29,10 @@ const EXERCISE_TITLES_MAP: Record<string, string> = {
 };
 
 function resolveExerciseTitle(slug: string): string {
-  const match = getExerciseBySlug(slug);
-  return match?.exercise.title || EXERCISE_TITLES_MAP[slug] || slug;
+  const match = getExerciseFromRegistry(slug);
+  if (match) return match.exercise.title;
+  const fixtureMatch = getExerciseBySlug(slug);
+  return fixtureMatch?.exercise.title || EXERCISE_TITLES_MAP[slug] || slug;
 }
 
 function resolveExerciseSkill(slug: string): { code: string; name: string } {
@@ -37,12 +40,24 @@ function resolveExerciseSkill(slug: string): { code: string; name: string } {
     const code = EXERCISE_SKILLS_MAP[slug][0];
     return { code, name: SKILLS_TAXONOMY[code]?.name || code };
   }
-  const match = getExerciseBySlug(slug);
+  const match = getExerciseFromRegistry(slug);
   if (match?.exercise.skillTags && match.exercise.skillTags.length > 0) {
     const tag = match.exercise.skillTags[0];
     return { code: tag, name: SKILLS_TAXONOMY[tag]?.name || tag.replace(/_/g, ' ') };
   }
+  const fixtureMatch = getExerciseBySlug(slug);
+  if (fixtureMatch?.exercise.skillTags && fixtureMatch.exercise.skillTags.length > 0) {
+    const tag = fixtureMatch.exercise.skillTags[0];
+    return { code: tag, name: SKILLS_TAXONOMY[tag]?.name || tag.replace(/_/g, ' ') };
+  }
   return { code: 'python_core', name: 'Kỹ năng Python cơ bản' };
+}
+
+// Server-side in-memory fallback store when running in Node.js / Next.js API routes
+const serverReviewQueueStore: Map<string, ReviewItem[]> = new Map();
+
+export function clearServerReviewQueueStore(): void {
+  serverReviewQueueStore.clear();
 }
 
 export class ReviewEngine {
@@ -158,8 +173,10 @@ export class ReviewEngine {
     return queue.filter((q) => q.status === 'completed');
   }
 
-  private static getStoredQueue(userId: string): ReviewItem[] {
-    if (typeof window === 'undefined') return [];
+  public static getStoredQueue(userId: string): ReviewItem[] {
+    if (typeof window === 'undefined') {
+      return serverReviewQueueStore.get(userId) || [];
+    }
     try {
       const raw = localStorage.getItem(`${STORAGE_REVIEW_QUEUE_KEY}_${userId}`);
       return raw ? JSON.parse(raw) : [];
@@ -169,7 +186,10 @@ export class ReviewEngine {
   }
 
   private static saveQueue(userId: string, queue: ReviewItem[]): void {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') {
+      serverReviewQueueStore.set(userId, queue);
+      return;
+    }
     try {
       localStorage.setItem(`${STORAGE_REVIEW_QUEUE_KEY}_${userId}`, JSON.stringify(queue));
     } catch {

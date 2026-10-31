@@ -1,11 +1,12 @@
 import React from 'react';
 import { AppShell } from '@/components/layout';
-import { LearningDashboard } from '@/components/dashboard/LearningDashboard';
+import { MinimalLondonHome } from '@/components/home/MinimalLondonHome';
 
+// LearningDashboard integration is encapsulated within MinimalLondonHome
 export default function HomePage() {
   return (
-    <AppShell>
-      <LearningDashboard />
+    <AppShell hideSidebar={true}>
+      <MinimalLondonHome />
     </AppShell>
   );
 }

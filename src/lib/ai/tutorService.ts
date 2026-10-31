@@ -5,6 +5,7 @@ export type AITutorAction =
   | 'get_hint'
   | 'analyze_weakness'
   | 'generate_exercise'
+  | 'recommend_exercises'
   | 'chat';
 
 export interface ExerciseContext {
@@ -14,6 +15,11 @@ export interface ExerciseContext {
   description: string;
   constraints?: string[];
   starterCode?: string;
+  chapterTitle?: string;
+  chapterIndex?: number;
+  lessonTitle?: string;
+  learningObjectives?: string[];
+  lessonTheorySnippet?: string;
 }
 
 export interface SubmissionData {
@@ -73,9 +79,15 @@ QUY TẮC CỐT LÕI BẮT BUỘC TUÂN THỦ:
    - Bạn KHÔNG BAO GIỜ được tự ý tuyên bố mã nguồn là đúng khi hệ thống tự động (Judge Engine) báo lỗi hoặc có test case thất bại.
    - Khi bài nộp bị chấm Wrong Answer hoặc Runtime Error, bạn phải phân tích vì sao kết quả thực tế không khớp với yêu cầu và hướng dẫn học viên sửa chữa.
 2. NGUYÊN TẮC SƯ PHẠM (PEDAGOGICAL HINTING):
-   - Ưu tiên giải thích nguyên nhân gốc rễ và đưa ra gợi ý nâng bậc (graduated hints).
+   - Ưu tiên giải thích nguyên nhân gốc rễ và đưa ra gợi ý nâng bậc (graduated hints: Mức 1 Khái niệm -> Mức 2 Thuật toán -> Mức 3 Cú pháp chi tiết).
    - KHÔNG đưa ra toàn bộ lời giải hoàn chỉnh ngay lập tức để học viên copy-paste, trừ khi học viên yêu cầu tột bậc sau nhiều lần gợi ý.
-3. NGÔN NGỮ & ĐỊNH DẠNG:
+3. PHÂN BIỆT RÕ RÀNG DỮ KIỆN VÀ GIẢ THUYẾT:
+   - Phân biệt rõ giữa dữ kiện chắc chắn (dựa trên thông báo traceback, dòng code thực tế, test case thất bại) và giả thuyết (suy đoán khi chưa có đủ thông tin, cần nêu rõ: "Khả năng cao là...", "Có thể bạn đang nhầm lẫn giữa...", "Nếu bạn dự định...").
+4. THÍCH ỨNG THEO TRÌNH ĐỘ HỌC VIÊN:
+   - Luôn giải thích code theo trình độ hiện tại của bài tập và học viên (Beginner: dùng hình ảnh trực quan, câu từ dễ hiểu, chỉ ra khái niệm cơ bản; Intermediate/Advanced: sử dụng thuật ngữ kỹ thuật chính xác, chuẩn PEP 8 và phân tích độ phức tạp).
+5. BÁM SÁT NGỮ CẢNH BÀI HỌC VÀ LÝ THUYẾT:
+   - Dựa trên nội dung bài học, mục tiêu bài học và lý thuyết hiện tại để hướng dẫn; không dùng các thư viện hoặc cú pháp quá xa lạ ngoài phạm vi bài học khi chưa cần thiết.
+6. NGÔN NGỮ & ĐỊNH DẠNG:
    - Trả lời bằng tiếng Việt thân thiện, súc tích, chuyên môn chính xác.
    - Trích dẫn rõ ràng dòng code lỗi, kiểu lỗi (SyntaxError, TypeError, IndexError, v.v.).
 `.trim();
@@ -99,6 +111,8 @@ QUY TẮC CỐT LÕI BẮT BUỘC TUÂN THỦ:
       userInstruction = this.buildHintPrompt(exerciseContext, submissionData, hintLevel);
     } else if (action === 'analyze_weakness') {
       userInstruction = this.buildWeaknessAnalysisPrompt(exerciseContext, submissionData);
+    } else if (action === 'recommend_exercises') {
+      userInstruction = this.buildRecommendExercisesPrompt(exerciseContext, submissionData);
     } else if (action === 'generate_exercise') {
       return await this.handleGenerateExercise(config, exerciseContext, userPrompt || '');
     } else {
@@ -144,7 +158,9 @@ QUY TẮC CỐT LÕI BẮT BUỘC TUÂN THỦ:
 
     return `
 [YÊU CẦU: GIẢI THÍCH LỖI MÃ NGUỒN]
-Đề bài: "${exercise.title}"
+Chương/Chủ đề: ${exercise.chapterTitle || 'Khóa học Python CodeCoBUG'}
+Bài học: ${exercise.lessonTitle || exercise.title}
+${exercise.learningObjectives && exercise.learningObjectives.length > 0 ? `Mục tiêu bài học: ${exercise.learningObjectives.join('; ')}\n` : ''}${exercise.lessonTheorySnippet ? `Tóm tắt lý thuyết liên quan: ${exercise.lessonTheorySnippet}\n` : ''}Đề bài: "${exercise.title}" (Độ khó: ${exercise.difficulty || 'Cơ bản'})
 Mô tả đề bài: ${exercise.description}
 
 Mã nguồn học viên đang viết:
@@ -192,7 +208,9 @@ Hãy giải thích cho học viên:
 
     return `
 [YÊU CẦU: GỢI Ý BÀI TẬP BẬC THANG - ${levelDescriptions[level as 1 | 2 | 3]}]
-Đề bài: "${exercise.title}"
+Chương/Chủ đề: ${exercise.chapterTitle || 'Khóa học Python CodeCoBUG'}
+Bài học: ${exercise.lessonTitle || exercise.title}
+${exercise.learningObjectives && exercise.learningObjectives.length > 0 ? `Mục tiêu bài học: ${exercise.learningObjectives.join('; ')}\n` : ''}${exercise.lessonTheorySnippet ? `Tóm tắt lý thuyết: ${exercise.lessonTheorySnippet}\n` : ''}Đề bài: "${exercise.title}" (Độ khó: ${exercise.difficulty || 'Cơ bản'})
 Mô tả yêu cầu: ${exercise.description}
 
 Code hiện tại của học viên:
@@ -217,6 +235,8 @@ Hãy đưa ra gợi ý phù hợp đúng với Mức ${level}. Giữ giọng vă
 
     return `
 [YÊU CẦU: PHÂN TÍCH ĐIỂM YẾU VÀ LỖI THƯỜNG GẶP]
+Chương/Chủ đề: ${exercise.chapterTitle || 'Khóa học Python CodeCoBUG'}
+Bài học: ${exercise.lessonTitle || exercise.title}
 Bài tập: "${exercise.title}"
 Mã nguồn đã nộp:
 \`\`\`python
@@ -323,7 +343,9 @@ BẠN PHẢI TRẢ VỀ DUY NHẤT 1 ĐỐI TƯỢNG JSON HỢP LỆ THEO SCHEMA
   ): string {
     return `
 [CÂU HỎI HỌC VIÊN]
-Học viên đang làm bài: "${exercise.title}"
+Chương/Chủ đề: ${exercise.chapterTitle || 'Khóa học Python CodeCoBUG'}
+Bài học: ${exercise.lessonTitle || exercise.title}
+${exercise.learningObjectives && exercise.learningObjectives.length > 0 ? `Mục tiêu bài học: ${exercise.learningObjectives.join('; ')}\n` : ''}${exercise.lessonTheorySnippet ? `Tóm tắt lý thuyết: ${exercise.lessonTheorySnippet}\n` : ''}Học viên đang làm bài: "${exercise.title}" (Độ khó: ${exercise.difficulty || 'Cơ bản'})
 Đề bài: ${exercise.description}
 
 Mã nguồn hiện tại trong Editor:
@@ -337,6 +359,32 @@ ${submission?.verdict ? `Phán quyết từ Judge: ${submission.verdict.toUpperC
 Câu hỏi của học viên: "${userPrompt}"
 
 Hãy trả lời học viên ngắn gọn, chính xác và có tính giáo dục.
+`.trim();
+  }
+
+  /**
+   * Action 6: Recommend Related Exercises
+   */
+  private static buildRecommendExercisesPrompt(
+    exercise: ExerciseContext,
+    submission?: SubmissionData
+  ): string {
+    return `
+[YÊU CẦU: ĐỀ XUẤT BÀI TẬP VÀ LỘ TRÌNH RÈN LUYỆN LIÊN QUAN]
+Chương/Chủ đề: ${exercise.chapterTitle || 'Lộ trình Python CodeCoBUG'}
+Bài học: ${exercise.lessonTitle || exercise.title}
+Bài tập hiện tại: "${exercise.title}" (Độ khó: ${exercise.difficulty || 'Cơ bản'})
+
+Mã nguồn hiện tại của học viên:
+\`\`\`python
+${submission?.submittedCode || '(chưa có)'}
+\`\`\`
+Trạng thái làm bài: ${submission?.verdict || 'Chưa nộp bài'}
+
+Dựa trên chủ đề của chương học này:
+1. Đề xuất 2-3 hướng rèn luyện hoặc bài tập liên quan thuộc cùng chủ đề giúp học viên củng cố vững chắc kiến thức.
+2. Nêu rõ giá trị sư phạm của từng đề xuất.
+3. Đặt 1 câu hỏi đố tư duy nhanh (quick challenge) để học viên tự suy ngẫm.
 `.trim();
   }
 }

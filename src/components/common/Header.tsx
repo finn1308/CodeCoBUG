@@ -12,6 +12,7 @@ import {
   User,
   Target,
   Menu,
+  Command,
 } from 'lucide-react';
 import { AISettingsModal } from '@/components/settings/AISettingsModal';
 import { AuthModal } from '@/components/auth/AuthModal';
@@ -31,6 +32,7 @@ export interface HeaderProps {
   onOpenAuth?: () => void;
   onOpenAISettings?: () => void;
   onOpenWeaknessTracker?: (initialTab?: 'skills' | 'queue' | 'policy') => void;
+  onOpenCommandCenter?: () => void;
   showBrand?: boolean;
 }
 
@@ -46,11 +48,13 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAuth: externalOpenAuth,
   onOpenAISettings: externalOpenAISettings,
   onOpenWeaknessTracker: externalOpenTracker,
+  onOpenCommandCenter,
   showBrand = true,
 }) => {
   const [internalSettingsOpen, setInternalSettingsOpen] = useState(false);
   const [internalAuthOpen, setInternalAuthOpen] = useState(false);
   const [internalTrackerOpen, setInternalTrackerOpen] = useState(false);
+  const [internalTrackerTab, setInternalTrackerTab] = useState<'skills' | 'queue' | 'policy' | 'history'>('skills');
   const [user, setUser] = useState<UserProfile | null>(authManager.getCurrentUser());
 
   useEffect(() => {
@@ -62,7 +66,10 @@ export const Header: React.FC<HeaderProps> = ({
 
   const handleOpenAuth = externalOpenAuth || (() => setInternalAuthOpen(true));
   const handleOpenSettings = externalOpenAISettings || (() => setInternalSettingsOpen(true));
-  const handleOpenTracker = externalOpenTracker || (() => setInternalTrackerOpen(true));
+  const handleOpenTracker = externalOpenTracker || ((tab?: 'skills' | 'queue' | 'policy' | 'history') => {
+    if (tab) setInternalTrackerTab(tab);
+    setInternalTrackerOpen(true);
+  });
 
   return (
     <>
@@ -181,6 +188,30 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="header-btn-text">Điểm yếu & Ôn tập</span>
           </Button>
 
+          {onOpenCommandCenter && (
+            <button
+              type="button"
+              className="btn btn-ghost command-center-trigger-btn"
+              style={{
+                padding: '5px 10px',
+                borderRadius: 'var(--radius-full)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                fontSize: '0.78rem',
+                color: 'var(--text-secondary)',
+                backgroundColor: 'var(--bg-surface)',
+                border: '1px solid var(--border-medium)',
+              }}
+              onClick={onOpenCommandCenter}
+              title="Mở trung tâm điều hướng một chạm (Phím tắt: ⌘K hoặc Ctrl+K)"
+              aria-label="Mở trung tâm điều hướng"
+            >
+              <Command size={14} style={{ color: 'var(--london-red)' }} />
+              <span className="header-btn-text" style={{ fontWeight: 600 }}>Điều hướng (⌘K)</span>
+            </button>
+          )}
+
           <button
             type="button"
             className="btn btn-ghost"
@@ -263,6 +294,7 @@ export const Header: React.FC<HeaderProps> = ({
       {!externalOpenTracker && (
         <WeaknessTrackerModal
           isOpen={internalTrackerOpen}
+          initialTab={internalTrackerTab}
           onClose={() => setInternalTrackerOpen(false)}
         />
       )}

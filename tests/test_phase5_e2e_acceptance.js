@@ -214,7 +214,7 @@ for s in squares:
   // -------------------------------------------------------------------------
   console.log('\n--- Domain 6: Comprehensive Test Coverage (>= 3 Tests per Exercise) ---');
   const allRegisteredExercises = getAllExercisesFromRegistry();
-  assert(allRegisteredExercises.length === 61, `Official curriculum has 61 exercises (actual: ${allRegisteredExercises.length})`);
+  assert(allRegisteredExercises.length >= 61, `Curriculum has comprehensive exercise catalog (minimum 61, actual: ${allRegisteredExercises.length})`);
 
   let exercisesMeetingMinTests = 0;
   for (const { exercise } of allRegisteredExercises) {

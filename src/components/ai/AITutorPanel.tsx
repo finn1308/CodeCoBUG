@@ -34,6 +34,11 @@ export interface AITutorPanelProps {
     description: string;
     constraints?: string[];
     starterCode?: string;
+    chapterTitle?: string;
+    chapterIndex?: number;
+    lessonTitle?: string;
+    learningObjectives?: string[];
+    lessonTheorySnippet?: string;
   };
   submissionData?: {
     submittedCode: string;
@@ -65,13 +70,18 @@ interface ChatMessage {
   isError?: boolean;
 }
 
-const DEFAULT_GENERAL_EXERCISE = {
+const DEFAULT_GENERAL_EXERCISE: NonNullable<AITutorPanelProps['exerciseContext']> = {
   title: 'Hỏi đáp Python Studio',
   slug: 'general-python-tutor',
   difficulty: 'beginner',
   description: 'Trợ lý học tập Python cá nhân CodeCoBUG: giải thích cú pháp, thuật toán, tư duy lập trình và phân tích lỗi.',
   constraints: [] as string[],
   starterCode: '# Viết code Python tại đây\n',
+  chapterTitle: 'Chương trình Tổng quan',
+  chapterIndex: 1,
+  lessonTitle: 'Học Python cùng AI Gia sư',
+  learningObjectives: ['Hỏi đáp cú pháp và tư duy lập trình Python cơ bản', 'Giải thích nguyên nhân lỗi và phương pháp gỡ lỗi'],
+  lessonTheorySnippet: 'Tổng quan hệ thống Python và hỗ trợ học tập CodeCoBUG.',
 };
 
 export const AITutorPanel: React.FC<AITutorPanelProps> = ({
@@ -161,7 +171,7 @@ export const AITutorPanel: React.FC<AITutorPanelProps> = ({
 
   // Dispatch API request to /api/ai/chat
   const handleSendRequest = async (
-    action: 'explain_error' | 'get_hint' | 'analyze_weakness' | 'generate_exercise' | 'chat',
+    action: 'explain_error' | 'get_hint' | 'analyze_weakness' | 'generate_exercise' | 'recommend_exercises' | 'chat',
     customQuery?: string,
     specificHintLevel?: 1 | 2 | 3
   ) => {
@@ -194,6 +204,7 @@ export const AITutorPanel: React.FC<AITutorPanelProps> = ({
       else if (action === 'get_hint') actionLabel = `💡 Cho tôi gợi ý bài tập (Mức ${specificHintLevel || hintLevel})`;
       else if (action === 'analyze_weakness') actionLabel = '📊 Phân tích điểm yếu và lỗi thường gặp của tôi';
       else if (action === 'generate_exercise') actionLabel = '✨ Hãy tạo một bài tập tự luyện tương tự';
+      else if (action === 'recommend_exercises') actionLabel = '📚 Đề xuất các bài tập và hướng rèn luyện liên quan trong chương này';
     }
 
     if (actionLabel) {
@@ -235,6 +246,11 @@ export const AITutorPanel: React.FC<AITutorPanelProps> = ({
             description: exerciseContext.description,
             constraints: exerciseContext.constraints,
             starterCode: exerciseContext.starterCode,
+            chapterTitle: exerciseContext.chapterTitle,
+            chapterIndex: exerciseContext.chapterIndex,
+            lessonTitle: exerciseContext.lessonTitle,
+            learningObjectives: exerciseContext.learningObjectives,
+            lessonTheorySnippet: exerciseContext.lessonTheorySnippet,
           },
           submissionData: payloadSubmission,
           userPrompt: customQuery || (action === 'chat' ? queryToSend : undefined),
@@ -295,11 +311,13 @@ export const AITutorPanel: React.FC<AITutorPanelProps> = ({
         { label: '🔍 Vì sao code báo lỗi?', action: () => handleSendRequest('explain_error') },
         { label: `💡 Gợi ý Mức ${hintLevel}`, action: () => handleSendRequest('get_hint') },
         { label: '📊 Phân tích lỗi sai', action: () => handleSendRequest('analyze_weakness') },
+        { label: '📚 Đề xuất bài tập cùng chương', action: () => handleSendRequest('recommend_exercises') },
         { label: '❓ Cách kiểm tra kiểu dữ liệu?', query: 'Cách kiểm tra và ép kiểu dữ liệu trong Python?' },
         { label: '✨ Tạo bài tương tự', action: () => handleSendRequest('generate_exercise') },
       ]
     : [
         { label: `💡 Gợi ý làm bài (Mức ${hintLevel})`, action: () => handleSendRequest('get_hint') },
+        { label: '📚 Đề xuất bài tập cùng chương', action: () => handleSendRequest('recommend_exercises') },
         { label: '🎯 Lưu ý điều kiện biên', query: 'Trong bài này cần lưu ý các trường hợp biên hoặc dữ liệu ngoại lệ nào?' },
         { label: '📝 Cách dùng input() và split()', query: 'Giải thích cách đọc nhiều số trên cùng 1 dòng bằng input() và split()?' },
         { label: '📊 Điểm yếu của tôi', action: () => handleSendRequest('analyze_weakness') },
@@ -360,7 +378,7 @@ export const AITutorPanel: React.FC<AITutorPanelProps> = ({
               </Badge>
             </div>
             <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
-              {exerciseContext.title}
+              {exerciseContext.chapterTitle ? `${exerciseContext.chapterTitle} • ` : ''}{exerciseContext.title}
             </div>
           </div>
         </div>
@@ -792,7 +810,10 @@ export const AITutorPanel: React.FC<AITutorPanelProps> = ({
           disabled={isLoading}
           onChange={(e) => setInputQuery(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') handleSendRequest('chat');
+            if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+              e.preventDefault();
+              handleSendRequest('chat');
+            }
           }}
           placeholder="Hỏi AI Gia sư về bài tập này..."
           className="form-input"

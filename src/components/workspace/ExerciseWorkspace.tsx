@@ -9,6 +9,7 @@ import { ProblemStatement } from './ProblemStatement';
 import { CodeEditor } from './CodeEditor';
 import { TerminalOutput } from './TerminalOutput';
 import { AISettingsModal } from '@/components/settings/AISettingsModal';
+import { AuthModal } from '@/components/auth/AuthModal';
 import { usePyodide } from '@/hooks/usePyodide';
 import { authManager, SavedSubmissionRecord } from '@/lib/auth/authManager';
 import { AITutorPanel } from '@/components/ai';
@@ -46,6 +47,7 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
   const [isTerminalCollapsed, setIsTerminalCollapsed] = useState(false);
   const [isAITutorOpen, setIsAITutorOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
 
   // Pyodide WebAssembly Hook
   const { isReady, isLoading, statusMessage, runPython } = usePyodide();
@@ -212,6 +214,13 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
       });
 
       if (!response.ok) {
+        if (response.status === 401) {
+          setIsAuthOpen(true);
+          if (typeof window !== 'undefined') {
+            window.dispatchEvent(new CustomEvent('codecobug:open-auth'));
+          }
+          throw new Error('Yêu cầu đăng nhập để chấm bài và lưu lịch sử học tập. Cửa sổ đăng nhập đã được mở (mã code của bạn được bảo toàn an toàn).');
+        }
         const errorData = await response.json();
         throw new Error(errorData.error || `HTTP ${response.status}`);
       }
@@ -231,6 +240,16 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
           passedTestsCount: report.passedTestsCount,
           totalTestsCount: report.totalTestsCount,
           executionTimeMs: report.totalExecutionTimeMs,
+          testCaseResults: report.testResults.map((tr) => ({
+            orderIndex: tr.orderIndex,
+            inputData: tr.inputData,
+            expectedOutput: tr.expectedOutput,
+            actualOutput: tr.actualOutput,
+            isPassed: tr.isPassed,
+            errorMessage: tr.errorMessage,
+            executionTimeMs: tr.executionTimeMs,
+            isHidden: tr.isHidden,
+          })),
         });
         const history = authManager.getSubmissionsForExercise(exercise.slug);
         setPastSubmissions(history);
@@ -504,6 +523,10 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
                 description: exercise.description,
                 constraints: exercise.completionCriteria?.forbiddenTokens,
                 starterCode: exercise.starterCode,
+                chapterTitle: topicTitle,
+                lessonTitle: lesson?.title,
+                learningObjectives: lesson?.learningObjectives,
+                lessonTheorySnippet: lesson?.theoryContent ? lesson.theoryContent.slice(0, 300) : undefined,
               }}
               submissionData={{
                 submittedCode: code,
@@ -549,6 +572,13 @@ export const ExerciseWorkspace: React.FC<ExerciseWorkspaceProps> = ({
       <AISettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
+      />
+
+      {/* Auth Modal for Guest Submissions & Login */}
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        onOpenAISettings={() => setIsSettingsOpen(true)}
       />
     </AppShell>
   );

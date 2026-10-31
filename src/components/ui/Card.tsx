@@ -2,7 +2,16 @@
 
 import React from 'react';
 
-export type CardVariant = 'default' | 'mint' | 'lavender' | 'sky' | 'peach' | 'yellow';
+export type CardVariant =
+  | 'default'
+  | 'mint'
+  | 'lavender'
+  | 'sky'
+  | 'peach'
+  | 'yellow'
+  | 'pink'
+  | 'cream'
+  | 'brick';
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: CardVariant;
@@ -34,6 +43,18 @@ const variantStyles: Record<CardVariant, React.CSSProperties> = {
   yellow: {
     backgroundColor: 'var(--pastel-yellow-light)',
     borderColor: 'var(--pastel-yellow)',
+  },
+  pink: {
+    backgroundColor: 'var(--pastel-pink-light)',
+    borderColor: 'var(--pastel-pink)',
+  },
+  cream: {
+    backgroundColor: 'var(--london-cream)',
+    borderColor: 'var(--london-cream-border)',
+  },
+  brick: {
+    backgroundColor: 'var(--london-brick-light, #FBF0ED)',
+    borderColor: '#F0C4B8',
   },
 };
 

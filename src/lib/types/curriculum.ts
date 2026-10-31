@@ -44,6 +44,15 @@ export interface LessonReferenceLink {
   url: string;
 }
 
+export type CurriculumLevel = 'beginner' | 'intermediate' | 'advanced';
+
+export interface LessonMiniChallenge {
+  title: string;
+  instructions: string;
+  hint?: string;
+  expectedOutputSnippet?: string;
+}
+
 export interface Exercise {
   id: string;
   lessonId: string;
@@ -82,6 +91,10 @@ export interface Lesson {
   guidedPracticeTask?: LessonGuidedTask;
   recap?: string[];
   referenceLinks?: LessonReferenceLink[];
+  level?: CurriculumLevel;
+  visualExplanation?: string;
+  miniChallenge?: LessonMiniChallenge;
+  relatedLessons?: string[];
   exercises: Exercise[];
   orderIndex: number;
   isPublished: boolean;
@@ -101,6 +114,8 @@ export interface Topic {
   category?: string;
   isLocked?: boolean;
   accentColor?: 'mint' | 'lavender' | 'sky' | 'peach' | 'yellow';
+  level?: CurriculumLevel;
+  prerequisites?: string[];
 }
 
 export interface Course {

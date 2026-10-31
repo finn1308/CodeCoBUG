@@ -21,10 +21,10 @@ export { createSessionToken, verifySessionToken, type SessionPayload };
 export async function getServerAuthenticatedUser(
   req: NextRequest | Request
 ): Promise<UserProfile | null> {
-  // 1. Check Authorization header: Bearer <token>
+  // 1. Check Authorization header: Bearer <token> (case-insensitive)
   const authHeader = req.headers.get('authorization') || req.headers.get('Authorization');
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    const token = authHeader.substring(7).trim();
+  if (authHeader && /^bearer\s+/i.test(authHeader)) {
+    const token = authHeader.replace(/^bearer\s+/i, '').trim();
     const verified = verifySessionToken(token);
     if (verified) return verified;
   }
@@ -68,8 +68,12 @@ export async function getServerAuthenticatedUser(
   if (cookieHeader) {
     const match = cookieHeader.match(/codecobug_session=([^;]+)/);
     if (match && match[1]) {
-      const verified = verifySessionToken(decodeURIComponent(match[1]));
-      if (verified) return verified;
+      try {
+        const verified = verifySessionToken(decodeURIComponent(match[1]));
+        if (verified) return verified;
+      } catch {
+        // Malformed URI component in cookie header ignored safely
+      }
     }
   }
 

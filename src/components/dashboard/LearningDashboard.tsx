@@ -19,6 +19,7 @@ import {
   ChevronDown,
   ChevronUp,
   BarChart2,
+  Compass,
 } from 'lucide-react';
 import { authManager, UserProfile, SavedSubmissionRecord } from '@/lib/auth/authManager';
 import { Course } from '@/lib/types/curriculum';
@@ -95,6 +96,22 @@ export const LearningDashboard: React.FC<LearningDashboardProps> = ({
   const completedExercisesCount = acceptedExerciseSlugs.size;
   const overallProgressPercentage = totalExercisesCount > 0
     ? Math.round((completedExercisesCount / totalExercisesCount) * 100)
+    : 0;
+
+  // Compute lesson statistics based on real accepted exercise submissions
+  const allLessons = course.topics.flatMap((t) =>
+    t.lessons.map((l) => ({
+      ...l,
+      topicTitle: t.title,
+      topicSlug: t.slug,
+    }))
+  );
+  const totalLessonsCount = allLessons.length;
+  const completedLessonsCount = allLessons.filter(
+    (l) => l.exercises.length > 0 && l.exercises.every((e) => acceptedExerciseSlugs.has(e.slug))
+  ).length;
+  const lessonProgressPercentage = totalLessonsCount > 0
+    ? Math.round((completedLessonsCount / totalLessonsCount) * 100)
     : 0;
 
   // Determine "Continue Learning" recommended exercise based strictly on real submissions
@@ -201,7 +218,7 @@ export const LearningDashboard: React.FC<LearningDashboardProps> = ({
             {user ? user.points : 0} pt
           </Badge>
           <Badge variant="sky" size="sm">
-            {completedExercisesCount}/{totalExercisesCount} bài ({overallProgressPercentage}%)
+            {completedLessonsCount}/{totalLessonsCount} bài học • {completedExercisesCount}/{totalExercisesCount} bài tập ({overallProgressPercentage}%)
           </Badge>
         </div>
       </div>
@@ -270,11 +287,11 @@ export const LearningDashboard: React.FC<LearningDashboardProps> = ({
                 {submissions.length > 0 ? 'Tiếp tục bài học' : 'Bắt đầu bài tập đầu tiên'}
               </Button>
             </Link>
-            <a href="#curriculum" style={{ textDecoration: 'none', textAlign: 'center' }}>
-              <Button variant="ghost" size="sm" style={{ width: '100%', fontSize: '0.78rem' }}>
-                Xem giáo trình
+            <Link href="/learning-path" style={{ textDecoration: 'none' }}>
+              <Button variant="outline" size="sm" leftIcon={<Compass size={14} />} style={{ width: '100%', fontSize: '0.78rem' }}>
+                Bản đồ lộ trình cá nhân
               </Button>
-            </a>
+            </Link>
           </div>
         </div>
       </Card>
@@ -326,6 +343,22 @@ export const LearningDashboard: React.FC<LearningDashboardProps> = ({
           >
             <Card variant="default" padding="sm" style={{ boxShadow: 'var(--shadow-xs)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ width: '36px', height: '36px', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--pastel-lavender)', color: 'var(--pastel-lavender-text)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <BookOpen size={18} />
+                </div>
+                <div>
+                  <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.2 }}>
+                    {completedLessonsCount}/{totalLessonsCount}
+                  </div>
+                  <div style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
+                    Bài học hoàn thành ({lessonProgressPercentage}%)
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            <Card variant="default" padding="sm" style={{ boxShadow: 'var(--shadow-xs)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <div style={{ width: '36px', height: '36px', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--pastel-mint)', color: 'var(--pastel-mint-text)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <CheckCircle2 size={18} />
                 </div>
@@ -334,7 +367,7 @@ export const LearningDashboard: React.FC<LearningDashboardProps> = ({
                     {completedExercisesCount}/{totalExercisesCount}
                   </div>
                   <div style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
-                    Bài hoàn thành ({overallProgressPercentage}%)
+                    Bài tập hoàn thành ({overallProgressPercentage}%)
                   </div>
                 </div>
               </div>

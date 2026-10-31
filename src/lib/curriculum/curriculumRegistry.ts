@@ -41,6 +41,8 @@ export const OFFICIAL_PYTHON_COURSE: Course = {
   ],
 };
 
+import { getCheckpointByExerciseSlug, convertCheckpointToExercise, ALL_PROJECTS } from '@/lib/projects';
+
 export function getExerciseFromRegistry(slug: string) {
   for (const topic of OFFICIAL_PYTHON_COURSE.topics) {
     for (const lesson of topic.lessons) {
@@ -50,6 +52,13 @@ export function getExerciseFromRegistry(slug: string) {
       }
     }
   }
+
+  // Check in Project-Based Learning (PBL) checkpoints
+  const pblMatch = getCheckpointByExerciseSlug(slug);
+  if (pblMatch) {
+    return convertCheckpointToExercise(pblMatch.checkpoint, pblMatch.project);
+  }
+
   return null;
 }
 
@@ -60,6 +69,46 @@ export function getAllExercisesFromRegistry() {
       for (const ex of lesson.exercises) {
         list.push({ exercise: ex, lesson, topic });
       }
+    }
+  }
+
+  // Include PBL checkpoint exercises
+  for (const project of ALL_PROJECTS) {
+    for (const chk of project.checkpoints) {
+      list.push(convertCheckpointToExercise(chk, project));
+    }
+  }
+
+  return list;
+}
+
+export function getTopicBySlug(slug: string) {
+  return OFFICIAL_PYTHON_COURSE.topics.find((t) => t.slug === slug) || null;
+}
+
+export function getLessonBySlug(topicSlug: string, lessonSlug: string) {
+  const topic = getTopicBySlug(topicSlug);
+  if (!topic) return null;
+  const lesson = topic.lessons.find((l) => l.slug === lessonSlug);
+  if (!lesson) return null;
+  return { topic, lesson };
+}
+
+export function findLessonBySlug(lessonSlug: string) {
+  for (const topic of OFFICIAL_PYTHON_COURSE.topics) {
+    const lesson = topic.lessons.find((l) => l.slug === lessonSlug);
+    if (lesson) {
+      return { topic, lesson };
+    }
+  }
+  return null;
+}
+
+export function getAllLessonsFromRegistry() {
+  const list = [];
+  for (const topic of OFFICIAL_PYTHON_COURSE.topics) {
+    for (const lesson of topic.lessons) {
+      list.push({ topic, lesson });
     }
   }
   return list;

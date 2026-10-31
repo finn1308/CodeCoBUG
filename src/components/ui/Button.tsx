@@ -9,6 +9,9 @@ export type ButtonVariant =
   | 'lavender'
   | 'sky'
   | 'peach'
+  | 'pink'
+  | 'london_red'
+  | 'cream'
   | 'secondary'
   | 'outline'
   | 'ghost'
@@ -44,7 +47,12 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     // Map variant to CSS class name
-    const variantClass = variant === 'primary' ? 'btn-primary' : `btn-${variant}`;
+    const variantClass =
+      variant === 'primary'
+        ? 'btn-primary'
+        : variant === 'london_red'
+        ? 'btn-london-red'
+        : `btn-${variant}`;
 
     // Size-specific styles (Adheres to controls: 12–16px radius)
     const sizeStyles: Record<ButtonSize, React.CSSProperties> = {

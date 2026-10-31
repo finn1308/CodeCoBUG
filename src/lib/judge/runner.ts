@@ -160,10 +160,15 @@ export async function evaluateSubmission(
       const rawError = err instanceof Error ? err.message : String(err);
       
       let errorLabel = 'RuntimeError';
-      if (rawError.includes('SyntaxError')) errorLabel = 'SyntaxError';
-      else if (rawError.includes('ZeroDivisionError')) errorLabel = 'ZeroDivisionError';
-      else if (rawError.includes('NameError')) errorLabel = 'NameError';
-      else if (rawError.includes('TypeError')) errorLabel = 'TypeError';
+      if (rawError.includes('SyntaxError') || rawError.includes('IndentationError') || rawError.includes('TabError')) {
+        errorLabel = 'SyntaxError';
+      } else if (rawError.includes('ZeroDivisionError')) {
+        errorLabel = 'ZeroDivisionError';
+      } else if (rawError.includes('NameError')) {
+        errorLabel = 'NameError';
+      } else if (rawError.includes('TypeError')) {
+        errorLabel = 'TypeError';
+      }
 
       if (overallVerdict === 'accepted' || overallVerdict === 'wrong_answer') {
         overallVerdict = errorLabel === 'SyntaxError' ? 'compile_error' : 'runtime_error';

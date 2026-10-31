@@ -62,6 +62,35 @@
   --pastel-yellow-light: #FFFDF0;
   --pastel-yellow-text: #594400;
 
+  /* Soft Pink */
+  --pastel-pink: #F5D5E8;
+  --pastel-pink-hover: #EBBFD9;
+  --pastel-pink-active: #DFABC8;
+  --pastel-pink-light: #FDF4FA;
+  --pastel-pink-text: #6E184D;
+
+  /* London Red Accent (Routemaster Bus / Underground Ring / Phone Kiosk) */
+  --london-red: #C93C45;
+  --london-red-hover: #B23139;
+  --london-red-active: #9E272E;
+  --london-red-light: #FDF1F2;
+  --london-red-border: #F8D0D3;
+  --london-red-text: #FFFFFF;
+  --london-red-accent-text: #8E1B23;
+
+  /* London Cream / Westminster Limestone */
+  --london-cream: #FFF9EF;
+  --london-cream-hover: #FFF3DE;
+  --london-cream-active: #FCECCD;
+  --london-cream-border: #F6E7D2;
+  --london-cream-text: #4A3519;
+
+  /* London Street & Brick Accents */
+  --london-brick: #DE7C68;
+  --london-brick-light: #FBF0ED;
+  --london-slate: #3B4B5A;
+  --london-underground-blue: #0019A8;
+
   /* --- Status Colors --- */
   --status-success: #10B981;
   --status-success-bg: #E6F9F0;
@@ -228,6 +257,60 @@ body {
   }
 }
 
+/* Card Color Variants */
+.card-pink {
+  background-color: var(--pastel-pink-light);
+  border-color: var(--pastel-pink);
+}
+
+.card-cream {
+  background-color: var(--london-cream);
+  border-color: var(--london-cream-border);
+}
+
+.card-brick {
+  background-color: var(--london-brick-light);
+  border-color: #F0C4B8;
+}
+
+/* London Motif & Accent Utilities */
+.london-underground-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background: var(--london-red-light);
+  border: 1px solid var(--london-red-border);
+  color: var(--london-red-accent-text);
+  font-weight: 600;
+}
+
+.london-bus-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background: var(--london-red);
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.london-card-brick {
+  background-color: var(--london-brick-light);
+  border: 1px solid #F0C4B8;
+  border-radius: var(--radius-xl);
+}
+
+.london-skyline-accent {
+  opacity: 0.18;
+  transition: opacity var(--transition-base);
+}
+.london-skyline-accent:hover {
+  opacity: 0.35;
+}
+
 /* Text Gradients */
 .text-gradient {
   background: linear-gradient(135deg, #16432A 0%, #0E426F 100%);
@@ -365,6 +448,39 @@ body {
 }
 .btn-peach:hover:not(:disabled) {
   background-color: var(--pastel-peach-hover);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Soft Pink Button */
+.btn-pink {
+  background-color: var(--pastel-pink);
+  color: var(--pastel-pink-text);
+  border-color: #EBBFD9;
+}
+.btn-pink:hover:not(:disabled) {
+  background-color: var(--pastel-pink-hover);
+  box-shadow: var(--shadow-sm);
+}
+
+/* London Red Button */
+.btn-london-red {
+  background-color: var(--london-red);
+  color: var(--london-red-text);
+  border-color: #B23139;
+}
+.btn-london-red:hover:not(:disabled) {
+  background-color: var(--london-red-hover);
+  box-shadow: var(--shadow-sm);
+}
+
+/* London Cream Button */
+.btn-cream {
+  background-color: var(--london-cream);
+  color: var(--london-cream-text);
+  border-color: var(--london-cream-border);
+}
+.btn-cream:hover:not(:disabled) {
+  background-color: var(--london-cream-hover);
   box-shadow: var(--shadow-sm);
 }
 
@@ -580,6 +696,24 @@ body {
   border: 1px solid var(--pastel-yellow);
 }
 
+.badge-pink {
+  background-color: var(--pastel-pink-light);
+  color: var(--pastel-pink-text);
+  border: 1px solid var(--pastel-pink);
+}
+
+.badge-london_red {
+  background-color: var(--london-red-light);
+  color: var(--london-red-accent-text);
+  border: 1px solid var(--london-red-border);
+}
+
+.badge-cream {
+  background-color: var(--london-cream);
+  color: var(--london-cream-text);
+  border: 1px solid var(--london-cream-border);
+}
+
 .badge-success {
   background-color: var(--status-success-bg);
   color: var(--status-success-text);
@@ -702,6 +836,74 @@ body {
     opacity: 1;
     transform: scale(1) translateY(0);
   }
+}
+
+/* ==========================================================================
+   Command Center Launcher & Navigation Panel (Pastel London One-Tap UX)
+   ========================================================================== */
+
+.command-center-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: var(--bg-backdrop);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: modalFadeIn var(--transition-fast) ease-out;
+}
+
+.command-center-panel {
+  width: 100%;
+  max-width: 620px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-modal);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 85vh;
+  animation: modalScaleUp var(--transition-base) cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (max-width: 640px) {
+  .command-center-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .command-center-panel {
+    max-width: 100%;
+    border-radius: 24px 24px 0 0;
+    max-height: 88vh;
+  }
+}
+
+.command-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: var(--radius-lg);
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+  text-decoration: none;
+  width: 100%;
+  text-align: left;
+}
+
+.command-item:hover,
+.command-item.command-item-active,
+.command-item:focus-visible {
+  background-color: var(--pastel-mint-light);
+  border-color: var(--pastel-mint);
+  transform: translateX(2px);
+  outline: none;
 }
 
 /* ==========================================================================

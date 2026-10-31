@@ -11,12 +11,23 @@ export const CHAPTER_01_INTRO: Topic = {
   isPublished: true,
   isLocked: false,
   accentColor: 'mint',
+  level: 'beginner',
+  prerequisites: [],
   lessons: [
     {
       id: 'lesson-01-gioi-thieu',
       topicId: 'topic-01-lam-quen-python',
       slug: 'gioi-thieu-va-moi-truong',
       title: 'Bài 01: Giới thiệu Python & Môi trường thực thi',
+      level: 'beginner',
+      visualExplanation: 'Mô hình luồng thực thi Python:\n[Mã nguồn script.py] ──► [Trình thông dịch Python 3 / Pyodide WASM] ──► [Luồng xuất stdout] ──► [Terminal Console]',
+      miniChallenge: {
+        title: 'Bức tranh chữ ASCII Art',
+        instructions: 'Sử dụng 4 câu lệnh print() liên tiếp để vẽ hình một tam giác hoặc mũi tên hướng lên bằng các ký tự *.',
+        hint: 'In dòng 1: "  *  ", dòng 2: " *** ", dòng 3: "*****", dòng 4: "  |  "',
+        expectedOutputSnippet: '***',
+      },
+      relatedLessons: ['cu-phap-va-chu-thich', 'xuat-du-lieu-print'],
       theoryContent: `Python là ngôn ngữ lập trình bậc cao, thông dịch, hướng đối tượng và đa năng do Guido van Rossum tạo ra từ năm 1991. Điểm nổi bật nhất của Python là cú pháp trong sáng, gần gũi với tiếng Anh tự nhiên, giúp người mới bắt đầu tập trung rèn luyện tư duy thuật toán thay vì bị phân tâm bởi các quy tắc ngữ pháp phức tạp.
 
 Trên nền tảng CodeCoBUG, bạn không cần phải cài đặt môi trường phức tạp lên máy tính cá nhân. Trình duyệt của bạn được tích hợp sẵn bộ thông dịch Python 3 chạy trực tiếp qua công nghệ WebAssembly (Pyodide), cho phép bạn viết và thực thi mã nguồn ngay lập tức.`,
@@ -149,6 +160,15 @@ Trên nền tảng CodeCoBUG, bạn không cần phải cài đặt môi trườ
       topicId: 'topic-01-lam-quen-python',
       slug: 'cu-phap-va-chu-thich',
       title: 'Bài 02: Cú pháp cơ bản, Thụt lề & Chú thích (Comments)',
+      level: 'beginner',
+      visualExplanation: 'Mô hình Thụt lề (Indentation) & Cột mã:\nCột 0 (Bắt buộc cho lệnh ngoài cùng)\n│\n├──► print("Lệnh 1: Hợp lệ")\n├──► # Ghi chú giải thích\n└──► print("Lệnh 2: Thẳng hàng")\n[Lỗi nếu thụt lề vô cớ]:\n  print("Lỗi IndentationError") ❌',
+      miniChallenge: {
+        title: 'Dọn dẹp mã nguồn hỗn loạn',
+        instructions: 'Viết một đoạn code có 1 dòng chú thích tiêu đề, sau đó in ra 2 dòng chữ nhưng đảm bảo không có bất kỳ khoảng trắng thụt lề nào ở đầu các dòng lệnh.',
+        hint: 'Kiểm tra kỹ đầu dòng mỗi lệnh print() để không bị dính phím cách thừa.',
+        expectedOutputSnippet: 'Dong 2',
+      },
+      relatedLessons: ['gioi-thieu-va-moi-truong', 'xuat-du-lieu-print'],
       theoryContent: `Khác với nhiều ngôn ngữ như C, C++ hay Java dùng dấu ngoặc nhọn \`{}\` để phân định khối lệnh, Python sử dụng **khoảng trắng thụt lề (Indentation)**. Điều này giúp mã nguồn Python luôn bắt buộc phải viết gọn gàng và dễ đọc.
 
 Ngoài ra, **chú thích (Comments)** là những dòng ghi chú dành cho con người đọc, bộ thông dịch Python sẽ bỏ qua hoàn toàn khi chạy chương trình. Trong Python:
@@ -282,6 +302,15 @@ Ngoài ra, **chú thích (Comments)** là những dòng ghi chú dành cho con n
       topicId: 'topic-01-lam-quen-python',
       slug: 'xuat-du-lieu-print',
       title: 'Bài 03: Xuất dữ liệu nâng cao với print()',
+      level: 'beginner',
+      visualExplanation: 'Cơ chế tham số sep và end của print():\nprint("A", "B", "C", sep="-") ──► [A] + [-] + [B] + [-] + [C] + [\\n] ──► A-B-C\nprint("Xin", end=" ")         ──► [Xin] + [ ] (không ngắt dòng)\nprint("Chao")                 ──► Xin Chao',
+      miniChallenge: {
+        title: 'Đồng hồ điện tử 3 phần',
+        instructions: 'Dùng một lệnh print() duy nhất với 3 đối số giờ, phút, giây và tham số sep=":" để in định dạng thời gian 12:45:30.',
+        hint: 'print(12, 45, 30, sep=":")',
+        expectedOutputSnippet: '12:45:30',
+      },
+      relatedLessons: ['cu-phap-va-chu-thich', 'nhap-du-lieu-input'],
       theoryContent: `Hàm \`print()\` trong Python không chỉ đơn thuần là in một chuỗi đơn lẻ, mà còn hỗ trợ hai tham số rất hữu ích:
 1. **Tham số \`sep\` (Separator)**: Quy định ký tự ngăn cách giữa các giá trị khi in nhiều phần tử (mặc định là dấu cách \`" "\`).
    Ví dụ: \`print("A", "B", "C", sep="-")\` sẽ cho ra \`A-B-C\`.
@@ -434,6 +463,15 @@ Ngoài ra, **chú thích (Comments)** là những dòng ghi chú dành cho con n
       topicId: 'topic-01-lam-quen-python',
       slug: 'nhap-du-lieu-input',
       title: 'Bài 04: Nhập dữ liệu từ bàn phím với hàm input()',
+      level: 'beginner',
+      visualExplanation: 'Luồng nhận dữ liệu bàn phím với input():\n[Bàn phím người dùng] ──(gõ "Huy" + Enter)──► [input()] ──(trả về kiểu str)──► [Biến ten = "Huy"]',
+      miniChallenge: {
+        title: 'Hộp thoại chào mừng tùy biến',
+        instructions: 'Nhập vào tên môn học yêu thích từ bàn phím và in ra câu chúc mừng dạng "Chuc ban hoc tot mon {mon_hoc}!".',
+        hint: 'mon_hoc = input(); print(f"Chuc ban hoc tot mon {mon_hoc}!")',
+        expectedOutputSnippet: 'Chuc ban hoc tot mon',
+      },
+      relatedLessons: ['xuat-du-lieu-print', 'khai-bao-bien-va-quy-tac-dat-ten'],
       theoryContent: `Để chương trình có tính tương tác, chúng ta cần nhận dữ liệu do người dùng nhập vào từ bàn phím. Trong Python, ta sử dụng hàm \`input()\`.
 
 **LƯU Ý CỐT LÕI**: Hàm \`input()\` luôn luôn trả về dữ liệu ở dạng chuỗi ký tự (\`str\`), ngay cả khi người dùng gõ vào một con số như \`"20"\`!

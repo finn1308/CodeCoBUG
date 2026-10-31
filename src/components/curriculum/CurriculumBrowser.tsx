@@ -373,6 +373,44 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
         </Card>
       )}
 
+      {/* 1.5. Project-Based Learning (PBL) Callout Banner */}
+      <div
+        style={{
+          background: 'linear-gradient(135deg, var(--pastel-lavender-light) 0%, var(--pastel-sky-light) 100%)',
+          border: '1px solid var(--pastel-lavender)',
+          borderRadius: 'var(--radius-lg)',
+          padding: '14px 20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '12px',
+          boxShadow: 'var(--shadow-xs)',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Sparkles size={18} style={{ color: 'var(--pastel-lavender-text)' }} />
+          <div>
+            <div style={{ fontWeight: 800, fontSize: '0.9rem', color: 'var(--text-primary)' }}>
+              Phần II: Học tập qua Dự án Thực chiến (Project-Based Learning)
+            </div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+              3 Dự án lớn: Game Alien Invasion (Pygame), Data Visualization (Matplotlib/Plotly) & Web App Django
+            </div>
+          </div>
+        </div>
+        <Link href="/projects" style={{ textDecoration: 'none' }}>
+          <Button
+            variant="lavender"
+            size="sm"
+            style={{ fontWeight: 700, borderRadius: 'var(--radius-md)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+          >
+            <span>Khám phá 3 Dự án</span>
+            <ArrowRight size={14} />
+          </Button>
+        </Link>
+      </div>
+
       {/* 2. Compact Search & Filter Controls */}
       <Card variant="default" padding="sm" style={{ boxShadow: 'var(--shadow-xs)' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -790,6 +828,28 @@ export const CurriculumBrowser: React.FC<CurriculumBrowserProps> = ({
                                     {isLessonDetailExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
                                   </button>
                                 )}
+
+                                <Link href={`/curriculum/${topic.slug}/${lesson.slug}`} style={{ textDecoration: 'none' }}>
+                                  <span
+                                    style={{
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '4px',
+                                      padding: '4px 10px',
+                                      borderRadius: 'var(--radius-full)',
+                                      fontSize: '0.74rem',
+                                      fontWeight: 600,
+                                      backgroundColor: 'var(--pastel-mint-light)',
+                                      border: '1px solid var(--pastel-mint)',
+                                      color: 'var(--pastel-mint-text)',
+                                      cursor: 'pointer',
+                                    }}
+                                    title="Mở toàn màn hình trang bài giảng chuyên sâu"
+                                  >
+                                    <ExternalLink size={12} />
+                                    <span>Mở bài học</span>
+                                  </span>
+                                </Link>
                               </div>
                             </div>
 

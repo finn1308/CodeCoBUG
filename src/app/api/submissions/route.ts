@@ -18,7 +18,8 @@ export async function GET(req: NextRequest) {
     }
 
     const { searchParams } = new URL(req.url);
-    const exerciseSlug = searchParams.get('exerciseSlug') || undefined;
+    const rawSlug = searchParams.get('exerciseSlug');
+    const exerciseSlug = rawSlug && rawSlug.trim().length > 0 ? rawSlug.trim() : undefined;
 
     // Strict multi-tenant: Query using verified authenticatedUser.id only!
     const submissions = await getAuthoritativeSubmissions(

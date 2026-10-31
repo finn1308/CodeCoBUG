@@ -6,4 +6,5 @@ export * from './Modal';
 export * from './Badge';
 export * from './Tabs';
 export * from './Toast';
+export * from './LondonMotif';
 

@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from '../supabase/server';
 import { createAdminSupabaseClient } from '../supabase/admin';
 import { Verdict } from '../types/runtime';
+import { getExerciseFromRegistry, getAllExercisesFromRegistry } from '../curriculum/curriculumRegistry';
 
 export interface AuthoritativeSubmissionRecord {
   id: string;
@@ -29,6 +30,10 @@ export interface AuthoritativeSubmissionRecord {
 
 // In-memory server fallback storage when running in local development mode without cloud Supabase
 const memorySubmissionsStore: AuthoritativeSubmissionRecord[] = [];
+
+export function clearMemorySubmissionsStore(): void {
+  memorySubmissionsStore.length = 0;
+}
 
 /**
  * Persist submission to authoritative database (Supabase PostgreSQL with fallback to server store).
@@ -125,13 +130,22 @@ export async function getAuthoritativeSubmissions(
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
+      if (exerciseSlug) {
+        const meta = getExerciseFromRegistry(exerciseSlug);
+        if (meta?.exercise?.id) {
+          query = query.eq('exercise_id', meta.exercise.id);
+        }
+      }
+
       const { data, error } = await query;
       if (!error && data && data.length > 0) {
+        const allExercises = getAllExercisesFromRegistry();
+        const idToSlugMap = new Map(allExercises.map((e) => [e.exercise.id, e.exercise.slug]));
         return data.map((d: any) => ({
           id: d.id,
           userId: d.user_id,
           exerciseId: d.exercise_id,
-          exerciseSlug: exerciseSlug || '',
+          exerciseSlug: exerciseSlug || idToSlugMap.get(d.exercise_id) || '',
           submittedCode: d.submitted_code,
           verdict: d.verdict,
           score: d.score,

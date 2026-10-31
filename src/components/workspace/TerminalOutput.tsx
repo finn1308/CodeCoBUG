@@ -16,6 +16,7 @@ import {
   RotateCcw,
   ChevronDown,
   ChevronUp,
+  User,
 } from 'lucide-react';
 import { OutputLog } from '@/lib/types/runtime';
 import { EvaluatedTestResult, SubmissionEvaluationReport } from '@/lib/judge/runner';
@@ -284,7 +285,31 @@ export const TerminalOutput: React.FC<TerminalOutputProps> = ({
                     key={log.id}
                     className={`terminal-line terminal-line-${log.type}`}
                   >
-                    {log.content}
+                    <div>{log.content}</div>
+                    {log.content.includes('Yêu cầu đăng nhập') && (
+                      <button
+                        type="button"
+                        className="btn btn-mint"
+                        style={{
+                          marginTop: '6px',
+                          marginBottom: '4px',
+                          padding: '4px 12px',
+                          fontSize: '0.78rem',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => {
+                          if (typeof window !== 'undefined') {
+                            window.dispatchEvent(new CustomEvent('codecobug:open-auth'));
+                          }
+                        }}
+                      >
+                        <User size={13} />
+                        <span>Đăng nhập hoặc Đăng ký ngay</span>
+                      </button>
+                    )}
                   </div>
                 ))
               )}
@@ -614,7 +639,7 @@ export const TerminalOutput: React.FC<TerminalOutputProps> = ({
                         </div>
 
                         {isExpanded && (
-                          <div style={{ marginTop: '6px' }}>
+                          <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                             <pre
                               style={{
                                 background: 'var(--terminal-bg)',
@@ -631,6 +656,49 @@ export const TerminalOutput: React.FC<TerminalOutputProps> = ({
                             >
                               {sub.submittedCode}
                             </pre>
+
+                            {sub.testCaseResults && sub.testCaseResults.length > 0 && (
+                              <div style={{ backgroundColor: 'var(--bg-tertiary)', borderRadius: 'var(--radius-md)', padding: '8px 10px', border: '1px solid var(--border-subtle)' }}>
+                                <div style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '6px' }}>
+                                  Chi tiết kết quả từng Test Case:
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                  {sub.testCaseResults.map((tc, tcIdx) => (
+                                    <div
+                                      key={tcIdx}
+                                      style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        padding: '4px 8px',
+                                        borderRadius: 'var(--radius-sm)',
+                                        fontSize: '0.74rem',
+                                        backgroundColor: tc.isPassed ? 'var(--pastel-mint-light)' : 'var(--pastel-peach-light)',
+                                        border: `1px solid ${tc.isPassed ? 'var(--pastel-mint)' : 'var(--pastel-peach)'}`,
+                                      }}
+                                    >
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        {tc.isPassed ? (
+                                          <CheckCircle2 size={12} style={{ color: 'var(--status-success-text)' }} />
+                                        ) : (
+                                          <XCircle size={12} style={{ color: 'var(--status-error-text)' }} />
+                                        )}
+                                        <span style={{ fontWeight: 600 }}>Test #{tc.orderIndex || tcIdx + 1}</span>
+                                        {tc.isHidden && <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>(Test ẩn)</span>}
+                                      </div>
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        {tc.executionTimeMs !== undefined && (
+                                          <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>{tc.executionTimeMs}ms</span>
+                                        )}
+                                        <span style={{ fontWeight: 700, color: tc.isPassed ? 'var(--status-success-text)' : 'var(--status-error-text)' }}>
+                                          {tc.isPassed ? 'ĐẠT' : 'CHƯA ĐẠT'}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>

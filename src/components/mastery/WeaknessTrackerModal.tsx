@@ -11,33 +11,45 @@ import {
   ShieldAlert,
   Zap,
   Info,
+  History,
+  XCircle,
+  Code2,
 } from 'lucide-react';
-import { authManager } from '@/lib/auth/authManager';
+import { authManager, SavedSubmissionRecord } from '@/lib/auth/authManager';
 import { MasteryEngine, LearnerMasteryReport } from '@/lib/mastery/masteryEngine';
 import { ReviewEngine, ReviewItem } from '@/lib/mastery/reviewEngine';
+import { getExerciseFromRegistry } from '@/lib/curriculum/curriculumRegistry';
 import { Modal, Button, Badge, Tabs } from '@/components/ui';
 
 interface WeaknessTrackerModalProps {
   isOpen: boolean;
+  initialTab?: 'skills' | 'queue' | 'policy' | 'history';
   onClose: () => void;
 }
 
 export const WeaknessTrackerModal: React.FC<WeaknessTrackerModalProps> = ({
   isOpen,
+  initialTab = 'skills',
   onClose,
 }) => {
-  const [activeTab, setActiveTab] = useState<'skills' | 'queue' | 'policy'>('skills');
+  const [activeTab, setActiveTab] = useState<'skills' | 'queue' | 'policy' | 'history'>(initialTab);
   const [masteryReport, setMasteryReport] = useState<LearnerMasteryReport | null>(null);
   const [reviewQueue, setReviewQueue] = useState<ReviewItem[]>([]);
   const [completedReviews, setCompletedReviews] = useState<ReviewItem[]>([]);
+  const [allSubmissions, setAllSubmissions] = useState<SavedSubmissionRecord[]>([]);
 
   useEffect(() => {
     if (!isOpen) return;
+
+    if (initialTab) {
+      setActiveTab(initialTab);
+    }
 
     const user = authManager.getCurrentUser();
     if (!user) return;
 
     const userSubmissions = authManager.getAllUserSubmissions();
+    setAllSubmissions(userSubmissions);
     const report = MasteryEngine.computeMastery(userSubmissions);
     setMasteryReport(report);
 
@@ -48,7 +60,7 @@ export const WeaknessTrackerModal: React.FC<WeaknessTrackerModalProps> = ({
 
     setReviewQueue(pending);
     setCompletedReviews(completed);
-  }, [isOpen]);
+  }, [isOpen, initialTab]);
 
   return (
     <Modal
@@ -81,11 +93,12 @@ export const WeaknessTrackerModal: React.FC<WeaknessTrackerModalProps> = ({
           variant="pill"
           fullWidth
           activeTab={activeTab}
-          onChange={(newTab) => setActiveTab(newTab as 'skills' | 'queue' | 'policy')}
+          onChange={(newTab) => setActiveTab(newTab as 'skills' | 'queue' | 'policy' | 'history')}
           tabs={[
             { id: 'skills', label: 'Kỹ năng & Điểm yếu', icon: <TrendingUp size={14} /> },
             { id: 'queue', label: `Hàng đợi ôn tập (${reviewQueue.length})`, icon: <Clock size={14} /> },
-            { id: 'policy', label: 'Chính sách thành thạo', icon: <Info size={14} /> },
+            { id: 'history', label: `Lịch sử (${allSubmissions.length})`, icon: <History size={14} /> },
+            { id: 'policy', label: 'Chính sách', icon: <Info size={14} /> },
           ]}
         />
       </div>
@@ -422,6 +435,95 @@ export const WeaknessTrackerModal: React.FC<WeaknessTrackerModalProps> = ({
               </li>
             </ul>
           </div>
+        </div>
+      )}
+
+      {/* TAB 4: COMPREHENSIVE SUBMISSION HISTORY */}
+      {activeTab === 'history' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {allSubmissions.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '36px 0', color: 'var(--text-muted)' }}>
+              <History size={36} style={{ margin: '0 auto 12px', opacity: 0.35 }} />
+              <p style={{ fontWeight: 600 }}>Chưa có lần nộp bài nào được ghi nhận.</p>
+              <p style={{ fontSize: '0.8rem', marginTop: '4px' }}>
+                Tiến độ và lịch sử chấm bài sẽ tự động xuất hiện tại đây sau khi bạn nộp code trong phòng lab.
+              </p>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '520px', overflowY: 'auto' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 4px', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+                <span>Tổng cộng <strong>{allSubmissions.length}</strong> lần nộp bài</span>
+                <span>Cô lập theo tài khoản người dùng</span>
+              </div>
+
+              {allSubmissions.map((sub, idx) => {
+                const isAccepted = sub.verdict === 'accepted';
+                const exMatch = getExerciseFromRegistry(sub.exerciseSlug);
+                const title = exMatch?.exercise.title || sub.exerciseSlug;
+                const chapterTitle = exMatch?.topic.title || '';
+                const dateStr = new Date(sub.submittedAt).toLocaleString('vi-VN');
+
+                return (
+                  <div
+                    key={sub.id}
+                    style={{
+                      backgroundColor: 'var(--bg-surface)',
+                      border: `1px solid ${isAccepted ? 'var(--pastel-mint)' : 'var(--pastel-peach)'}`,
+                      borderRadius: 'var(--radius-lg)',
+                      padding: '12px 16px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      flexWrap: 'wrap',
+                      gap: '10px',
+                      boxShadow: 'var(--shadow-xs)',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1 1 260px' }}>
+                      {isAccepted ? (
+                        <div style={{ width: '32px', height: '32px', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--pastel-mint-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                          <CheckCircle2 size={18} style={{ color: 'var(--status-success-text)' }} />
+                        </div>
+                      ) : (
+                        <div style={{ width: '32px', height: '32px', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--pastel-peach-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                          <XCircle size={18} style={{ color: 'var(--status-error-text)' }} />
+                        </div>
+                      )}
+
+                      <div>
+                        <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-primary)' }}>
+                          {title}
+                        </div>
+                        <div style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                          #{allSubmissions.length - idx} • {chapterTitle ? `${chapterTitle} • ` : ''}{dateStr}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                      <Badge variant={isAccepted ? 'mint' : 'peach'} size="sm">
+                        {isAccepted ? 'Accepted' : sub.verdict.toUpperCase()}
+                      </Badge>
+
+                      <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                        {sub.score}/{sub.totalPoints} pts
+                      </span>
+
+                      <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
+                        {sub.passedTestsCount}/{sub.totalTestsCount} tests
+                      </span>
+
+                      <Link href={`/exercises/${sub.exerciseSlug}`} style={{ textDecoration: 'none' }} onClick={onClose}>
+                        <Button variant="ghost" size="sm" rightIcon={<ArrowRight size={12} />} style={{ fontSize: '0.76rem', padding: '4px 8px' }}>
+                          Làm lại
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
     </Modal>

@@ -3265,6 +3265,8 @@ export const SERVER_EXERCISE_TESTS: Record<string, ServerExerciseTestConfig> = {
   },
 };
 
+import { getProjectExerciseTests } from '@/lib/projects/projectTestCases';
+
 export function getServerExerciseTests(slug: string): ServerExerciseTestConfig | null {
-  return SERVER_EXERCISE_TESTS[slug] || null;
+  return SERVER_EXERCISE_TESTS[slug] || getProjectExerciseTests(slug) || null;
 }

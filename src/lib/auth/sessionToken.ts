@@ -80,6 +80,11 @@ export function verifySessionToken(token: string): UserProfile | null {
     const payloadJson = Buffer.from(fromBase64Url(payloadB64), 'base64').toString('utf8');
     const payload: SessionPayload = JSON.parse(payloadJson);
 
+    // Defensively ensure payload object integrity and valid userId
+    if (!payload || typeof payload !== 'object' || typeof payload.userId !== 'string' || !payload.userId.trim()) {
+      return null;
+    }
+
     // Check expiration
     if (payload.expiresAt && Date.now() > payload.expiresAt) {
       return null;

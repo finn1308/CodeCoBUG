@@ -10,6 +10,7 @@ import { WeaknessTrackerModal } from '@/components/mastery/WeaknessTrackerModal'
 import { AITutorModal } from '@/components/ai';
 import { HelpModal } from '@/components/common/HelpModal';
 import { ToastProvider } from '@/components/ui';
+import { CommandCenter } from '@/components/navigation';
 
 export interface AppShellProps {
   children: React.ReactNode;
@@ -32,8 +33,39 @@ export const AppShell: React.FC<AppShellProps> = ({
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isTrackerOpen, setIsTrackerOpen] = useState(false);
+  const [trackerTab, setTrackerTab] = useState<'skills' | 'queue' | 'policy' | 'history'>('skills');
   const [isGlobalAITutorOpen, setIsGlobalAITutorOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [isCommandCenterOpen, setIsCommandCenterOpen] = useState(false);
+
+  // Global keyboard shortcut: Cmd+K / Ctrl+K opens Command Center
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsCommandCenterOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Global interaction custom event bridge
+  useEffect(() => {
+    const handleOpenAuth = () => setIsAuthOpen(true);
+    const handleOpenSettings = () => setIsSettingsOpen(true);
+    const handleOpenCmd = () => setIsCommandCenterOpen(true);
+
+    window.addEventListener('codecobug:open-auth', handleOpenAuth);
+    window.addEventListener('codecobug:open-settings', handleOpenSettings);
+    window.addEventListener('codecobug:open-command-center', handleOpenCmd);
+
+    return () => {
+      window.removeEventListener('codecobug:open-auth', handleOpenAuth);
+      window.removeEventListener('codecobug:open-settings', handleOpenSettings);
+      window.removeEventListener('codecobug:open-command-center', handleOpenCmd);
+    };
+  }, []);
 
   // Load sidebar collapse preference from localStorage on desktop
   useEffect(() => {
@@ -55,7 +87,10 @@ export const AppShell: React.FC<AppShellProps> = ({
     });
   };
 
-  const handleOpenWeaknessTracker = (_initialTab?: 'skills' | 'queue' | 'policy') => {
+  const handleOpenWeaknessTracker = (initialTab?: 'skills' | 'queue' | 'policy' | 'history') => {
+    if (initialTab) {
+      setTrackerTab(initialTab);
+    }
     setIsTrackerOpen(true);
   };
 
@@ -89,12 +124,21 @@ export const AppShell: React.FC<AppShellProps> = ({
             onOpenAuth={() => setIsAuthOpen(true)}
             onOpenAISettings={() => setIsSettingsOpen(true)}
             onOpenWeaknessTracker={handleOpenWeaknessTracker}
+            onOpenCommandCenter={() => setIsCommandCenterOpen(true)}
             showBrand={hideSidebar}
           />
 
           {/* Content Body */}
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-            {children}
+            {React.isValidElement(children)
+              ? React.cloneElement(children as React.ReactElement<any>, {
+                  onOpenCommandCenter: () => setIsCommandCenterOpen(true),
+                  onOpenAuth: () => setIsAuthOpen(true),
+                  onOpenAISettings: () => setIsSettingsOpen(true),
+                  onOpenWeaknessTracker: handleOpenWeaknessTracker,
+                  onToggleAITutor: handleToggleAITutor,
+                })
+              : children}
           </div>
         </div>
 
@@ -109,7 +153,17 @@ export const AppShell: React.FC<AppShellProps> = ({
           onOpenHelp={() => setIsHelpOpen(true)}
         />
 
-        {/* 4. Global Modals */}
+        {/* 4. Global Command Center (One-Tap Navigation) */}
+        <CommandCenter
+          isOpen={isCommandCenterOpen}
+          onClose={() => setIsCommandCenterOpen(false)}
+          onOpenAuth={() => setIsAuthOpen(true)}
+          onOpenAISettings={() => setIsSettingsOpen(true)}
+          onOpenWeaknessTracker={handleOpenWeaknessTracker}
+          onToggleAITutor={handleToggleAITutor}
+        />
+
+        {/* 5. Global Modals */}
         <AuthModal
           isOpen={isAuthOpen}
           onClose={() => setIsAuthOpen(false)}
@@ -123,6 +177,7 @@ export const AppShell: React.FC<AppShellProps> = ({
 
         <WeaknessTrackerModal
           isOpen={isTrackerOpen}
+          initialTab={trackerTab}
           onClose={() => setIsTrackerOpen(false)}
         />
 
